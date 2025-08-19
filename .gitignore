@@ -416,3 +416,36 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Angular specific files
+#
+# from https://github.com/github/gitignore/blob/main/Angular.gitignore
+
+### Build results ###
+/dist
+/build
+/coverage
+/e2e/
+
+# Generated files
+.angular/
+.browserslistrc
+.eslintignore
+.editorconfig
+.prettierrc
+.npmrc
+.nvmrc
+
+### Temp files ###
+.tmp/
+.sass-cache/
+.cache/
+
+# NPM
+/node_modules
+npm-debug.log*
+yarn-error.log*
+
+# Other
+*.tsbuildinfo
+.env
