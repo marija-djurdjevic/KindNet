@@ -1,4 +1,7 @@
 using KindNet.Data;
+using KindNet.Models.Interfaces;
+using KindNet.Repositories;
+using KindNet.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +26,9 @@ builder.Services.AddCors(options =>
                    .AllowAnyMethod();
         });
 });
+
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<EventService>();
 
 var app = builder.Build();
 
