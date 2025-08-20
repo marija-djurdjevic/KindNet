@@ -3,6 +3,7 @@
     using KindNet.Data;
     using KindNet.Models;
     using KindNet.Models.Interfaces;
+    using KindNet.Models.Enums;
     using Microsoft.EntityFrameworkCore;
     public class EventRepository : IEventRepository
     {
@@ -33,5 +34,17 @@
                 .Include(e => e.Organizer)
                 .ToListAsync();
         }
+
+        public async Task<Event> GetOverlappingEventAsync(string city, DateTime startTime, DateTime endTime)
+        {
+            return await _context.Events
+                .Where(e =>
+                    e.City == city &&
+                    (e.Status == EventStatus.Planned || e.Status == EventStatus.Active) &&
+                    e.StartTime < endTime &&
+                    e.EndTime > startTime)
+                .FirstOrDefaultAsync();
+        }
+
     }
 }

@@ -1,8 +1,7 @@
-﻿using KindNet.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using KindNet.Dtos;
-using KindNet.Models;
 using KindNet.Models.Enums;
-using Microsoft.AspNetCore.Mvc;
+using KindNet.Services;
 
 namespace KindNet.Controllers
 {
@@ -10,47 +9,58 @@ namespace KindNet.Controllers
     [ApiController]
     public class EventController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly EventService _eventService;
 
-        public EventController(AppDbContext context)
+        public EventController(EventService eventService)
         {
-            _context = context;
+            _eventService = eventService;
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateEvent([FromBody] CreateEventDto eventDto)
         {
-            var temporaryOrganizerId = 1L;
+            var result = await _eventService.CreateEventAsync(eventDto);
 
-            var newEvent = new Event
+            if (result.IsOverlapping)
             {
-                Name = eventDto.Name,
-                Description = eventDto.Description,
-                City = eventDto.City,
-                StartTime = eventDto.StartTime,
-                EndTime = eventDto.EndTime,
-                Type = eventDto.Type,
-                Status = EventStatus.Draft,
-                OrganizerId = temporaryOrganizerId
-            };
+                return Conflict("Događaj se preklapa sa postojećim događajem u istom gradu.");
+            }
 
-            _context.Events.Add(newEvent);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetEvent), new { id = newEvent.Id }, newEvent);
+            return CreatedAtAction(nameof(GetEvent), new { id = result.CreatedEvent.Id }, result.CreatedEvent);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEvent(long id)
         {
-            var foundEvent = await _context.Events.FindAsync(id);
+            var eventDto = await _eventService.GetEventDtoByIdAsync(id);
 
-            if (foundEvent == null)
+            if (eventDto == null)
             {
                 return NotFound();
             }
 
-            return Ok(foundEvent);
+            return Ok(eventDto);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllEvents()
+        {
+            var eventDtos = await _eventService.GetAllEventDtosAsync();
+
+            return Ok(eventDtos);
+        }
+
+        [HttpGet("check-overlap")]
+        public async Task<IActionResult> CheckOverlap([FromQuery] string city, [FromQuery] DateTime startTime, [FromQuery] DateTime endTime)
+        {
+            if (string.IsNullOrEmpty(city) || startTime == default || endTime == default)
+            {
+                return BadRequest("City, StartTime, and EndTime are required parameters.");
+            }
+
+            var isOverlapping = await _eventService.IsEventOverlapping(city, startTime, endTime);
+
+            return Ok(isOverlapping);
         }
     }
 }
