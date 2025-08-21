@@ -1,0 +1,36 @@
+.app-container {
+  height: 100vh;
+  background: linear-gradient(to bottom right, #FFC75F, #FFD8A7);
+}
+mat-toolbar {
+  background-color: #fcfcfc; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+}
+
+.sidenav {
+  width: 250px;
+  background-color: #fcfcfc; 
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.app-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 20px;
+  text-align: center;
+  color: #333; 
+}
+.nav-list {
+  padding-top: 20px;
+}
+
+.nav-list a {
+  color: #555; 
+  padding: 10px 20px; 
+}
+
+.nav-list mat-icon {
+  margin-right: 15px;
+  vertical-align: middle; 
+}
+
