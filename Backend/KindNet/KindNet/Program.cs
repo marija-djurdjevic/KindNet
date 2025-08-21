@@ -29,6 +29,9 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<EventService>();
+builder.Services.AddScoped<ITokenGenerator, JwtGenerator>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 
 var app = builder.Build();
 
