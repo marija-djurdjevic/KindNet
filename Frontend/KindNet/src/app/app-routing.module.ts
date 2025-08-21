@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LayoutComponent } from './layout/layout/layout.component';
 import { EventsListComponent } from './events-list/events-list.component';
 import { CreateEventComponent } from './create-event/create-event.component';
+import { CalendarComponent } from './calendar/calendar.component';
 
 const routes: Routes = [
   {
@@ -10,7 +11,8 @@ const routes: Routes = [
     component: LayoutComponent,
     children: [
       { path: 'events', component: EventsListComponent },
-      { path: 'create-event', component: CreateEventComponent }
+      { path: 'create-event', component: CreateEventComponent },
+      { path: 'calendar', component: CalendarComponent }
     ]
   }
 ];

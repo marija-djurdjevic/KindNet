@@ -53,6 +53,13 @@
                 .Include(e => e.Organizer)
                 .ToListAsync();
         }
+        public async Task<IEnumerable<Event>> GetPlannedAndActiveEventsAsync()
+        {
+            return await _context.Events
+                .Where(e => e.Status == EventStatus.Planned || e.Status == EventStatus.Active)
+                .Include(e => e.Organizer)
+                .ToListAsync();
+        }
 
     }
 }
