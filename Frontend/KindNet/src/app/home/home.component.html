@@ -1,0 +1,18 @@
+<nav>
+  <div class="logo">KindNet</div>
+  <div class="nav-links">
+    <ng-container *ngIf="isLoggedIn$ | async">
+      <button class="nav-button" (click)="onLogout()">Logout</button>
+    </ng-container>
+
+    <ng-container *ngIf="!(isLoggedIn$ | async)">
+      <button class="nav-button" [routerLink]="['/login']">Login</button>
+      <button class="nav-button" [routerLink]="['/sign-up']">Sign Up</button>
+    </ng-container>
+  </div>
+</nav>
+
+<div class="content-container">
+  <h1>Dobrodošli na KindNet!</h1>
+  <p>Prijavite se da biste pristupili svim funkcionalnostima.</p>
+</div>

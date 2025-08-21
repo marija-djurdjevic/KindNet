@@ -10,7 +10,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { HttpClientModule } from '@angular/common/http';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
@@ -21,33 +20,44 @@ import localeSr from '@angular/common/locales/sr-Latn';
 registerLocaleData(localeSr);
 
 import { AppComponent } from './app.component';
+import { LoginComponent } from './login/login.component';
+import { SignUpComponent } from './sign-up/sign-up.component';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { AuthService } from './services/auth.service';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { HomeComponent } from './home/home.component';
+import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EventsListComponent } from './events-list/events-list.component';
 import { CreateEventComponent } from './create-event/create-event.component';
 import { CalendarComponent } from './calendar/calendar.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,
+    LoginComponent,
+    SignUpComponent,
+    HomeComponent,
     EventsListComponent,
     CreateEventComponent,
     CalendarComponent
   ],
+
   imports: [
     BrowserModule,
+    HttpClientModule,
+    FormsModule,
+    RouterModule,
     AppRoutingModule,
     LayoutModule,
     BrowserAnimationsModule,
     MatIconModule,
     MatFormFieldModule, 
     MatInputModule, 
-    FormsModule,
     MatSelectModule,
     MatOptionModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    HttpClientModule,
     MatProgressSpinnerModule,
     MatCardModule,
     MatButtonModule,
@@ -56,7 +66,16 @@ import { CalendarComponent } from './calendar/calendar.component';
       useFactory: adapterFactory,
     })
   ],
-  providers: [],
+
+   providers: [
+    AuthService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
+  
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -29,6 +29,14 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<EventService>();
+builder.Services.AddScoped<ITokenGenerator, JwtGenerator>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
+
 
 var app = builder.Build();
 
