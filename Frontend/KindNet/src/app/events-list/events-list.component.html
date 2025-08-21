@@ -20,7 +20,7 @@
   <mat-card 
     class="event-card" 
     *ngFor="let event of events" 
-    [ngClass]="'type-border-' + typeMapping[event.type].toLowerCase()">
+    [ngClass]="'type-border-' + event.type.toLowerCase()">
     
     <div class="card-main-content">
       <div class="event-info">
@@ -45,11 +45,11 @@
       </div>
 
       <div class="event-meta">
-        <span class="tag status-tag" [ngClass]="'status-' + statusMapping[event.status].toLowerCase()">
-          {{ statusMapping[event.status] }}
+        <span class="tag status-tag" [ngClass]="'status-' + event.status.toLowerCase()">
+          {{ event.status }}
         </span>
         <span class="tag type-tag">
-          {{ typeMapping[event.type] }}
+          {{ event.type }}
         </span>
       </div>
     </div>

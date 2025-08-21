@@ -38,15 +38,15 @@ export class EventsListComponent implements OnInit {
     6: 'Technology'
   };
 
-  typeIconMapping: { [key: number]: string } = {
-    0: 'eco',
-    1: 'theater_comedy',
-    2: 'school',
-    3: 'volunteer_activism',
-    4: 'sports_soccer',
-    5: 'groups',
-    6: 'computer'
-  };
+  typeIconMapping: { [key: string]: string } = {
+    'Environmental': 'eco',
+    'Cultural': 'theater_comedy',
+    'Educational': 'school',
+    'Humanitarian': 'volunteer_activism',
+    'Sport': 'sports_soccer',
+    'Community': 'groups',
+    'Technology': 'computer'
+};
 
   constructor(private eventService: EventService, private router: Router) { }
 

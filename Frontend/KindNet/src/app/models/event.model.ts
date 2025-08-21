@@ -17,8 +17,8 @@ export interface EventDto {
   city: string;
   startTime: Date;
   endTime: Date;
-  type: number;
-  status: number;
+  type: string;
+  status: string;
   applicationDeadline: Date;
   requiredSkills: string[];
 }
