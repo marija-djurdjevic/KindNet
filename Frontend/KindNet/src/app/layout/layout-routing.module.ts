@@ -4,7 +4,7 @@ import { LayoutComponent } from './layout/layout.component';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'layout',
     component: LayoutComponent
   }
 ];

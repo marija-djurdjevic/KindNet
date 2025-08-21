@@ -9,12 +9,12 @@ import { CreateEventComponent } from './create-event/create-event.component';
 import { CalendarComponent } from './calendar/calendar.component';
 
 const routes: Routes = [
-   { path: 'login', component: LoginComponent },
+  { path: 'login', component: LoginComponent },
   { path: 'sign-up', component: SignUpComponent },
   { path: 'home', component: HomeComponent },
 
   {
-    path: '',
+    path: 'layout',
     component: LayoutComponent,
     children: [
       { path: 'events', component: EventsListComponent },
@@ -23,7 +23,7 @@ const routes: Routes = [
     ]
   },
   
-  { path: '**', redirectTo: '/home' }
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
 ];
 
 @NgModule({

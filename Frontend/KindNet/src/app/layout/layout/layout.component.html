@@ -3,16 +3,16 @@
     <div class="app-title">KindNet</div>
     
     <mat-nav-list class="nav-list">
-      <a mat-list-item routerLink="/">
+      <a mat-list-item routerLink="/layout/">
         <mat-icon>home</mat-icon> Početna stranica
       </a>
-      <a mat-list-item routerLink="/events">
+      <a mat-list-item routerLink="/layout/events">
         <mat-icon>event</mat-icon> Događaji
       </a>
-      <a mat-list-item routerLink="/calendar">
+      <a mat-list-item routerLink="/layout/calendar">
         <mat-icon>calendar_month</mat-icon> Kalendar
       </a>
-      <a mat-list-item routerLink="/profil">
+      <a mat-list-item routerLink="/layout/profil">
         <mat-icon>person</mat-icon> Profil
       </a>
     </mat-nav-list>
@@ -23,7 +23,10 @@
       <button mat-icon-button (click)="sidenav.toggle()">
         <mat-icon>menu</mat-icon>
       </button>
-      <span></span> 
+      <span style="flex: 1 1 auto;"></span> 
+      <button mat-icon-button (click)="logout()">
+        <mat-icon>logout</mat-icon>
+      </button>
     </mat-toolbar>
     
     <div class="main-content">

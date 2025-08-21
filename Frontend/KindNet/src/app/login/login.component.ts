@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(credentials).subscribe({
       next: (response) => {
         console.log('Login successful!', response);
-        this.router.navigate(['/home']); 
+        this.router.navigate(['/layout']); 
       },
       error: (error) => {
         console.error('Login failed:', error);
