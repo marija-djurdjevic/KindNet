@@ -23,7 +23,7 @@ namespace KindNet.Controllers
             {
                 return BadRequest(result.Errors.First().Message);
             }
-            return Ok("Registration successful!");
+            return Ok(new { message = "Registration successful!" });
         }
 
         [HttpPost("login")]
