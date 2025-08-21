@@ -25,5 +25,9 @@ namespace KindNet.Dtos
         public EventType Type { get; set; }
 
         public EventStatus Status {  get; set; }
+
+        [Required]
+        public DateTime ApplicationDeadline { get; set; }
+        public List<string> RequiredSkills { get; set; }
     }
 }

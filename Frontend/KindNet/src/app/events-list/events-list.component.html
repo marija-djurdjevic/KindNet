@@ -37,6 +37,10 @@
             <mat-icon>schedule</mat-icon>
             <span>{{ event.startTime | date:'dd.MM.yyyy HH:mm' }} - {{ event.endTime | date:'dd.MM.yy HH:mm' }}</span>
           </div>
+          <div class="detail-item">
+            <mat-icon>event</mat-icon>
+            <span>Rok za prijavu: {{ event.applicationDeadline | date:'dd.MM.yyyy' }}</span>
+          </div>
         </div>
       </div>
 
@@ -48,6 +52,12 @@
           {{ typeMapping[event.type] }}
         </span>
       </div>
+    </div>
+
+    <div class="skills-container" *ngIf="event.requiredSkills && event.requiredSkills.length > 0">
+      <span class="skill-tag" *ngFor="let skill of event.requiredSkills">
+        {{ skill }}
+      </span>
     </div>
 
     <mat-card-content *ngIf="event.description">

@@ -77,5 +77,14 @@ namespace KindNet.Controllers
 
             return Ok(isOverlapping);
         }
+
+        [HttpGet("my-events")]
+        public async Task<IActionResult> GetMyEvents()
+        {
+            var temporaryOrganizerId = 1L;
+            var eventDtos = await _eventService.GetAllEventsByOrganizerIdAsync(temporaryOrganizerId);
+            return Ok(eventDtos);
+        }
+
     }
 }

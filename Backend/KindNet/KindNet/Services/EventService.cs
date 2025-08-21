@@ -42,7 +42,9 @@ namespace KindNet.Services
                 EndTime = eventDto.EndTime,
                 Type = eventDto.Type,
                 Status = EventStatus.Draft,
-                OrganizerId = temporaryOrganizerId
+                OrganizerId = temporaryOrganizerId,
+                ApplicationDeadline = eventDto.ApplicationDeadline,
+                RequiredSkills = eventDto.RequiredSkills
             };
 
             var createdEvent = await _eventRepository.AddAsync(newEvent);
@@ -55,7 +57,9 @@ namespace KindNet.Services
                 City = createdEvent.City,
                 StartTime = createdEvent.StartTime,
                 EndTime = createdEvent.EndTime,
-                Type = createdEvent.Type
+                Type = createdEvent.Type,
+                ApplicationDeadline = eventDto.ApplicationDeadline,
+                RequiredSkills = eventDto.RequiredSkills
             };
 
             return new CreateEventResultDto { CreatedEvent = createdEventDto, IsOverlapping = false };
@@ -84,7 +88,9 @@ namespace KindNet.Services
                 City = foundEvent.City,
                 StartTime = foundEvent.StartTime,
                 EndTime = foundEvent.EndTime,
-                Type = foundEvent.Type
+                Type = foundEvent.Type,
+                ApplicationDeadline = foundEvent.ApplicationDeadline,
+                RequiredSkills = foundEvent.RequiredSkills
             };
             return eventDto;
         }
@@ -100,7 +106,28 @@ namespace KindNet.Services
                 City = e.City,
                 StartTime = e.StartTime,
                 EndTime = e.EndTime,
-                Type = e.Type
+                Type = e.Type,
+                ApplicationDeadline = e.ApplicationDeadline,
+                RequiredSkills = e.RequiredSkills
+            }).ToList();
+
+            return eventDtos;
+        }
+        public async Task<IEnumerable<EventDto>> GetAllEventsByOrganizerIdAsync(long organizerId)
+        {
+            var events = await _eventRepository.GetAllByOrganizerIdAsync(organizerId);
+            var eventDtos = events.Select(e => new EventDto
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Description = e.Description,
+                City = e.City,
+                StartTime = e.StartTime,
+                EndTime = e.EndTime,
+                Type = e.Type,
+                Status = e.Status,
+                ApplicationDeadline = e.ApplicationDeadline,
+                RequiredSkills = e.RequiredSkills
             }).ToList();
 
             return eventDtos;

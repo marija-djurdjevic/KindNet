@@ -16,8 +16,10 @@ export class CreateEventComponent implements OnInit {
     description: '',
     city: '',
     startTime: new Date(), 
-    endTime: new Date(),   
-    type: '', 
+    endTime: new Date(), 
+    applicationDeadline: new Date(), // Inicijalizovano kao obavezno polje
+    requiredSkills: [], // Inicijalizovano kao prazan niz
+    type: '',
     forceCreate: false
   };
 
@@ -25,6 +27,8 @@ export class CreateEventComponent implements OnInit {
   startTimeTime: string = '';
   endTimeDate: Date | null = null;
   endTimeTime: string = '';
+  // Nova varijabla za veštine
+  requiredSkillsString: string = '';
 
   private typeMapping: { [key: string]: number } = {
     'Environmental': 0,
@@ -65,6 +69,14 @@ export class CreateEventComponent implements OnInit {
 
     this.event.startTime = startDateTime;
     this.event.endTime = endDateTime;
+    
+    // Konverzija stringa veština u niz
+    this.event.requiredSkills = this.requiredSkillsString.split(',').map(skill => skill.trim()).filter(skill => skill.length > 0);
+    // Dodatna validacija: rok za prijavu ne sme biti nakon početka događaja
+    if (this.event.applicationDeadline > this.event.startTime) {
+      alert('Rok za prijavu mora biti pre datuma početka događaja.');
+      return;
+    }
 
     this.eventService.checkOverlap(this.event.city, this.event.startTime, this.event.endTime)
       .subscribe(isOverlapping => {
@@ -87,6 +99,9 @@ export class CreateEventComponent implements OnInit {
       City: this.event.city,
       StartTime: this.event.startTime.toISOString(),
       EndTime: this.event.endTime.toISOString(),
+      // Dodati novi podaci
+      ApplicationDeadline: this.event.applicationDeadline.toISOString(),
+      RequiredSkills: this.event.requiredSkills,
       Type: this.typeMapping[this.event.type],
       ForceCreate: this.event.forceCreate
     };
@@ -111,6 +126,9 @@ export class CreateEventComponent implements OnInit {
       City: this.event.city,
       StartTime: this.event.startTime.toISOString(),
       EndTime: this.event.endTime.toISOString(),
+      // Dodati novi podaci
+      ApplicationDeadline: this.event.applicationDeadline.toISOString(),
+      RequiredSkills: this.event.requiredSkills,
       Type: this.typeMapping[this.event.type],
       ForceCreate: this.event.forceCreate
     };

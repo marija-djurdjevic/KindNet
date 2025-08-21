@@ -30,10 +30,10 @@
           </mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" class="half-width">
-          <mat-label>Vreme početka</mat-label>
+          <mat-label>Vrijeme početka</mat-label>
           <input matInput type="time" [(ngModel)]="startTimeTime" name="startTimeTime" required #startTime="ngModel">
            <mat-error *ngIf="startTime.invalid && (startTime.dirty || startTime.touched)">
-            Vreme početka je obavezno.
+            Vrijeme početka je obavezno.
           </mat-error>
         </mat-form-field>
       </div>
@@ -49,13 +49,28 @@
           </mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" class="half-width">
-          <mat-label>Vreme završetka</mat-label>
+          <mat-label>Vrijeme završetka</mat-label>
           <input matInput type="time" [(ngModel)]="endTimeTime" name="endTimeTime" required #endTime="ngModel">
            <mat-error *ngIf="endTime.invalid && (endTime.dirty || endTime.touched)">
-            Vreme završetka je obavezno.
+            Vrijeme završetka je obavezno.
           </mat-error>
         </mat-form-field>
       </div>
+      
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Rok za prijavu</mat-label>
+        <input matInput [matDatepicker]="deadlinePicker" [(ngModel)]="event.applicationDeadline" name="applicationDeadline" required #deadline="ngModel">
+        <mat-datepicker-toggle matSuffix [for]="deadlinePicker"></mat-datepicker-toggle>
+        <mat-datepicker #deadlinePicker></mat-datepicker>
+        <mat-error *ngIf="deadline.invalid && (deadline.dirty || deadline.touched)">
+          Rok za prijavu je obavezan.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Potrebne vještine</mat-label>
+        <input matInput placeholder="Npr. programiranje, komunikacija, dizajn (odvojite zarezom)" [(ngModel)]="requiredSkillsString" name="requiredSkills" #skills="ngModel">
+      </mat-form-field>
 
       <mat-form-field appearance="outline" class="half-width">
         <mat-label>Grad</mat-label>

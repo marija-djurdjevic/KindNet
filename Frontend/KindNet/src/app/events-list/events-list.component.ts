@@ -12,7 +12,6 @@ export class EventsListComponent implements OnInit {
   events: EventDto[] = [];
   isLoading: boolean = true;
 
-  // Eksplicitno definirani tipovi za mape
   statusMapping: { [key: number]: string } = {
     0: 'Draft',
     1: 'Planned',
@@ -57,7 +56,7 @@ export class EventsListComponent implements OnInit {
 
   getEvents() {
     this.isLoading = true;
-    this.eventService.getEvents().subscribe(
+    this.eventService.getMyEvents().subscribe(
       (data) => {
         this.events = data;
         this.isLoading = false;

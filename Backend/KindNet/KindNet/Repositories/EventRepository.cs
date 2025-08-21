@@ -46,5 +46,13 @@
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<IEnumerable<Event>> GetAllByOrganizerIdAsync(long organizerId)
+        {
+            return await _context.Events
+                .Where(e => e.OrganizerId == organizerId)
+                .Include(e => e.Organizer)
+                .ToListAsync();
+        }
+
     }
 }
