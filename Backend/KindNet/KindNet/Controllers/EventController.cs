@@ -16,7 +16,7 @@ namespace KindNet.Controllers
             _eventService = eventService;
         }
 
-        [HttpPost]
+        /*[HttpPost]
         public async Task<IActionResult> CreateEvent([FromBody] CreateEventDto eventDto)
         {
             var result = await _eventService.CreateEventAsync(eventDto);
@@ -28,7 +28,23 @@ namespace KindNet.Controllers
 
             return CreatedAtAction(nameof(GetEvent), new { id = result.CreatedEvent.Id }, result.CreatedEvent);
         }
+        */
 
+        [HttpPost]
+        public async Task<ActionResult<CreateEventResultDto>> Create([FromBody] CreateEventDto eventDto)
+        {
+            try
+            {
+                var result = await _eventService.CreateEventAsync(eventDto);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                // OVO JE KLJUČNO ZA DEBAGOVANJE
+                Console.WriteLine($"Greška prilikom kreiranja događaja: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEvent(long id)
         {

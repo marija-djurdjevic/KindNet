@@ -1,0 +1,30 @@
+.events-list-container {
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header button {
+    display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Poppins', sans-serif;
+  background-color: #ffffff; 
+  color: #333; 
+  border-radius: 8px; 
+  padding: 8px 16px; 
+  font-weight: 500;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); 
+  transition: all 0.2s ease-in-out;
+  border: 1px solid #ddd; 
+}
+
+.header button:hover {
+  background-color: #f7f7f7; 
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1); 
+}
