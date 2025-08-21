@@ -1,0 +1,33 @@
+<mat-sidenav-container class="app-container">
+  <mat-sidenav #sidenav mode="side" opened class="sidenav">
+    <div class="app-title">KindNet</div>
+    
+    <mat-nav-list class="nav-list">
+      <a mat-list-item routerLink="/">
+        <mat-icon>home</mat-icon> Početna stranica
+      </a>
+      <a mat-list-item routerLink="/events">
+        <mat-icon>event</mat-icon> Događaji
+      </a>
+      <a mat-list-item routerLink="/calendar">
+        <mat-icon>calendar_month</mat-icon> Kalendar
+      </a>
+      <a mat-list-item routerLink="/profil">
+        <mat-icon>person</mat-icon> Profil
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  
+  <mat-sidenav-content class="content">
+    <mat-toolbar>
+      <button mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span></span> 
+    </mat-toolbar>
+    
+    <div class="main-content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

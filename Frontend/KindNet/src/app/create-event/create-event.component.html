@@ -1,0 +1,105 @@
+<div class="form-wrapper">
+  <div class="form-container">
+    <h2>Kreiraj novi događaj</h2>
+    <form class="event-form" #eventForm="ngForm" (ngSubmit)="onSubmit(eventForm)">
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Naziv događaja</mat-label>
+        <input matInput placeholder="Naziv događaja" [(ngModel)]="event.name" name="name" required #name="ngModel">
+        <mat-error *ngIf="name.invalid && (name.dirty || name.touched)">
+          Naziv događaja je obavezan.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Opis</mat-label>
+        <textarea matInput placeholder="Opis događaja" cdkTextareaAutosize cdkAutosizeMinRows="3" [(ngModel)]="event.description" name="description" required #description="ngModel"></textarea>
+         <mat-error *ngIf="description.invalid && (description.dirty || description.touched)">
+          Opis je obavezan.
+        </mat-error>
+      </mat-form-field>
+
+      <div class="date-time-group">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Datum početka</mat-label>
+          <input matInput [matDatepicker]="startDatePicker" [(ngModel)]="startTimeDate" name="startTimeDate" required #startDate="ngModel">
+          <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #startDatePicker></mat-datepicker>
+           <mat-error *ngIf="startDate.invalid && (startDate.dirty || startDate.touched)">
+            Datum početka je obavezan.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Vrijeme početka</mat-label>
+          <input matInput type="time" [(ngModel)]="startTimeTime" name="startTimeTime" required #startTime="ngModel">
+           <mat-error *ngIf="startTime.invalid && (startTime.dirty || startTime.touched)">
+            Vrijeme početka je obavezno.
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="date-time-group">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Datum završetka</mat-label>
+          <input matInput [matDatepicker]="endDatePicker" [(ngModel)]="endTimeDate" name="endTimeDate" required #endDate="ngModel">
+          <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #endDatePicker></mat-datepicker>
+           <mat-error *ngIf="endDate.invalid && (endDate.dirty || endDate.touched)">
+            Datum završetka je obavezan.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Vrijeme završetka</mat-label>
+          <input matInput type="time" [(ngModel)]="endTimeTime" name="endTimeTime" required #endTime="ngModel">
+           <mat-error *ngIf="endTime.invalid && (endTime.dirty || endTime.touched)">
+            Vrijeme završetka je obavezno.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Rok za prijavu</mat-label>
+        <input matInput [matDatepicker]="deadlinePicker" [(ngModel)]="event.applicationDeadline" name="applicationDeadline" required #deadline="ngModel">
+        <mat-datepicker-toggle matSuffix [for]="deadlinePicker"></mat-datepicker-toggle>
+        <mat-datepicker #deadlinePicker></mat-datepicker>
+        <mat-error *ngIf="deadline.invalid && (deadline.dirty || deadline.touched)">
+          Rok za prijavu je obavezan.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Potrebne vještine</mat-label>
+        <input matInput placeholder="Npr. programiranje, komunikacija, dizajn (odvojite zarezom)" [(ngModel)]="requiredSkillsString" name="requiredSkills" #skills="ngModel">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Grad</mat-label>
+        <input matInput placeholder="Unesite grad" [(ngModel)]="event.city" name="city" required #city="ngModel">
+         <mat-error *ngIf="city.invalid && (city.dirty || city.touched)">
+          Grad je obavezan.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Tip događaja</mat-label>
+        <mat-select [(ngModel)]="event.type" name="type" required #type="ngModel">
+          <mat-option value="Environmental">Ekološki</mat-option>
+          <mat-option value="Cultural">Kulturni</mat-option>
+          <mat-option value="Educational">Edukativni</mat-option>
+          <mat-option value="Humanitarian">Humanitarni</mat-option>
+          <mat-option value="Sport">Sportski</mat-option>
+          <mat-option value="Community">Društveni</mat-option>
+          <mat-option value="Technology">Tehnološki</mat-option>
+        </mat-select>
+         <mat-error *ngIf="type.invalid && (type.dirty || type.touched)">
+          Tip događaja je obavezan.
+        </mat-error>
+      </mat-form-field>
+
+      <div class="button-container">
+        <button mat-flat-button class="save-button" type="submit" [disabled]="!eventForm.form.valid">Sačuvaj</button>
+        <button mat-flat-button class="cancel-button" type="button" routerLink="/dogadjaji">Otkaži</button>
+      </div>
+    </form>
+  </div>
+</div>

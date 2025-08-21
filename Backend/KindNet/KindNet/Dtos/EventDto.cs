@@ -1,9 +1,13 @@
-﻿namespace KindNet.Dtos
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace KindNet.Dtos
 {
     using KindNet.Models.Enums;
     using System.ComponentModel.DataAnnotations;
-    public class CreateEventDto
+    public class EventDto
     {
+        public long Id { get; set; }
+
         [Required]
         public string Name { get; set; }
 
@@ -19,7 +23,8 @@
         public DateTime EndTime { get; set; }
 
         public EventType Type { get; set; }
-        public bool ForceCreate { get; set; }
+
+        public EventStatus Status {  get; set; }
 
         [Required]
         public DateTime ApplicationDeadline { get; set; }

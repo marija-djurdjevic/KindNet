@@ -1,7 +1,23 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
-
+import { AppRoutingModule } from './app-routing.module';
+import { LayoutModule } from './layout/layout.module';
+import { MatIconModule } from '@angular/material/icon'; 
+import { MatFormFieldModule } from '@angular/material/form-field'; 
+import { MatInputModule } from '@angular/material/input'; 
+import { FormsModule } from '@angular/forms'; 
+import { MatSelectModule } from '@angular/material/select'; 
+import { MatOptionModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCardModule } from '@angular/material/card';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { MatButtonModule } from '@angular/material/button';
+import { registerLocaleData } from '@angular/common'; 
+import localeSr from '@angular/common/locales/sr-Latn';
+registerLocaleData(localeSr);
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -9,17 +25,22 @@ import { SignUpComponent } from './sign-up/sign-up.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthService } from './services/auth.service';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
-import { FormsModule } from '@angular/forms';
 import { HomeComponent } from './home/home.component';
 import { RouterModule } from '@angular/router';
-import { AppRoutingModule } from './app-routing.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { EventsListComponent } from './events-list/events-list.component';
+import { CreateEventComponent } from './create-event/create-event.component';
+import { CalendarComponent } from './calendar/calendar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     SignUpComponent,
-    HomeComponent
+    HomeComponent,
+    EventsListComponent,
+    CreateEventComponent,
+    CalendarComponent
   ],
 
   imports: [
@@ -27,7 +48,23 @@ import { AppRoutingModule } from './app-routing.module';
     HttpClientModule,
     FormsModule,
     RouterModule,
-    AppRoutingModule
+    AppRoutingModule,
+    LayoutModule,
+    BrowserAnimationsModule,
+    MatIconModule,
+    MatFormFieldModule, 
+    MatInputModule, 
+    MatSelectModule,
+    MatOptionModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatProgressSpinnerModule,
+    MatCardModule,
+    MatButtonModule,
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    })
   ],
 
    providers: [
@@ -38,6 +75,7 @@ import { AppRoutingModule } from './app-routing.module';
       multi: true
     }
   ],
+  
   bootstrap: [AppComponent]
 })
 export class AppModule { }
