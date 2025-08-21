@@ -23,5 +23,7 @@ namespace KindNet.Dtos
         public DateTime EndTime { get; set; }
 
         public EventType Type { get; set; }
+
+        public EventStatus Status {  get; set; }
     }
 }

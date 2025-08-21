@@ -22,4 +22,8 @@ export class EventService {
   createEvent(eventDto: CreateEventPayload): Observable<CreateEventResultDto> {
     return this.http.post<CreateEventResultDto>(this.apiUrl, eventDto);
   }
+
+  getEvents(): Observable<EventDto[]> {
+    return this.http.get<EventDto[]>(this.apiUrl);
+  }
 }

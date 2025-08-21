@@ -40,7 +40,6 @@ namespace KindNet.Controllers
             }
             catch (Exception ex)
             {
-                // OVO JE KLJUČNO ZA DEBAGOVANJE
                 Console.WriteLine($"Greška prilikom kreiranja događaja: {ex.Message}");
                 return BadRequest(ex.Message);
             }

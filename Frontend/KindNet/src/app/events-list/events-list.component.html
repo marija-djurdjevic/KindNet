@@ -6,5 +6,54 @@
     </button>
   </div>
 
-  <p>Ovdje će biti lista događaja.</p>
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner></mat-spinner>
+    <p>Učitavanje događaja...</p>
+  </div>
+
+  <div *ngIf="!isLoading && events.length === 0" class="no-events">
+    <mat-icon>info</mat-icon>
+    <p>Trenutno nema dostupnih događaja.</p>
+  </div>
+
+  <div class="event-list" *ngIf="!isLoading && events.length > 0">
+  <mat-card 
+    class="event-card" 
+    *ngFor="let event of events" 
+    [ngClass]="'type-border-' + typeMapping[event.type].toLowerCase()">
+    
+    <div class="card-main-content">
+      <div class="event-info">
+        <div class="event-title-line">
+          <mat-icon class="type-icon">{{ typeIconMapping[event.type] }}</mat-icon>
+          <h3 class="event-name">{{ event.name }}</h3>
+        </div>
+        <div class="event-details">
+          <div class="detail-item">
+            <mat-icon>location_on</mat-icon>
+            <span>{{ event.city }}</span>
+          </div>
+          <div class="detail-item">
+            <mat-icon>schedule</mat-icon>
+            <span>{{ event.startTime | date:'dd.MM.yyyy HH:mm' }} - {{ event.endTime | date:'dd.MM.yy HH:mm' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event-meta">
+        <span class="tag status-tag" [ngClass]="'status-' + statusMapping[event.status].toLowerCase()">
+          {{ statusMapping[event.status] }}
+        </span>
+        <span class="tag type-tag">
+          {{ typeMapping[event.type] }}
+        </span>
+      </div>
+    </div>
+
+    <mat-card-content *ngIf="event.description">
+      <p class="event-description">{{ event.description }}</p>
+    </mat-card-content>
+
+  </mat-card>
+</div>
 </div>

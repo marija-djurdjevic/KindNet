@@ -15,7 +15,8 @@ export interface EventDto {
   city: string;
   startTime: Date;
   endTime: Date;
-  type: string;
+  type: number;
+  status: number;
 }
 
 export interface CreateEventResultDto {
