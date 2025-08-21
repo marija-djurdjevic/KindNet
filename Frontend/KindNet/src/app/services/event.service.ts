@@ -30,4 +30,8 @@ export class EventService {
   getMyEvents(): Observable<EventDto[]> {
     return this.http.get<EventDto[]>(`${this.apiUrl}/my-events`);
   }
+
+  getPlannedAndActiveEvents(): Observable<EventDto[]> {
+    return this.http.get<EventDto[]>(`${this.apiUrl}/calendar`);
+  }
 }

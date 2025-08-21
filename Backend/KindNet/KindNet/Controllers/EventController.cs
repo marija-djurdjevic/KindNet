@@ -86,5 +86,12 @@ namespace KindNet.Controllers
             return Ok(eventDtos);
         }
 
+        [HttpGet("calendar")]
+        public async Task<IActionResult> GetPlannedAndActiveEvents()
+        {
+            var eventDtos = await _eventService.GetPlannedAndActiveEventDtosAsync();
+            return Ok(eventDtos);
+        }
+
     }
 }

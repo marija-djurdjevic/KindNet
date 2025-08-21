@@ -13,19 +13,26 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { HttpClientModule } from '@angular/common/http';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
-
-
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { MatButtonModule } from '@angular/material/button';
+import { registerLocaleData } from '@angular/common'; 
+import localeSr from '@angular/common/locales/sr-Latn';
+registerLocaleData(localeSr);
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EventsListComponent } from './events-list/events-list.component';
 import { CreateEventComponent } from './create-event/create-event.component';
+import { CalendarComponent } from './calendar/calendar.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     EventsListComponent,
-    CreateEventComponent
+    CreateEventComponent,
+    CalendarComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +49,12 @@ import { CreateEventComponent } from './create-event/create-event.component';
     MatNativeDateModule,
     HttpClientModule,
     MatProgressSpinnerModule,
-    MatCardModule
+    MatCardModule,
+    MatButtonModule,
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]
