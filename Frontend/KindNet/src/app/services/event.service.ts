@@ -34,4 +34,14 @@ export class EventService {
   getPlannedAndActiveEvents(): Observable<EventDto[]> {
     return this.http.get<EventDto[]>(`${this.apiUrl}/calendar`);
   }
+
+ getFilteredEvents(city?: string, type?: string, organizationName?: string): Observable<EventDto[]> {
+    let params = new HttpParams();
+    if (city) params = params.set('city', city);
+    if (type) params = params.set('type', type);
+    if (organizationName) params = params.set('organizationName', organizationName);
+
+    return this.http.get<EventDto[]>(`${this.apiUrl}/calendar/filtered`, { params });
+  }
+
 }

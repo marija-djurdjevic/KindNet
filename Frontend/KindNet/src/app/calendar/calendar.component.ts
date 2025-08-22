@@ -21,19 +21,55 @@ export class CalendarComponent implements OnInit {
   viewDate: Date = new Date();
   activeDayIsOpen: boolean = false;
   events: CalendarEvent[] = [];
-  
+
+  activeFilter: 'city' | 'type' | 'organization' | null = null;
+  selectedCity: string | null = null;
+  selectedType: string | null = null;
+  selectedOrganization: string | null = null;
+
+  allCities: string[] = [];
+  allEventTypes: string[] = [];
+  allOrganizations: string[] = [];
+
   constructor(private eventService: EventService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    this.fetchEventsForCalendar();
-    this.cdr.detectChanges(); 
+    this.populateFilterOptions(); 
+    this.fetchFilteredEvents();    
   }
 
-  fetchEventsForCalendar() {
-    this.eventService.getPlannedAndActiveEvents().subscribe(
+  populateFilterOptions(): void {
+    this.eventService.getFilteredEvents(undefined, undefined, undefined).subscribe(
+      (allEvents: EventDto[]) => {
+        this.allCities = Array.from(new Set(allEvents.map(e => e.city))).sort();
+        this.allEventTypes = Array.from(new Set(allEvents.map(e => e.type))).sort();
+        this.allOrganizations = Array.from(new Set(allEvents.map(e => e.organizerName || 'Nepoznato'))).sort();
+      }
+    );
+  }
+
+  toggleFilter(filter: 'city' | 'type' | 'organization'): void {
+    this.activeFilter = this.activeFilter === filter ? null : filter;
+  }
+  
+  applyFilter(filter: 'city' | 'type' | 'organization', value: string | null): void {
+    if (filter === 'city') this.selectedCity = value;
+    if (filter === 'type') this.selectedType = value;
+    if (filter === 'organization') this.selectedOrganization = value;
+
+    this.activeFilter = null; 
+    this.fetchFilteredEvents();
+  }
+
+  fetchFilteredEvents(): void {
+    const cityParam = this.selectedCity ?? undefined;
+    const typeParam = this.selectedType ?? undefined;
+    const orgParam = this.selectedOrganization ?? undefined;
+
+    this.eventService.getFilteredEvents(cityParam, typeParam, orgParam).subscribe(
       (events: EventDto[]) => {
         this.events = this.mapToCalendarEvents(events);
-        this.cdr.detectChanges(); 
+        this.cdr.detectChanges();
       },
       (error) => {
         console.error('Greška prilikom dohvaćanja događaja:', error);
@@ -47,7 +83,6 @@ export class CalendarComponent implements OnInit {
         this.activeDayIsOpen = false;
       } else {
         this.activeDayIsOpen = true;
-        // ❌ uklonjeno menjanje viewDate da ne blokira dugmad za mesec
       }
       this.cdr.detectChanges();
     }
@@ -59,7 +94,6 @@ export class CalendarComponent implements OnInit {
         primary: '#1e90ff',
         secondary: '#D1E8FF'
       };
-      
       return {
         start: new Date(event.startTime),
         end: new Date(event.endTime),

@@ -98,5 +98,19 @@ namespace KindNet.Controllers
             return Ok(eventDtos);
         }
 
+        [HttpGet("calendar/filtered")]
+        public async Task<IActionResult> GetFilteredEvents([FromQuery] string? city, [FromQuery] string? type, [FromQuery] string? organizationName)
+        {
+            EventType? eventType = null;
+            if (!string.IsNullOrEmpty(type) && Enum.TryParse<EventType>(type, out var parsedType))
+            {
+                eventType = parsedType;
+            }
+
+            var eventDtos = await _eventService.GetFilteredPlannedAndActiveEventsAsync(city, eventType, organizationName);
+            return Ok(eventDtos);
+        }
+
+
     }
 }

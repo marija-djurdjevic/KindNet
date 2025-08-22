@@ -21,6 +21,7 @@ export interface EventDto {
   status: string;
   applicationDeadline: Date;
   requiredSkills: string[];
+  organizerName: string;
 }
 
 export interface CreateEventResultDto {

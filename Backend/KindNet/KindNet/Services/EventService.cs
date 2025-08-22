@@ -150,5 +150,26 @@ namespace KindNet.Services
             }).ToList();
             return eventDtos;
         }
+
+        public async Task<IEnumerable<EventDto>> GetFilteredPlannedAndActiveEventsAsync(string? city = null, EventType? type = null, string? organizationName = null)
+        {
+            var events = await _eventRepository.GetPlannedAndActiveEventsWithFiltersAsync(city, type, organizationName);
+
+            return events.Select(e => new EventDto
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Description = e.Description,
+                City = e.City,
+                StartTime = e.StartTime,
+                EndTime = e.EndTime,
+                Type = e.Type,
+                Status = e.Status,
+                ApplicationDeadline = e.ApplicationDeadline,
+                RequiredSkills = e.RequiredSkills,
+                OrganizerName = e.Organizer?.Name
+            }).ToList();
+        }
+
     }
 }

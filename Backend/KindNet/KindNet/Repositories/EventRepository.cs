@@ -61,5 +61,31 @@
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Event>> GetPlannedAndActiveEventsWithFiltersAsync(string? city = null, EventType? type = null, string? organizationName = null)
+        {
+            var query = _context.Events
+                .Include(e => e.Organizer)
+                .Where(e => e.Status == EventStatus.Planned || e.Status == EventStatus.Active)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(city))
+            {
+                query = query.Where(e => e.City.ToLower() == city.ToLower());
+            }
+
+            if (type.HasValue)
+            {
+                query = query.Where(e => e.Type == type.Value);
+            }
+
+            if (!string.IsNullOrEmpty(organizationName))
+            {
+                query = query.Where(e => e.Organizer != null && e.Organizer.Name.ToLower().Contains(organizationName.ToLower()));
+            }
+
+            return await query.ToListAsync();
+        }
+
+
     }
 }

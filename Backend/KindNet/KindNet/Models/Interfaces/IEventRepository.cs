@@ -1,4 +1,6 @@
-﻿namespace KindNet.Models.Interfaces
+﻿using KindNet.Models.Enums;
+
+namespace KindNet.Models.Interfaces
 {
     public interface IEventRepository
     {
@@ -8,5 +10,7 @@
         Task<Event> GetOverlappingEventAsync(string city, DateTime startTime, DateTime endTime);
         Task<IEnumerable<Event>> GetAllByOrganizerIdAsync(long organizerId);
         Task<IEnumerable<Event>> GetPlannedAndActiveEventsAsync();
+        Task<IEnumerable<Event>> GetPlannedAndActiveEventsWithFiltersAsync(string? city = null, EventType? type = null, string? organizationName = null);
+
     }
 }
