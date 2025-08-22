@@ -11,17 +11,18 @@
 
 .view-buttons {
   display: flex;
-  gap: 8px; /* Dodaje razmak između dugmadi */
+  gap: 8px; 
 }
 
 .view-buttons button {
   min-width: 100px;
-  background-color: #f0f0f0; /* Svetlo siva pozadina */
-  color: #333; /* Tamniji tekst */
+  background-color: #f0f0f0; 
+  color: #333; 
+  font-family: 'Poppins', sans-serif;
 }
 
 .view-buttons button:hover {
-  background-color: #e0e0e0; /* Tamnija siva na hover */
+  background-color: #e0e0e0; 
 }
 
 .current-month-title h3 {
@@ -35,7 +36,6 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Stilovi za prilagođavanje ćelije kalendara */
 .event-titles-container {
   font-size: 12px;
   white-space: normal;
