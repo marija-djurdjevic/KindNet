@@ -2,6 +2,8 @@
 using KindNet.Dtos;
 using KindNet.Models.Enums;
 using KindNet.Services;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace KindNet.Controllers
 {
@@ -16,26 +18,24 @@ namespace KindNet.Controllers
             _eventService = eventService;
         }
 
-        /*[HttpPost]
-        public async Task<IActionResult> CreateEvent([FromBody] CreateEventDto eventDto)
-        {
-            var result = await _eventService.CreateEventAsync(eventDto);
-
-            if (result.IsOverlapping)
-            {
-                return Conflict("Događaj se preklapa sa postojećim događajem u istom gradu.");
-            }
-
-            return CreatedAtAction(nameof(GetEvent), new { id = result.CreatedEvent.Id }, result.CreatedEvent);
-        }
-        */
-
         [HttpPost]
         public async Task<ActionResult<CreateEventResultDto>> Create([FromBody] CreateEventDto eventDto)
         {
             try
             {
-                var result = await _eventService.CreateEventAsync(eventDto);
+                var userIdClaim = User.FindFirst("id");
+
+                if (userIdClaim == null)
+                {
+                    return Unauthorized("Korisnički ID claim ('id') nije pronađen u tokenu.");
+                }
+
+                if (!long.TryParse(userIdClaim.Value, out long organizerId))
+                {
+                    return Unauthorized($"Nevažeći format korisničkog ID-a ('{userIdClaim.Value}') u tokenu. Očekuje se numerička vrednost.");
+                }
+
+                var result = await _eventService.CreateEventAsync(eventDto, organizerId);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -81,8 +81,13 @@ namespace KindNet.Controllers
         [HttpGet("my-events")]
         public async Task<IActionResult> GetMyEvents()
         {
-            var temporaryOrganizerId = 1L;
-            var eventDtos = await _eventService.GetAllEventsByOrganizerIdAsync(temporaryOrganizerId);
+            var userIdClaim = User.FindFirst("id");
+            if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out long organizerId))
+            {
+                return Unauthorized("Korisnički ID claim ('id') nije pronađen ili je nevažeći u tokenu.");
+            }
+
+            var eventDtos = await _eventService.GetAllEventsByOrganizerIdAsync(organizerId);
             return Ok(eventDtos);
         }
 

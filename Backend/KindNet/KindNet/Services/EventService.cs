@@ -20,7 +20,7 @@ namespace KindNet.Services
             return overlappingEvent != null;
         }
 
-        public async Task<CreateEventResultDto> CreateEventAsync(CreateEventDto eventDto)
+        public async Task<CreateEventResultDto> CreateEventAsync(CreateEventDto eventDto, long organizerId)
         {
             if (!eventDto.ForceCreate)
             {
@@ -32,7 +32,6 @@ namespace KindNet.Services
                 }
             }
 
-            var temporaryOrganizerId = 1L;
             var newEvent = new Event
             {
                 Name = eventDto.Name,
@@ -42,7 +41,7 @@ namespace KindNet.Services
                 EndTime = eventDto.EndTime,
                 Type = eventDto.Type,
                 Status = EventStatus.Draft,
-                OrganizerId = temporaryOrganizerId,
+                OrganizerId = organizerId,
                 ApplicationDeadline = eventDto.ApplicationDeadline,
                 RequiredSkills = eventDto.RequiredSkills
             };
