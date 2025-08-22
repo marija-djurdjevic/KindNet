@@ -17,8 +17,8 @@ export class CreateEventComponent implements OnInit {
     city: '',
     startTime: new Date(), 
     endTime: new Date(), 
-    applicationDeadline: new Date(), // Inicijalizovano kao obavezno polje
-    requiredSkills: [], // Inicijalizovano kao prazan niz
+    applicationDeadline: new Date(), 
+    requiredSkills: [], 
     type: '',
     forceCreate: false
   };
@@ -27,7 +27,6 @@ export class CreateEventComponent implements OnInit {
   startTimeTime: string = '';
   endTimeDate: Date | null = null;
   endTimeTime: string = '';
-  // Nova varijabla za veštine
   requiredSkillsString: string = '';
 
   private typeMapping: { [key: string]: number } = {
@@ -70,9 +69,7 @@ export class CreateEventComponent implements OnInit {
     this.event.startTime = startDateTime;
     this.event.endTime = endDateTime;
     
-    // Konverzija stringa veština u niz
     this.event.requiredSkills = this.requiredSkillsString.split(',').map(skill => skill.trim()).filter(skill => skill.length > 0);
-    // Dodatna validacija: rok za prijavu ne sme biti nakon početka događaja
     if (this.event.applicationDeadline > this.event.startTime) {
       alert('Rok za prijavu mora biti pre datuma početka događaja.');
       return;
@@ -99,7 +96,6 @@ export class CreateEventComponent implements OnInit {
       City: this.event.city,
       StartTime: this.event.startTime.toISOString(),
       EndTime: this.event.endTime.toISOString(),
-      // Dodati novi podaci
       ApplicationDeadline: this.event.applicationDeadline.toISOString(),
       RequiredSkills: this.event.requiredSkills,
       Type: this.typeMapping[this.event.type],
@@ -112,7 +108,7 @@ export class CreateEventComponent implements OnInit {
       .subscribe(result => {
         if (result && !result.isOverlapping) {
           alert('Događaj uspješno kreiran!');
-          this.router.navigate(['/events']);
+          this.router.navigate(['/layout/events']);
         }
       });
   }
@@ -126,7 +122,6 @@ export class CreateEventComponent implements OnInit {
       City: this.event.city,
       StartTime: this.event.startTime.toISOString(),
       EndTime: this.event.endTime.toISOString(),
-      // Dodati novi podaci
       ApplicationDeadline: this.event.applicationDeadline.toISOString(),
       RequiredSkills: this.event.requiredSkills,
       Type: this.typeMapping[this.event.type],
@@ -136,7 +131,7 @@ export class CreateEventComponent implements OnInit {
     this.eventService.createEvent(eventToSend)
       .subscribe(result => {
         alert('Događaj uspješno kreiran uprkos preklapanju!');
-        this.router.navigate(['/events']);
+        this.router.navigate(['/layout/events']);
       });
   }
 }
