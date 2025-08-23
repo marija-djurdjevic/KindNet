@@ -35,6 +35,7 @@ builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<EventService>();
 builder.Services.AddScoped<ITokenGenerator, JwtGenerator>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddHostedService<EventStatusUpdaterService>();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
