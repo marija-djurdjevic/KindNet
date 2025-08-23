@@ -58,6 +58,13 @@ h2 {
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
 
+.save-button:disabled {
+    background-color: #ccc; 
+    cursor: not-allowed; 
+    box-shadow: none; 
+    transform: none; 
+}
+
 .cancel-button {
   background-color: #f7f0e8;
   color: #555;

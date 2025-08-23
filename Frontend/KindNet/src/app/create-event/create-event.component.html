@@ -1,7 +1,7 @@
 <div class="form-wrapper">
   <div class="form-container">
     <h2>Kreiraj novi događaj</h2>
-    <form class="event-form" #eventForm="ngForm" (ngSubmit)="onSubmit(eventForm)">
+    <form class="event-form" #eventForm="ngForm">
 
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Naziv događaja</mat-label>
@@ -97,7 +97,21 @@
       </mat-form-field>
 
       <div class="button-container">
-        <button mat-flat-button class="save-button" type="submit" [disabled]="!eventForm.form.valid">Sačuvaj</button>
+        <button mat-flat-button 
+            class="save-button" 
+            type="submit" 
+            [disabled]="!eventForm.form.valid"
+            (click)="onSubmit(eventForm, 'Draft')">
+        Sačuvaj nacrt
+    </button>
+    
+    <button mat-flat-button 
+            class="save-button" 
+            type="button" 
+            [disabled]="!eventForm.form.valid"
+            (click)="onSubmit(eventForm, 'Planned')">
+        Sačuvaj i objavi
+    </button>
         <button mat-flat-button class="cancel-button" type="button" routerLink="/dogadjaji">Otkaži</button>
       </div>
     </form>

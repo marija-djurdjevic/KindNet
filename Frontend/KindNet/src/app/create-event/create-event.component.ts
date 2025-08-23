@@ -20,7 +20,8 @@ export class CreateEventComponent implements OnInit {
     applicationDeadline: new Date(), 
     requiredSkills: [], 
     type: '',
-    forceCreate: false
+    forceCreate: false,
+    status: 'Draft'
   };
 
   startTimeDate: Date | null = null;
@@ -47,7 +48,7 @@ export class CreateEventComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onSubmit(form: NgForm) {
+  onSubmit(form: NgForm, status: string) {
     if (form.invalid || !this.startTimeDate || !this.endTimeDate || !this.startTimeTime || !this.endTimeTime) {
       alert('Molimo vas popunite sva obavezna polja.');
       return;
@@ -68,7 +69,8 @@ export class CreateEventComponent implements OnInit {
 
     this.event.startTime = startDateTime;
     this.event.endTime = endDateTime;
-    
+    this.event.status = status;
+
     this.event.requiredSkills = this.requiredSkillsString.split(',').map(skill => skill.trim()).filter(skill => skill.length > 0);
     if (this.event.applicationDeadline > this.event.startTime) {
       alert('Rok za prijavu mora biti pre datuma početka događaja.');
@@ -99,7 +101,8 @@ export class CreateEventComponent implements OnInit {
       ApplicationDeadline: this.event.applicationDeadline.toISOString(),
       RequiredSkills: this.event.requiredSkills,
       Type: this.typeMapping[this.event.type],
-      ForceCreate: this.event.forceCreate
+      ForceCreate: this.event.forceCreate,
+      Status: this.event.status 
     };
 
     console.log('Finalni podaci koji se šalju servisu:', eventToSend);
@@ -125,7 +128,8 @@ export class CreateEventComponent implements OnInit {
       ApplicationDeadline: this.event.applicationDeadline.toISOString(),
       RequiredSkills: this.event.requiredSkills,
       Type: this.typeMapping[this.event.type],
-      ForceCreate: this.event.forceCreate
+      ForceCreate: this.event.forceCreate,
+      Status: this.event.status
     };
 
     this.eventService.createEvent(eventToSend)

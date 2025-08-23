@@ -5,6 +5,7 @@ export interface CreateEventDto {
   startTime: Date;
   endTime: Date;
   type: string;
+  status: string;
   forceCreate: boolean;
   applicationDeadline: Date;
   requiredSkills: string[];
@@ -36,6 +37,7 @@ export interface CreateEventPayload {
   StartTime: string;
   EndTime: string;
   Type: number; 
+  Status: string;
   ForceCreate: boolean;
   ApplicationDeadline: string;
   RequiredSkills: string[];

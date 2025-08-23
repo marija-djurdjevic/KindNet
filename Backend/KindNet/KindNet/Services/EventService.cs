@@ -40,7 +40,7 @@ namespace KindNet.Services
                 StartTime = eventDto.StartTime,
                 EndTime = eventDto.EndTime,
                 Type = eventDto.Type,
-                Status = EventStatus.Draft,
+                Status = eventDto.Status,
                 OrganizerId = organizerId,
                 ApplicationDeadline = eventDto.ApplicationDeadline,
                 RequiredSkills = eventDto.RequiredSkills
@@ -57,6 +57,7 @@ namespace KindNet.Services
                 StartTime = createdEvent.StartTime,
                 EndTime = createdEvent.EndTime,
                 Type = createdEvent.Type,
+                Status = createdEvent.Status,
                 ApplicationDeadline = eventDto.ApplicationDeadline,
                 RequiredSkills = eventDto.RequiredSkills
             };
