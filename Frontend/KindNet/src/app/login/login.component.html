@@ -10,8 +10,8 @@
         <label for="password" class="form-label">Lozinka</label>
         <input type="password" id="password" [(ngModel)]="password" name="password" class="form-input" required>
       </div>
-      <button type="submit" class="submit-button">Prijavi se</button>
-      <div *ngIf="errorMessage" class="error-message">
+      <button type="submit" class="submit-button" [disabled]="!email || !password">Prijavi se</button>
+       <div *ngIf="errorMessage" class="error-message">
         {{ errorMessage }}
       </div>
       <p class="link-text">Nemaš nalog? <a routerLink="/sign-up">Registruj se</a></p>

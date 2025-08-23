@@ -16,7 +16,7 @@
           <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
         </select>
       </div>
-      <button type="submit" class="submit-button">Registruj se</button>
+      <button type="submit" class="submit-button" [disabled]="!email || !password">Registruj se</button>
       <div *ngIf="errorMessage" class="error-message">
         {{ errorMessage }}
       </div>

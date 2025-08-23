@@ -2,15 +2,18 @@
   height: 100vh;
   background: linear-gradient(to bottom right, #FFC75F, #FFD8A7);
 }
+
 mat-toolbar {
-  background-color: #fcfcfc; 
+  background-color: #FFF2EE;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+  color: #333;
 }
 
 .sidenav {
   width: 250px;
-  background-color: #fcfcfc; 
+  background-color: #FFF2EE;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  color: #333;
 }
 
 .app-title {
