@@ -20,8 +20,7 @@
   <mat-card 
     class="event-card" 
     *ngFor="let event of events" 
-    [ngClass]="'type-border-' + event.type.toLowerCase()">
-    
+    [ngClass]="'type-border-' + event.type.toLowerCase()">  
     <div class="card-main-content">
       <div class="event-info">
         <div class="event-title-line">
@@ -51,6 +50,14 @@
         <span class="tag type-tag">
           {{ event.type }}
         </span>
+         <button 
+          *ngIf="event.status === 'Draft'"
+          mat-icon-button 
+          color="primary"
+          class="edit-button" 
+          (click)="onEdit(event.id)">
+          <mat-icon>edit</mat-icon>
+        </button>
       </div>
     </div>
 

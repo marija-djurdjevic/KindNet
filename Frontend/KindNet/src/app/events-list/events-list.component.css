@@ -39,13 +39,23 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
   border-radius: 8px;
-  border-left: 5px solid #FFC107; /* Default boja, biće pregažena */
+  border-left: 5px solid #FFC107; 
   padding: 16px;
 }
 
 .event-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.event-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px; 
+}
+
+.edit-button {
+  margin-left: auto; 
 }
 
 .card-main-content {
@@ -55,12 +65,11 @@
   gap: 16px;
 }
 
-/* Levi deo */
 .event-info {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  flex-grow: 1; /* Omogućava da zauzme sav dostupan prostor */
+  flex-grow: 1; 
 }
 
 .event-title-line {
@@ -133,6 +142,9 @@
 .type-border-cultural { border-left-color: #9C27B0; }
 .type-border-educational { border-left-color: #03A9F4; }
 .type-border-humanitarian { border-left-color: #E91E63; }
+.type-border-sport { border-left-color: #FF9800; } 
+.type-border-community { border-left-color: #FF5722; } 
+.type-border-technology { border-left-color: #607D8B; }
 
 .event-description {
   margin-top: 16px;

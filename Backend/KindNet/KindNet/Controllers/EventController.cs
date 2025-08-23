@@ -44,6 +44,7 @@ namespace KindNet.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEvent(long id)
         {
@@ -111,6 +112,32 @@ namespace KindNet.Controllers
             return Ok(eventDtos);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateEvent(long id, [FromBody] CreateEventDto eventDto)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("id");
+                if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out long organizerId))
+                {
+                    return Unauthorized("Korisnički ID claim ('id') nije pronađen ili je nevažeći u tokenu.");
+                }
+
+                var updatedEventDto = await _eventService.UpdateEventAsync(id, eventDto, organizerId);
+
+                if (updatedEventDto == null)
+                {
+                    return NotFound("Događaj nije pronađen ili nemate dozvolu za ažuriranje.");
+                }
+
+                return Ok(updatedEventDto);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Greška prilikom ažuriranja događaja: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+        }
 
     }
 }

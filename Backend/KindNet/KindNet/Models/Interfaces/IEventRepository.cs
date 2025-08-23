@@ -11,6 +11,6 @@ namespace KindNet.Models.Interfaces
         Task<IEnumerable<Event>> GetAllByOrganizerIdAsync(long organizerId);
         Task<IEnumerable<Event>> GetPlannedAndActiveEventsAsync();
         Task<IEnumerable<Event>> GetPlannedAndActiveEventsWithFiltersAsync(string? city = null, EventType? type = null, string? organizationName = null);
-
+        Task<Event> UpdateAsync(Event existingEvent);        
     }
 }

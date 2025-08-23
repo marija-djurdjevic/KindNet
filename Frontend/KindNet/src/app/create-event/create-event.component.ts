@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CreateEventDto, CreateEventPayload } from '../models/event.model';
 import { EventService } from '../services/event.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms'; 
 
 @Component({
@@ -24,6 +24,9 @@ export class CreateEventComponent implements OnInit {
     status: 'Draft'
   };
 
+  isEditMode = false;
+  eventId: number | null = null;
+
   startTimeDate: Date | null = null;
   startTimeTime: string = '';
   endTimeDate: Date | null = null;
@@ -42,10 +45,39 @@ export class CreateEventComponent implements OnInit {
 
   constructor(
     private eventService: EventService,
-    private router: Router
+    private router: Router,
+     private route: ActivatedRoute
   ) { }
 
-  ngOnInit(): void {
+    ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const idParam = params.get('id');
+      if (idParam) {
+        this.eventId = +idParam; 
+        this.isEditMode = true;
+        this.loadEventData(); 
+      }
+    });
+  }
+
+  private loadEventData() {
+    if (this.eventId) {
+      this.eventService.getEventById(this.eventId).subscribe(eventData => {
+        this.event = eventData;
+        this.startTimeDate = new Date(eventData.startTime);
+        this.startTimeTime = this.formatTime(eventData.startTime);
+        this.endTimeDate = new Date(eventData.endTime);
+        this.endTimeTime = this.formatTime(eventData.endTime);
+        this.requiredSkillsString = eventData.requiredSkills.join(', ');
+      });
+    }
+  }
+
+  private formatTime(date: string): string {
+    const d = new Date(date);
+    const hours = d.getHours().toString().padStart(2, '0');
+    const minutes = d.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
   }
 
   onSubmit(form: NgForm, status: string) {
@@ -77,18 +109,22 @@ export class CreateEventComponent implements OnInit {
       return;
     }
 
-    this.eventService.checkOverlap(this.event.city, this.event.startTime, this.event.endTime)
-      .subscribe(isOverlapping => {
-        if (isOverlapping) {
-          if (confirm('Događaj se preklapa sa drugim događajem u istom gradu. Želite li da nastavite sa kreiranjem?')) {
-            this.createEventWithForceCreate();
+     if (this.isEditMode && this.eventId) {
+      this.updateEvent();
+    } else {
+      this.eventService.checkOverlap(this.event.city, this.event.startTime, this.event.endTime)
+        .subscribe(isOverlapping => {
+          if (isOverlapping) {
+            if (confirm('Događaj se preklapa sa drugim događajem u istom gradu. Želite li da nastavite?')) {
+              this.createEventWithForceCreate();
+            } else {
+              console.log('Kreiranje događaja je otkazano od strane korisnika.');
+            }
           } else {
-            console.log('Kreiranje događaja je otkazano od strane korisnika.');
+            this.createEvent();
           }
-        } else {
-          this.createEvent();
-        }
-      });
+        });
+    }
   }
 
   private createEvent() {
@@ -113,6 +149,17 @@ export class CreateEventComponent implements OnInit {
           alert('Događaj uspješno kreiran!');
           this.router.navigate(['/layout/events']);
         }
+      });
+  }
+
+   private updateEvent() {
+    this.eventService.updateEvent(this.eventId!, this.event)
+      .subscribe(() => {
+        alert('Događaj uspješno ažuriran!');
+        this.router.navigate(['/layout/events']);
+      }, (error: any) => {
+        alert('Došlo je do greške prilikom ažuriranja događaja.');
+        console.error('Update error:', error);
       });
   }
 

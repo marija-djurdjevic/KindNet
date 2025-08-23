@@ -86,6 +86,13 @@
             return await query.ToListAsync();
         }
 
+        public async Task<Event> UpdateAsync(Event existingEvent)
+        {
+            _context.Entry(existingEvent).State = EntityState.Modified;
 
+            await _context.SaveChangesAsync();
+
+            return existingEvent;
+        }
     }
 }

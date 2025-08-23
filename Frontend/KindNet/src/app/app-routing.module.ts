@@ -19,6 +19,7 @@ const routes: Routes = [
     children: [
       { path: 'events', component: EventsListComponent },
       { path: 'create-event', component: CreateEventComponent },
+      { path: 'create-event/:id', component: CreateEventComponent },
       { path: 'calendar', component: CalendarComponent }
     ]
   },

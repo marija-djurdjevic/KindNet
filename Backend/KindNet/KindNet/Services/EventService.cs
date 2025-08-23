@@ -172,5 +172,43 @@ namespace KindNet.Services
             }).ToList();
         }
 
+        public async Task<EventDto> UpdateEventAsync(long id, CreateEventDto eventDto, long organizerId)
+        {
+            var existingEvent = await _eventRepository.GetByIdAsync(id);
+
+            if (existingEvent == null || existingEvent.OrganizerId != organizerId)
+            {
+                return null;
+            }
+
+            existingEvent.Name = eventDto.Name;
+            existingEvent.Description = eventDto.Description;
+            existingEvent.City = eventDto.City;
+            existingEvent.StartTime = eventDto.StartTime;
+            existingEvent.EndTime = eventDto.EndTime;
+            existingEvent.ApplicationDeadline = eventDto.ApplicationDeadline;
+            existingEvent.RequiredSkills = eventDto.RequiredSkills;
+            existingEvent.Type = eventDto.Type;
+            existingEvent.Status = eventDto.Status;
+
+            var updatedEvent = await _eventRepository.UpdateAsync(existingEvent);
+
+            var updatedEventDto = new EventDto
+            {
+                Id = updatedEvent.Id,
+                Name = updatedEvent.Name,
+                Description = updatedEvent.Description,
+                City = updatedEvent.City,
+                StartTime = updatedEvent.StartTime,
+                EndTime = updatedEvent.EndTime,
+                Type = updatedEvent.Type,
+                Status = updatedEvent.Status,
+                ApplicationDeadline = updatedEvent.ApplicationDeadline,
+                RequiredSkills = updatedEvent.RequiredSkills,
+                OrganizerName = updatedEvent.Organizer?.Name
+            };
+
+            return updatedEventDto;
+        }
     }
 }

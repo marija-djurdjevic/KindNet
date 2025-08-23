@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { EventService } from '../services/event.service';
 import { EventDto } from '../models/event.model';
 import { Router } from '@angular/router';
@@ -11,7 +11,8 @@ import { Router } from '@angular/router';
 export class EventsListComponent implements OnInit {
   events: EventDto[] = [];
   isLoading: boolean = true;
-
+  @Input() event: any;
+  
   statusMapping: { [key: number]: string } = {
     0: 'Draft',
     1: 'Planned',
@@ -52,6 +53,11 @@ export class EventsListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getEvents();
+  }
+
+  onEdit(eventId: number) {
+    console.log('Navigacija za uređivanje događaja sa ID-jem:', eventId);
+    this.router.navigate(['/layout/create-event', eventId]);
   }
 
   getEvents() {

@@ -1,8 +1,7 @@
 <div class="form-wrapper">
   <div class="form-container">
-    <h2>Kreiraj novi događaj</h2>
-    <form class="event-form" #eventForm="ngForm">
-
+    <h2>{{ isEditMode ? 'Izmijeni događaj' : 'Kreiraj novi događaj' }}</h2>
+     <form class="event-form" #eventForm="ngForm">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Naziv događaja</mat-label>
         <input matInput placeholder="Naziv događaja" [(ngModel)]="event.name" name="name" required #name="ngModel">
