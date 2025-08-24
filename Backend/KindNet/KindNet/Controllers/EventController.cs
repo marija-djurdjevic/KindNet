@@ -139,5 +139,71 @@ namespace KindNet.Controllers
             }
         }
 
+        [Authorize]
+        [HttpPut("{id}/cancel")]
+        public async Task<IActionResult> CancelEvent(long id)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("id");
+                if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out long organizerId))
+                {
+                    return Unauthorized("Korisnički ID claim ('id') nije pronađen ili je nevažeći u tokenu.");
+                }
+
+                var eventToCancel = await _eventService.GetEventByIdAsync(id);
+                if (eventToCancel == null || eventToCancel.OrganizerId != organizerId)
+                {
+                    return Unauthorized("Nemate dozvolu da otkažete ovaj događaj.");
+                }
+
+                var result = await _eventService.CancelEventAsync(id);
+                if (!result)
+                {
+                    return BadRequest("Događaj se ne može otkazati jer nije u statusu 'Planned' ili je preostalo manje od 24 sata do početka.");
+                }
+
+                return Ok(eventToCancel);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Greška prilikom otkazivanja događaja: {ex.Message}");
+                return StatusCode(500, "Došlo je do greške prilikom otkazivanja događaja.");
+            }
+        }
+
+        [Authorize]
+        [HttpPut("{id}/archive")]
+        public async Task<IActionResult> ArchiveEvent(long id)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("id");
+                if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out long organizerId))
+                {
+                    return Unauthorized("Korisnički ID claim ('id') nije pronađen ili je nevažeći u tokenu.");
+                }
+
+                var eventToArchive = await _eventService.GetEventByIdAsync(id);
+                if (eventToArchive == null || eventToArchive.OrganizerId != organizerId)
+                {
+                    return Unauthorized("Nemate dozvolu da arhivirate ovaj događaj.");
+                }
+
+                var result = await _eventService.ArchiveEventAsync(id);
+                if (!result)
+                {
+                    return BadRequest("Događaj se ne može arhivirati jer nije u statusu 'Finished'.");
+                }
+
+                return Ok(eventToArchive);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Greška prilikom arhiviranja događaja: {ex.Message}");
+                return StatusCode(500, "Došlo je do greške prilikom arhiviranja događaja.");
+            }
+        }
+    
     }
 }

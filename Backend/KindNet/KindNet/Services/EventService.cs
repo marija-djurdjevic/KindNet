@@ -147,22 +147,54 @@ namespace KindNet.Services
 
             var updatedEvent = await _eventRepository.UpdateAsync(existingEvent);
 
-            var updatedEventDto = new EventDto
-            {
-                Id = updatedEvent.Id,
-                Name = updatedEvent.Name,
-                Description = updatedEvent.Description,
-                City = updatedEvent.City,
-                StartTime = updatedEvent.StartTime,
-                EndTime = updatedEvent.EndTime,
-                Type = updatedEvent.Type,
-                Status = updatedEvent.Status,
-                ApplicationDeadline = updatedEvent.ApplicationDeadline,
-                RequiredSkills = updatedEvent.RequiredSkills,
-                OrganizerName = updatedEvent.Organizer?.Name
-            };
-
+            var updatedEventDto = MapToEventDto(updatedEvent);
             return updatedEventDto;
+        }
+
+        public async Task<bool> CancelEventAsync(long eventId)
+        {
+            var eventToCancel = await _eventRepository.GetByIdAsync(eventId);
+
+            if (eventToCancel == null)
+            {
+                return false; 
+            }
+
+            if (eventToCancel.Status != EventStatus.Planned)
+            {
+                return false; 
+            }
+
+            var timeUntilStart = eventToCancel.StartTime - DateTime.UtcNow;
+            if (timeUntilStart.TotalHours < 24)
+            {
+                return false; 
+            }
+
+            eventToCancel.Status = EventStatus.Canceled;
+            await _eventRepository.UpdateAsync(eventToCancel);
+
+            return true; 
+        }
+
+        public async Task<bool> ArchiveEventAsync(long eventId)
+        {
+            var eventToArchive = await _eventRepository.GetByIdAsync(eventId);
+
+            if (eventToArchive == null)
+            {
+                return false; 
+            }
+
+            if (eventToArchive.Status != EventStatus.Finished)
+            {
+                return false; 
+            }
+
+            eventToArchive.Status = EventStatus.Archived;
+            await _eventRepository.UpdateAsync(eventToArchive);
+
+            return true; 
         }
 
         private void CheckAndUpdateStatus(Event eventItem)
@@ -194,7 +226,8 @@ namespace KindNet.Services
                 Type = eventItem.Type,
                 Status = eventItem.Status,
                 ApplicationDeadline = eventItem.ApplicationDeadline,
-                RequiredSkills = eventItem.RequiredSkills
+                RequiredSkills = eventItem.RequiredSkills,
+                OrganizerName = eventItem.Organizer?.Name
             };
         }
 

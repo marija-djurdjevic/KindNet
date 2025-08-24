@@ -18,7 +18,8 @@ export class EventsListComponent implements OnInit {
     1: 'Planned',
     2: 'Active',
     3: 'Finished',
-    4: 'Canceled'
+    4: 'Canceled',
+    5: 'Archived'
   };
 
   statusIconMapping: { [key: number]: string } = {
@@ -56,8 +57,37 @@ export class EventsListComponent implements OnInit {
   }
 
   onEdit(eventId: number) {
-    console.log('Navigacija za uređivanje događaja sa ID-jem:', eventId);
     this.router.navigate(['/layout/create-event', eventId]);
+  }
+
+  onCancel(eventId: number) {
+    if (confirm('Da li ste sigurni da želite da otkažete ovaj događaj?')) {
+      this.eventService.cancelEvent(eventId).subscribe({
+        next: (response) => {
+          console.log('Događaj uspješno otkazan', response);
+          this.getEvents();
+        },
+        error: (error: { error: string; }) => {
+          console.error('Greška prilikom otkazivanja događaja:', error);
+          alert('Greška: ' + error.error);
+        }
+      });
+    }
+  }
+
+  onArchive(eventId: number) {
+    if (confirm('Da li ste sigurni da želite da arhivirate ovaj događaj?')) {
+      this.eventService.archiveEvent(eventId).subscribe({
+        next: (response) => {
+          console.log('Događaj uspješno arhiviran', response);
+          this.getEvents();
+        },
+        error: (error: { error: string; }) => {
+          console.error('Greška prilikom arhiviranja događaja:', error);
+          alert('Greška: ' + error.error);
+        }
+      });
+    }
   }
 
   getEvents() {
