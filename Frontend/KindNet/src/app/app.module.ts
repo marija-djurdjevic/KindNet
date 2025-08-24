@@ -19,6 +19,10 @@ import { registerLocaleData } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import localeSr from '@angular/common/locales/sr-Latn';
 registerLocaleData(localeSr);
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatListModule } from '@angular/material/list';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -32,6 +36,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EventsListComponent } from './events-list/events-list.component';
 import { CreateEventComponent } from './create-event/create-event.component';
 import { CalendarComponent } from './calendar/calendar.component';
+import { ApplicationsDashboardComponent } from './applications-dashboard/applications-dashboard.component';
+
 
 @NgModule({
   declarations: [
@@ -41,7 +47,8 @@ import { CalendarComponent } from './calendar/calendar.component';
     HomeComponent,
     EventsListComponent,
     CreateEventComponent,
-    CalendarComponent
+    CalendarComponent,
+    ApplicationsDashboardComponent
   ],
 
   imports: [
@@ -66,7 +73,11 @@ import { CalendarComponent } from './calendar/calendar.component';
     CalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory,
-    })
+    }),
+    MatExpansionModule,
+    MatListModule,
+    MatChipsModule,
+    MatTooltipModule
   ],
 
    providers: [

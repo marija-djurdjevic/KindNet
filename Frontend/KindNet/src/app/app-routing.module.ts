@@ -7,6 +7,7 @@ import { LayoutComponent } from './layout/layout/layout.component';
 import { EventsListComponent } from './events-list/events-list.component';
 import { CreateEventComponent } from './create-event/create-event.component';
 import { CalendarComponent } from './calendar/calendar.component';
+import { ApplicationsDashboardComponent } from './applications-dashboard/applications-dashboard.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -20,7 +21,8 @@ const routes: Routes = [
       { path: 'events', component: EventsListComponent },
       { path: 'create-event', component: CreateEventComponent },
       { path: 'create-event/:id', component: CreateEventComponent },
-      { path: 'calendar', component: CalendarComponent }
+      { path: 'calendar', component: CalendarComponent },
+      { path: 'events-applications', component: ApplicationsDashboardComponent }
     ]
   },
   
