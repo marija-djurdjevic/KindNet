@@ -6,6 +6,7 @@
         Planned,
         Active,
         Finished,
-        Canceled
+        Canceled,
+        Archived
     }
 }

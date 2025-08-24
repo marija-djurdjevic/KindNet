@@ -20,6 +20,7 @@
 
         public EventType Type { get; set; }
         public bool ForceCreate { get; set; }
+        public EventStatus Status { get; set; }
 
         [Required]
         public DateTime ApplicationDeadline { get; set; }

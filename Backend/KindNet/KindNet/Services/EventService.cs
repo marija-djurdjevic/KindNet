@@ -2,6 +2,7 @@
 using KindNet.Models.Interfaces;
 using KindNet.Models.Enums;
 using KindNet.Dtos;
+using KindNet.Repositories;
 
 namespace KindNet.Services
 {
@@ -40,7 +41,7 @@ namespace KindNet.Services
                 StartTime = eventDto.StartTime,
                 EndTime = eventDto.EndTime,
                 Type = eventDto.Type,
-                Status = EventStatus.Draft,
+                Status = eventDto.Status,
                 OrganizerId = organizerId,
                 ApplicationDeadline = eventDto.ApplicationDeadline,
                 RequiredSkills = eventDto.RequiredSkills
@@ -48,18 +49,7 @@ namespace KindNet.Services
 
             var createdEvent = await _eventRepository.AddAsync(newEvent);
 
-            var createdEventDto = new EventDto
-            {
-                Id = createdEvent.Id,
-                Name = createdEvent.Name,
-                Description = createdEvent.Description,
-                City = createdEvent.City,
-                StartTime = createdEvent.StartTime,
-                EndTime = createdEvent.EndTime,
-                Type = createdEvent.Type,
-                ApplicationDeadline = eventDto.ApplicationDeadline,
-                RequiredSkills = eventDto.RequiredSkills
-            };
+            var createdEventDto = MapToEventDto(createdEvent);
 
             return new CreateEventResultDto { CreatedEvent = createdEventDto, IsOverlapping = false };
         }
@@ -79,35 +69,18 @@ namespace KindNet.Services
             var foundEvent = await _eventRepository.GetByIdAsync(id);
             if (foundEvent == null) return null;
 
-            var eventDto = new EventDto
-            {
-                Id = foundEvent.Id,
-                Name = foundEvent.Name,
-                Description = foundEvent.Description,
-                City = foundEvent.City,
-                StartTime = foundEvent.StartTime,
-                EndTime = foundEvent.EndTime,
-                Type = foundEvent.Type,
-                ApplicationDeadline = foundEvent.ApplicationDeadline,
-                RequiredSkills = foundEvent.RequiredSkills
-            };
+            CheckAndUpdateStatus(foundEvent);
+            var eventDto = MapToEventDto(foundEvent);
             return eventDto;
         }
 
         public async Task<IEnumerable<EventDto>> GetAllEventDtosAsync()
         {
             var events = await _eventRepository.GetAllAsync();
-            var eventDtos = events.Select(e => new EventDto
+            var eventDtos = events.Select(e =>
             {
-                Id = e.Id,
-                Name = e.Name,
-                Description = e.Description,
-                City = e.City,
-                StartTime = e.StartTime,
-                EndTime = e.EndTime,
-                Type = e.Type,
-                ApplicationDeadline = e.ApplicationDeadline,
-                RequiredSkills = e.RequiredSkills
+                CheckAndUpdateStatus(e); 
+                return MapToEventDto(e);
             }).ToList();
 
             return eventDtos;
@@ -115,18 +88,11 @@ namespace KindNet.Services
         public async Task<IEnumerable<EventDto>> GetAllEventsByOrganizerIdAsync(long organizerId)
         {
             var events = await _eventRepository.GetAllByOrganizerIdAsync(organizerId);
-            var eventDtos = events.Select(e => new EventDto
+
+            var eventDtos = events.Select(e =>
             {
-                Id = e.Id,
-                Name = e.Name,
-                Description = e.Description,
-                City = e.City,
-                StartTime = e.StartTime,
-                EndTime = e.EndTime,
-                Type = e.Type,
-                Status = e.Status,
-                ApplicationDeadline = e.ApplicationDeadline,
-                RequiredSkills = e.RequiredSkills
+                CheckAndUpdateStatus(e);
+                return MapToEventDto(e);
             }).ToList();
 
             return eventDtos;
@@ -135,19 +101,13 @@ namespace KindNet.Services
         public async Task<IEnumerable<EventDto>> GetPlannedAndActiveEventDtosAsync()
         {
             var events = await _eventRepository.GetPlannedAndActiveEventsAsync();
-            var eventDtos = events.Select(e => new EventDto
+
+            var eventDtos = events.Select(e =>
             {
-                Id = e.Id,
-                Name = e.Name,
-                Description = e.Description,
-                City = e.City,
-                StartTime = e.StartTime,
-                EndTime = e.EndTime,
-                Type = e.Type,
-                Status = e.Status,
-                ApplicationDeadline = e.ApplicationDeadline,
-                RequiredSkills = e.RequiredSkills
+                CheckAndUpdateStatus(e);
+                return MapToEventDto(e);
             }).ToList();
+
             return eventDtos;
         }
 
@@ -155,21 +115,122 @@ namespace KindNet.Services
         {
             var events = await _eventRepository.GetPlannedAndActiveEventsWithFiltersAsync(city, type, organizationName);
 
-            return events.Select(e => new EventDto
+            var eventDtos = events.Select(e =>
             {
-                Id = e.Id,
-                Name = e.Name,
-                Description = e.Description,
-                City = e.City,
-                StartTime = e.StartTime,
-                EndTime = e.EndTime,
-                Type = e.Type,
-                Status = e.Status,
-                ApplicationDeadline = e.ApplicationDeadline,
-                RequiredSkills = e.RequiredSkills,
-                OrganizerName = e.Organizer?.Name
+                CheckAndUpdateStatus(e);
+                var dto = MapToEventDto(e);
+                dto.OrganizerName = e.Organizer?.Name;
+                return dto;
             }).ToList();
+
+            return eventDtos;
         }
+
+        public async Task<EventDto> UpdateEventAsync(long id, CreateEventDto eventDto, long organizerId)
+        {
+            var existingEvent = await _eventRepository.GetByIdAsync(id);
+
+            if (existingEvent == null || existingEvent.OrganizerId != organizerId)
+            {
+                return null;
+            }
+
+            existingEvent.Name = eventDto.Name;
+            existingEvent.Description = eventDto.Description;
+            existingEvent.City = eventDto.City;
+            existingEvent.StartTime = eventDto.StartTime;
+            existingEvent.EndTime = eventDto.EndTime;
+            existingEvent.ApplicationDeadline = eventDto.ApplicationDeadline;
+            existingEvent.RequiredSkills = eventDto.RequiredSkills;
+            existingEvent.Type = eventDto.Type;
+            existingEvent.Status = eventDto.Status;
+
+            var updatedEvent = await _eventRepository.UpdateAsync(existingEvent);
+
+            var updatedEventDto = MapToEventDto(updatedEvent);
+            return updatedEventDto;
+        }
+
+        public async Task<bool> CancelEventAsync(long eventId)
+        {
+            var eventToCancel = await _eventRepository.GetByIdAsync(eventId);
+
+            if (eventToCancel == null)
+            {
+                return false; 
+            }
+
+            if (eventToCancel.Status != EventStatus.Planned)
+            {
+                return false; 
+            }
+
+            var timeUntilStart = eventToCancel.StartTime - DateTime.UtcNow;
+            if (timeUntilStart.TotalHours < 24)
+            {
+                return false; 
+            }
+
+            eventToCancel.Status = EventStatus.Canceled;
+            await _eventRepository.UpdateAsync(eventToCancel);
+
+            return true; 
+        }
+
+        public async Task<bool> ArchiveEventAsync(long eventId)
+        {
+            var eventToArchive = await _eventRepository.GetByIdAsync(eventId);
+
+            if (eventToArchive == null)
+            {
+                return false; 
+            }
+
+            if (eventToArchive.Status != EventStatus.Finished)
+            {
+                return false; 
+            }
+
+            eventToArchive.Status = EventStatus.Archived;
+            await _eventRepository.UpdateAsync(eventToArchive);
+
+            return true; 
+        }
+
+        private void CheckAndUpdateStatus(Event eventItem)
+        {
+            var now = DateTime.UtcNow;
+
+            if (eventItem.Status == EventStatus.Planned && now >= eventItem.StartTime && now <= eventItem.EndTime)
+            {
+                eventItem.Status = EventStatus.Active;
+                _eventRepository.UpdateAsync(eventItem);
+            }
+            else if (eventItem.Status == EventStatus.Active && now > eventItem.EndTime)
+            {
+                eventItem.Status = EventStatus.Finished;
+                _eventRepository.UpdateAsync(eventItem);
+            }
+        }
+
+        private EventDto MapToEventDto(Event eventItem)
+        {
+            return new EventDto
+            {
+                Id = eventItem.Id,
+                Name = eventItem.Name,
+                Description = eventItem.Description,
+                City = eventItem.City,
+                StartTime = eventItem.StartTime,
+                EndTime = eventItem.EndTime,
+                Type = eventItem.Type,
+                Status = eventItem.Status,
+                ApplicationDeadline = eventItem.ApplicationDeadline,
+                RequiredSkills = eventItem.RequiredSkills,
+                OrganizerName = eventItem.Organizer?.Name
+            };
+        }
+
 
     }
 }

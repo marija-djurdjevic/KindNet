@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { EventService } from '../services/event.service';
 import { EventDto } from '../models/event.model';
 import { Router } from '@angular/router';
@@ -11,13 +11,15 @@ import { Router } from '@angular/router';
 export class EventsListComponent implements OnInit {
   events: EventDto[] = [];
   isLoading: boolean = true;
-
+  @Input() event: any;
+  
   statusMapping: { [key: number]: string } = {
     0: 'Draft',
     1: 'Planned',
     2: 'Active',
     3: 'Finished',
-    4: 'Canceled'
+    4: 'Canceled',
+    5: 'Archived'
   };
 
   statusIconMapping: { [key: number]: string } = {
@@ -52,6 +54,40 @@ export class EventsListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getEvents();
+  }
+
+  onEdit(eventId: number) {
+    this.router.navigate(['/layout/create-event', eventId]);
+  }
+
+  onCancel(eventId: number) {
+    if (confirm('Da li ste sigurni da želite da otkažete ovaj događaj?')) {
+      this.eventService.cancelEvent(eventId).subscribe({
+        next: (response) => {
+          console.log('Događaj uspješno otkazan', response);
+          this.getEvents();
+        },
+        error: (error: { error: string; }) => {
+          console.error('Greška prilikom otkazivanja događaja:', error);
+          alert('Greška: ' + error.error);
+        }
+      });
+    }
+  }
+
+  onArchive(eventId: number) {
+    if (confirm('Da li ste sigurni da želite da arhivirate ovaj događaj?')) {
+      this.eventService.archiveEvent(eventId).subscribe({
+        next: (response) => {
+          console.log('Događaj uspješno arhiviran', response);
+          this.getEvents();
+        },
+        error: (error: { error: string; }) => {
+          console.error('Greška prilikom arhiviranja događaja:', error);
+          alert('Greška: ' + error.error);
+        }
+      });
+    }
   }
 
   getEvents() {

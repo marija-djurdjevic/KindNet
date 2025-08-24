@@ -16,6 +16,7 @@ import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { MatButtonModule } from '@angular/material/button';
 import { registerLocaleData } from '@angular/common'; 
+import { MatTooltipModule } from '@angular/material/tooltip';
 import localeSr from '@angular/common/locales/sr-Latn';
 registerLocaleData(localeSr);
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -68,6 +69,7 @@ import { ApplicationsDashboardComponent } from './applications-dashboard/applica
     MatProgressSpinnerModule,
     MatCardModule,
     MatButtonModule,
+    MatTooltipModule,
     CalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory,

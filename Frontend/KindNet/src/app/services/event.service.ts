@@ -44,4 +44,20 @@ export class EventService {
     return this.http.get<EventDto[]>(`${this.apiUrl}/calendar/filtered`, { params });
   }
 
+   getEventById(id: number): Observable<any> {
+    return this.http.get<any>( `${this.apiUrl}/${id}`);
+  }
+
+   updateEvent(id: number, eventData: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/${id}`, eventData);
+  }
+
+  cancelEvent(eventId: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${eventId}/cancel`, null);
+  }
+
+  archiveEvent(eventId: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${eventId}/archive`, null);
+  }
+
 }

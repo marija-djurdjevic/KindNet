@@ -20,8 +20,7 @@
   <mat-card 
     class="event-card" 
     *ngFor="let event of events" 
-    [ngClass]="'type-border-' + event.type.toLowerCase()">
-    
+    [ngClass]="'type-border-' + event.type.toLowerCase()">  
     <div class="card-main-content">
       <div class="event-info">
         <div class="event-title-line">
@@ -45,14 +44,44 @@
       </div>
 
       <div class="event-meta">
-        <span class="tag status-tag" [ngClass]="'status-' + event.status.toLowerCase()">
-          {{ event.status }}
-        </span>
+        <div class="tag-and-actions">
+    <span class="tag status-tag" [ngClass]="'status-' + event.status.toLowerCase()">
+      {{ event.status }}
+    </span>
+    <button
+      *ngIf="event.status === 'Planned'"
+      mat-icon-button
+      color="warn"
+      class="cancel-button"
+      matTooltip="Otkaži događaj"
+      matTooltipClass="custom-tooltip"
+      (click)="onCancel(event.id)">
+       <mat-icon>cancel</mat-icon> </button>
+    <button
+        *ngIf="event.status === 'Finished'"
+        mat-icon-button
+        color="primary"
+        class="archive-button"
+        matTooltip="Arhiviraj događaj"
+        matTooltipClass="custom-tooltip"
+        (click)="onArchive(event.id)">
+        <mat-icon>inventory</mat-icon> 
+    </button>
+    <button 
+      *ngIf="event.status === 'Draft'"
+      mat-icon-button 
+      color="primary"
+      class="edit-button" 
+      (click)="onEdit(event.id)">
+      <mat-icon>edit</mat-icon>
+    </button>
+  </div>
         <span class="tag type-tag">
           {{ event.type }}
         </span>
       </div>
     </div>
+    
 
     <div class="skills-container" *ngIf="event.requiredSkills && event.requiredSkills.length > 0">
       <span class="skill-tag" *ngFor="let skill of event.requiredSkills">
