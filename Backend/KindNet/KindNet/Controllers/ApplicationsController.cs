@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using KindNet.Dtos;
 using KindNet.Models;
 using Microsoft.AspNetCore.Authorization;
+using KindNet.Models.Enums;
 
 namespace KindNet.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class ApplicationsController : ControllerBase
     {
         private readonly ApplicationService _applicationService;
@@ -67,6 +67,34 @@ namespace KindNet.Controllers
             catch (UnauthorizedAccessException ex)
             {
                 return Forbid(ex.Message);
+            }
+        }
+
+        [HttpPost("update-status/{id}")]
+        public async Task<IActionResult> UpdateApplicationStatus(long id, [FromBody] ApplicationStatus status)
+        {
+            try
+            {
+                var userIdString = User.FindFirst("id")?.Value; 
+                if (string.IsNullOrEmpty(userIdString) || !long.TryParse(userIdString, out var userId))
+                {
+                    return Unauthorized("Korisnički ID claim ('id') nije pronađen ili je nevažeći u tokenu.");
+                }
+
+                var success = await _applicationService.UpdateApplicationStatusAsync(id, status, userId);
+                if (success)
+                {
+                    return Ok();
+                }
+                return NotFound();
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
         }
     }

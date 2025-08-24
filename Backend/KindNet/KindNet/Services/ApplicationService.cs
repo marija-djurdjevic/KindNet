@@ -108,5 +108,26 @@ namespace KindNet.Services
 
             return newApplication;
         }
+
+        public async Task<bool> UpdateApplicationStatusAsync(long applicationId, ApplicationStatus status, long userId)
+        {
+            var application = await _applicationRepository.GetApplicationByIdAsync(applicationId);
+
+            if (application == null)
+            {
+                throw new KeyNotFoundException("Prijava sa datim ID-jem ne postoji.");
+            }
+
+            var eventData = await _context.Events
+                                          .Include(e => e.Organizer)
+                                          .FirstOrDefaultAsync(e => e.Id == application.EventId);
+
+            if (eventData == null || eventData.Organizer.UserId != userId)
+            {
+                throw new UnauthorizedAccessException("Nemate dozvolu da mijenjate status ove prijave.");
+            }
+
+            return await _applicationRepository.UpdateApplicationStatusAsync(applicationId, status);
+        }
     }
 }
