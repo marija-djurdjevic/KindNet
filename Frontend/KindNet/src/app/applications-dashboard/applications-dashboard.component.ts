@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ApplicationService } from '../services/application.service';
-import { EventApplication } from '../models/event-application.model';
+import { EventApplication, VolunteerEventApplication } from '../models/event-application.model';
 import { groupBy } from 'rxjs/operators';
 import { from, toArray } from 'rxjs';
 import { KeyValue } from '@angular/common';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-applications-dashboard',
@@ -13,21 +14,46 @@ import { KeyValue } from '@angular/common';
 export class ApplicationsDashboardComponent implements OnInit {
   eventApplications: EventApplication[] = [];
   eventApplicationsGroupedByEvent: { [key: number]: EventApplication[] } = {};
+  volunteerApplications: VolunteerEventApplication[] = [];
+  isLoading: boolean = true;
 
-  constructor(private applicationService: ApplicationService) {}
+   applicationStatusIconMapping: { [key: string]: string } = {
+    'Pending': 'schedule',
+    'Approved': 'check_circle',
+    'Rejected': 'cancel'
+  };
+
+  applicationStatusTextMapping: { [key: string]: string } = {
+    'Pending': 'Na čekanju',
+    'Approved': 'Prihvaćena',
+    'Rejected': 'Odbijena'
+  };
+
+  constructor(private applicationService: ApplicationService, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.fetchApplications();
   }
 
   fetchApplications(): void {
+    this.isLoading = true;
+    if (this.isOrganiser()) {
+      this.getApplicationsForOwnerEvents();
+    } else {
+      this.getApplicationsForVolunteer();
+    }
+  }
+
+  getApplicationsForOwnerEvents(): void {
     this.applicationService.getApplicationsForOwnerEvents().subscribe({
       next: (data) => {
         this.eventApplications = data;
         this.groupApplicationsByEvent();
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Došlo je do greške prilikom dohvatanja prijava', err);
+        this.isLoading = false;
       }
     });
   }
@@ -77,5 +103,26 @@ export class ApplicationsDashboardComponent implements OnInit {
         console.error('Greška prilikom odbijanja prijave', err);
       }
     });
+  }
+
+   getApplicationsForVolunteer(): void {
+    this.applicationService.getApplicationsForVolunteer().subscribe({
+      next: (applications) => {
+        this.volunteerApplications = applications;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Greška pri učitavanju prijava volontera', err);
+        this.isLoading = false;
+      }
+    });
+  }
+
+    isOrganiser() {
+    return this.authService.isOrganizer();
+  }
+
+  getApplicationStatusClass(status: string): string {
+    return status.toLowerCase();
   }
 }

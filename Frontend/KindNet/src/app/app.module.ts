@@ -17,13 +17,12 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { MatButtonModule } from '@angular/material/button';
 import { registerLocaleData } from '@angular/common'; 
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { JwtModule } from '@auth0/angular-jwt';
 import localeSr from '@angular/common/locales/sr-Latn';
 registerLocaleData(localeSr);
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatTooltipModule } from '@angular/material/tooltip';
-
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
@@ -38,6 +37,9 @@ import { CreateEventComponent } from './create-event/create-event.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { ApplicationsDashboardComponent } from './applications-dashboard/applications-dashboard.component';
 
+export function tokenGetter() {
+  return localStorage.getItem('jwt');
+}
 
 @NgModule({
   declarations: [
@@ -77,7 +79,13 @@ import { ApplicationsDashboardComponent } from './applications-dashboard/applica
     MatExpansionModule,
     MatListModule,
     MatChipsModule,
-    MatTooltipModule
+    MatTooltipModule,
+     JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        allowedDomains: ["localhost:7200"], 
+      }
+    })
   ],
 
    providers: [
@@ -91,4 +99,5 @@ import { ApplicationsDashboardComponent } from './applications-dashboard/applica
   
   bootstrap: [AppComponent]
 })
+
 export class AppModule { }

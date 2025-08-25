@@ -97,5 +97,37 @@ namespace KindNet.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpGet("check-status/{eventId}")]
+        public async Task<ActionResult<bool>> CheckApplicationStatus(long eventId)
+        {
+            var userIdClaim = User.FindFirstValue("id");
+            if (userIdClaim == null || !long.TryParse(userIdClaim, out long volunteerId))
+            {
+                return Unauthorized("Korisnički ID nije pronađen u tokenu ili je nevažeći.");
+            }
+
+            bool exists = await _applicationService.ApplicationExistsForUserAsync(volunteerId, eventId);
+
+            return Ok(exists);
+        }
+
+        [HttpGet("my-applications")]
+        public async Task<ActionResult<IEnumerable<VolunteerApplicationDto>>> GetApplicationsForVolunteer()
+        {
+            var userIdClaim = User.FindFirst("id");
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Korisnički ID claim ('id') nije pronađen u tokenu.");
+            }
+            if (!long.TryParse(userIdClaim.Value, out long volunteerUserId))
+            {
+                return Unauthorized($"Nevažeći format korisničkog ID-a ('{userIdClaim.Value}') u tokenu. Očekuje se numerička vrednost.");
+            }
+
+            var volunteerApplications = await _applicationService.GetApplicationsForVolunteerAsync(volunteerUserId);
+
+            return Ok(volunteerApplications);
+        }
     }
 }

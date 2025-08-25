@@ -8,6 +8,7 @@ using KindNet.Data;
 using KindNet.Models.Interfaces;
 using KindNet.Models.Enums;
 using KindNet.Models;
+using KindNet.Dtos;
 
 namespace KindNet.Services
 {
@@ -128,6 +129,64 @@ namespace KindNet.Services
             }
 
             return await _applicationRepository.UpdateApplicationStatusAsync(applicationId, status);
+        }
+
+        public async Task<bool> ApplicationExistsForUserAsync(long volunteerUserId, long eventId)
+        {
+            return await _applicationRepository.ApplicationExistsAsync(volunteerUserId, eventId);
+        }
+
+        public async Task<IEnumerable<VolunteerApplicationDto>> GetApplicationsForVolunteerAsync(long volunteerUserId)
+        {
+            var applications = await _context.EventApplications
+                                             .Where(a => a.VolunteerUserId == volunteerUserId)
+                                             .ToListAsync();
+
+            if (!applications.Any())
+            {
+                return new List<VolunteerApplicationDto>();
+            }
+
+            var eventIds = applications.Select(a => a.EventId).Distinct().ToList();
+
+            var events = await _context.Events
+                .Where(e => eventIds.Contains(e.Id))
+                .ToDictionaryAsync(e => e.Id);
+
+            var organizerIds = events.Values.Select(e => e.OrganizerId).Distinct().ToList();
+            var organizationProfiles = await _context.OrganizationProfiles
+                .Where(op => organizerIds.Contains(op.Id))
+                .ToDictionaryAsync(op => op.Id);
+
+            var volunteerProfile = await _context.VolunteerProfiles
+                .SingleOrDefaultAsync(vp => vp.UserId == volunteerUserId);
+
+            var applicationDtos = applications.Select(a =>
+            {
+                events.TryGetValue(a.EventId, out var eventData);
+                organizationProfiles.TryGetValue(eventData.OrganizerId, out var orgProfile);
+
+                return new VolunteerApplicationDto
+                {
+                    ApplicationId = a.Id,
+                    Status = a.Status,
+                    ApplicationTime = a.ApplicationTime,
+                    EventId = a.EventId,
+                    EventName = eventData?.Name,
+                    EventStartTime = eventData.StartTime,
+                    EventEndTime = eventData.EndTime,
+                    EventCity = eventData?.City,
+                    MatchingSkills = volunteerProfile?.Skills != null && eventData?.RequiredSkills != null
+                        ? volunteerProfile.Skills.Intersect(eventData.RequiredSkills, StringComparer.OrdinalIgnoreCase).ToList()
+                        : new List<string>(),
+                    OrganisationId = orgProfile.Id,
+                    OrganisationName = orgProfile.Name,
+                    OrganisationContactPhone = orgProfile.ContactPhone,
+                    OrganisationWebsite = orgProfile.Website
+                };
+            }).ToList();
+
+            return applicationDtos;
         }
     }
 }

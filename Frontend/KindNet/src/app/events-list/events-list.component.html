@@ -1,7 +1,7 @@
 <div class="events-list-container">
   <div class="header">
     <h2>Događaji</h2>
-    <button mat-flat-button color="accent" routerLink="/layout/create-event">
+    <button *ngIf="isOrganiser()" mat-flat-button color="accent" routerLink="/layout/create-event">
       <mat-icon>add</mat-icon> Kreiraj događaj
     </button>
   </div>
@@ -20,7 +20,7 @@
   <mat-card 
     class="event-card" 
     *ngFor="let event of events" 
-    [ngClass]="'type-border-' + event.type.toLowerCase()">  
+     [ngClass]="getCardClasses(event)">
     <div class="card-main-content">
       <div class="event-info">
         <div class="event-title-line">
@@ -49,7 +49,7 @@
       {{ event.status }}
     </span>
     <button
-      *ngIf="event.status === 'Planned'"
+      *ngIf="event.status === 'Planned' && isOrganiser()"
       mat-icon-button
       color="warn"
       class="cancel-button"
@@ -58,7 +58,7 @@
       (click)="onCancel(event.id)">
        <mat-icon>cancel</mat-icon> </button>
     <button
-        *ngIf="event.status === 'Finished'"
+        *ngIf="event.status === 'Finished' && isOrganiser()" 
         mat-icon-button
         color="primary"
         class="archive-button"
@@ -68,7 +68,7 @@
         <mat-icon>inventory</mat-icon> 
     </button>
     <button 
-      *ngIf="event.status === 'Draft'"
+      *ngIf="event.status === 'Draft' && isOrganiser()"
       mat-icon-button 
       color="primary"
       class="edit-button" 
@@ -93,6 +93,27 @@
       <p class="event-description">{{ event.description }}</p>
     </mat-card-content>
 
+      <div 
+    class="volunteer-actions">
+    <button 
+     *ngIf="!isOrganiser() && event.status === 'Planned' && !applicationStatus[event.id] && isApplicationDeadlineMet(event)" 
+      mat-flat-button 
+      color="primary"
+      class="apply-button"
+      (click)="onVolunteerApply(event.id)">
+      <mat-icon>volunteer_activism</mat-icon> Prijavi se
+    </button>
+     <button 
+        *ngIf="!isOrganiser() && applicationStatus[event.id]"
+        mat-icon-button
+        matTooltip="Prijava je poslata!"
+        (click)="navigateToApplications()">
+        <mat-icon color="primary">article</mat-icon>
+     </button>
+     <div *ngIf="!isApplicationDeadlineMet(event) && !applicationStatus[event.id]" class="deadline-expired-message">
+        <mat-icon color="warn" matTooltip="Rok za prijavu je istekao">warning_amber</mat-icon>
+      </div>
+  </div>
   </mat-card>
 </div>
 </div>

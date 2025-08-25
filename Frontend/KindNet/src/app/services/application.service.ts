@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http'; // UVEZITE HttpHeaders
 import { Observable } from 'rxjs';
-import { EventApplication } from '../models/event-application.model';
+import { EventApplication, VolunteerEventApplication } from '../models/event-application.model';
 
 @Injectable({
   providedIn: 'root'
@@ -31,5 +31,18 @@ export class ApplicationService {
   
   revertApplicationStatus(applicationId: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/update-status/${applicationId}`, JSON.stringify("Pending"), { headers: this.getHeaders() });
+  }
+
+  createApplication(eventId: number): Observable<any> {
+    const body = { eventId: eventId };
+    return this.http.post(`${this.apiUrl}/apply`, body);
+  }
+
+  checkApplicationStatus(eventId: number): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/check-status/${eventId}`);
+  }
+
+   getApplicationsForVolunteer(): Observable<VolunteerEventApplication[]> {
+    return this.http.get<VolunteerEventApplication[]>(`${this.apiUrl}/my-applications`);
   }
 }
