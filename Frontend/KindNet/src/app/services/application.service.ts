@@ -32,4 +32,13 @@ export class ApplicationService {
   revertApplicationStatus(applicationId: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/update-status/${applicationId}`, JSON.stringify("Pending"), { headers: this.getHeaders() });
   }
+
+  createApplication(eventId: number): Observable<any> {
+    const body = { eventId: eventId };
+    return this.http.post(`${this.apiUrl}/apply`, body);
+  }
+
+  checkApplicationStatus(eventId: number): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/check-status/${eventId}`);
+  }
 }

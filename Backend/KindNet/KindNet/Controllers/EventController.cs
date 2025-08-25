@@ -204,6 +204,22 @@ namespace KindNet.Controllers
                 return StatusCode(500, "Došlo je do greške prilikom arhiviranja događaja.");
             }
         }
-    
+
+        [HttpGet("get-all-with-status")]
+        public async Task<IActionResult> GetAllEventsWithStatus()
+        {
+            long? volunteerId = null;
+            var userIdClaim = User.FindFirstValue("id");
+
+            if (long.TryParse(userIdClaim, out long parsedId))
+            {
+                volunteerId = parsedId;
+            }
+
+            var result = await _eventService.GetAllEventsWithApplicationStatusAsync(volunteerId);
+
+            return Ok(result);
+        }
+
     }
 }

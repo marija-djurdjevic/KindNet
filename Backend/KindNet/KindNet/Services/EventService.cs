@@ -3,16 +3,19 @@ using KindNet.Models.Interfaces;
 using KindNet.Models.Enums;
 using KindNet.Dtos;
 using KindNet.Repositories;
+using Microsoft.Extensions.Logging;
 
 namespace KindNet.Services
 {
     public class EventService
     {
         private readonly IEventRepository _eventRepository;
+        private readonly IApplicationRepository _applicationRepository;
 
-        public EventService(IEventRepository eventRepository)
+        public EventService(IEventRepository eventRepository, IApplicationRepository applicationRepository)
         {
             _eventRepository = eventRepository;
+            _applicationRepository = applicationRepository;
         }
 
         public async Task<bool> IsEventOverlapping(string city, DateTime startTime, DateTime endTime)
@@ -195,6 +198,41 @@ namespace KindNet.Services
             await _eventRepository.UpdateAsync(eventToArchive);
 
             return true; 
+        }
+
+        public async Task<EventsWithApplicationStatusDto> GetAllEventsWithApplicationStatusAsync(long? volunteerId)
+        {
+            var allEvents = await _eventRepository.GetAllAsync();
+
+            foreach (var eventItem in allEvents)
+            {
+                CheckAndUpdateStatus(eventItem);
+            }
+
+            var eventDtos = allEvents.Select(MapToEventDto).ToList();
+            var applicationStatus = new Dictionary<long, bool>();
+
+            if (volunteerId.HasValue)
+            {
+                foreach (var eventDto in eventDtos)
+                {
+                    bool isApplied = await _applicationRepository.ApplicationExistsAsync(volunteerId.Value, eventDto.Id);
+                    applicationStatus[eventDto.Id] = isApplied;
+                }
+            }
+            else
+            {
+                foreach (var eventDto in eventDtos)
+                {
+                    applicationStatus[eventDto.Id] = false;
+                }
+            }
+
+            return new EventsWithApplicationStatusDto
+            {
+                Events = eventDtos,
+                ApplicationStatus = applicationStatus
+            };
         }
 
         private void CheckAndUpdateStatus(Event eventItem)

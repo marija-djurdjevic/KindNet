@@ -129,5 +129,10 @@ namespace KindNet.Services
 
             return await _applicationRepository.UpdateApplicationStatusAsync(applicationId, status);
         }
+
+        public async Task<bool> ApplicationExistsForUserAsync(long volunteerUserId, long eventId)
+        {
+            return await _applicationRepository.ApplicationExistsAsync(volunteerUserId, eventId);
+        }
     }
 }

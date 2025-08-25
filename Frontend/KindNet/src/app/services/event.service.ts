@@ -27,6 +27,10 @@ export class EventService {
     return this.http.get<EventDto[]>(this.apiUrl);
   }
 
+  getAllEventsWithApplicationStatus(): Observable<EventDto[]> {
+    return this.http.get<EventDto[]>(`${this.apiUrl}/get-all-with-status`);
+  }
+
   getMyEvents(): Observable<EventDto[]> {
     return this.http.get<EventDto[]>(`${this.apiUrl}/my-events`);
   }

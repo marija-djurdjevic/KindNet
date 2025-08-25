@@ -97,5 +97,19 @@ namespace KindNet.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpGet("check-status/{eventId}")]
+        public async Task<ActionResult<bool>> CheckApplicationStatus(long eventId)
+        {
+            var userIdClaim = User.FindFirstValue("id");
+            if (userIdClaim == null || !long.TryParse(userIdClaim, out long volunteerId))
+            {
+                return Unauthorized("Korisnički ID nije pronađen u tokenu ili je nevažeći.");
+            }
+
+            bool exists = await _applicationService.ApplicationExistsForUserAsync(volunteerId, eventId);
+
+            return Ok(exists);
+        }
     }
 }

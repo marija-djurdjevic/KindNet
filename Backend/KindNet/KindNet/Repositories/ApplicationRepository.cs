@@ -35,6 +35,7 @@ namespace KindNet.Repositories
         {
             return await _context.EventApplications.AnyAsync(ea => ea.VolunteerUserId == volunteerUserId && ea.EventId == eventId);
         }
+
         public async Task<EventApplication> GetApplicationByIdAsync(long applicationId)
         {
             return await _context.EventApplications
