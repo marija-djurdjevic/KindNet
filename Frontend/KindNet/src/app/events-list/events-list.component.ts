@@ -181,4 +181,8 @@ export class EventsListComponent implements OnInit {
     const deadline = new Date(event.applicationDeadline);
     return deadline.getTime() > this.now.getTime();
   }
+
+  navigateToApplications() {
+    this.router.navigate(['layout/events-applications']);
+  }
 }

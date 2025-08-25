@@ -1,4 +1,5 @@
 <div class="applications-container">
+  <div *ngIf="isOrganiser()">
     <mat-accordion multi="true">
       <mat-expansion-panel *ngFor="let event of eventApplicationsGroupedByEvent | keyvalue" expanded="true">
         <mat-expansion-panel-header>
@@ -11,7 +12,6 @@
         </mat-expansion-panel-header>
 
         <div class="applications-content">
-          
           <div class="application-section" *ngIf="getPendingApplications(event.value).length > 0">
             <h3>Prijave na čekanju ({{ getPendingApplications(event.value).length }})</h3>
             <div *ngFor="let app of getPendingApplications(event.value)" class="application-card">
@@ -84,8 +84,63 @@
                 </div>
               </div>
           </div>
-
         </div>
       </mat-expansion-panel>
     </mat-accordion>
+     </div>
+       <div *ngIf="!isOrganiser()">
+        <mat-accordion multi="true">
+            <mat-expansion-panel *ngFor="let app of volunteerApplications" expanded="true">
+                <mat-expansion-panel-header>
+        <mat-panel-title class="panel-title-volunteer" style="width: 100%;">
+            {{ app.eventName }}
+        </mat-panel-title>
+          <mat-panel-description class="panel-description">
+              <div class="status-badge" [ngClass]="getApplicationStatusClass(app.status)">
+                  <mat-icon>{{ applicationStatusIconMapping[app.status] }}</mat-icon>
+                  <span>{{ applicationStatusTextMapping[app.status] }}</span>
+              </div>
+          </mat-panel-description>
+</mat-expansion-panel-header>
+
+                <div class="applications-content">
+                    <div class="application-card">
+                        <div class="card-content">
+                            <div class="details-section">
+                                <h3>Detalji događaja</h3>
+                                <div class="info-line"><mat-icon>location_on</mat-icon><span>Lokacija: {{ app.eventCity }}</span></div>
+                                <div class="info-line"><mat-icon>access_time</mat-icon><span>Vrijeme: {{ app.eventStartTime | date:'HH:mm' }}</span></div>
+                                <div class="info-line"><mat-icon>calendar_today</mat-icon><span>Datum: {{ app.eventStartTime | date:'dd.MM.yyyy' }}</span></div>
+                                <div class="info-line"><mat-icon>check_circle_outline</mat-icon><span>Prijava poslata: {{ app.applicationTime | date:'dd.MM.yyyy, HH:mm' }}</span></div>
+                            </div>
+                            
+                            <div class="details-section">
+                                <h3>Organizator</h3>
+                                <div class="info-line"><mat-icon>person</mat-icon><span>{{ app.organisationName }}</span></div>
+                                <div class="info-line"><mat-icon>phone</mat-icon><span>{{ app.organisationContactPhone }}</span></div>
+                                <div class="info-line"><mat-icon>website</mat-icon><span>{{ app.organisationWebsite }}</span></div>
+
+                            </div>
+
+                           <div class="details-section">
+  <h3>Podudarajuće vještine</h3>
+  <div class="skills-list">
+    <mat-chip-listbox>
+      <mat-chip *ngFor="let skill of app.matchingSkills" class="matching-skill" selected>
+        {{ skill }}
+      </mat-chip>
+
+      <div *ngIf="!app.matchingSkills || app.matchingSkills.length === 0" class="no-skills-container">
+        <mat-icon color="warn">sentiment_dissatisfied</mat-icon>
+        <span>Nema podudarajućih vještina</span>
+      </div>
+    </mat-chip-listbox>
+  </div>
+</div>
+                        </div>
+                    </div>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
 </div>

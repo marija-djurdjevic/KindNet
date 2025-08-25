@@ -111,5 +111,23 @@ namespace KindNet.Controllers
 
             return Ok(exists);
         }
+
+        [HttpGet("my-applications")]
+        public async Task<ActionResult<IEnumerable<VolunteerApplicationDto>>> GetApplicationsForVolunteer()
+        {
+            var userIdClaim = User.FindFirst("id");
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Korisnički ID claim ('id') nije pronađen u tokenu.");
+            }
+            if (!long.TryParse(userIdClaim.Value, out long volunteerUserId))
+            {
+                return Unauthorized($"Nevažeći format korisničkog ID-a ('{userIdClaim.Value}') u tokenu. Očekuje se numerička vrednost.");
+            }
+
+            var volunteerApplications = await _applicationService.GetApplicationsForVolunteerAsync(volunteerUserId);
+
+            return Ok(volunteerApplications);
+        }
     }
 }

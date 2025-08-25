@@ -106,11 +106,12 @@
      <button 
         *ngIf="!isOrganiser() && applicationStatus[event.id]"
         mat-icon-button
-        matTooltip="Prijava je poslata!">
-        <mat-icon color="primary">check_circle</mat-icon>
+        matTooltip="Prijava je poslata!"
+        (click)="navigateToApplications()">
+        <mat-icon color="primary">article</mat-icon>
      </button>
      <div *ngIf="!isApplicationDeadlineMet(event) && !applicationStatus[event.id]" class="deadline-expired-message">
-        <mat-icon color="warn" matTooltip="Rok za prijavu je istekao">info</mat-icon>
+        <mat-icon color="warn" matTooltip="Rok za prijavu je istekao">warning_amber</mat-icon>
       </div>
   </div>
   </mat-card>

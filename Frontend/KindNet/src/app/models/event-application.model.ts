@@ -13,3 +13,19 @@ export interface EventApplication {
   eventName: string;
   matchingSkills: string[];
 }
+
+export interface VolunteerEventApplication {
+  applicationId: number;
+  status: 'Pending' | 'Approved' | 'Rejected';
+  applicationTime: string;
+  eventId: number;
+  eventName: string;
+  eventStartTime: Date;
+  eventEndTime: Date;
+  eventCity: string;
+  matchingSkills: string[];
+  organisationId: number;
+  organisationName: string;
+  organisationContactPhone: string;
+  organisationWebsite: string;
+}
