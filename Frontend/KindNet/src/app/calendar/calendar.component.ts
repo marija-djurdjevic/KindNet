@@ -4,6 +4,7 @@ import { EventService } from '../services/event.service';
 import { EventDto } from '../models/event.model';
 import { isSameDay, isSameMonth } from 'date-fns';
 import { MonthViewDay } from 'calendar-utils';
+import { colors } from '../utils/colors'; 
 
 @Component({
   selector: 'app-calendar',
@@ -22,6 +23,9 @@ export class CalendarComponent implements OnInit {
   activeDayIsOpen: boolean = false;
   events: CalendarEvent[] = [];
 
+  isModalOpen: boolean = false;
+  selectedEvent: CalendarEvent | null = null;
+
   activeFilter: 'city' | 'type' | 'organization' | null = null;
   selectedCity: string | null = null;
   selectedType: string | null = null;
@@ -35,7 +39,7 @@ export class CalendarComponent implements OnInit {
 
   ngOnInit(): void {
     this.populateFilterOptions(); 
-    this.fetchFilteredEvents();    
+    this.fetchFilteredEvents(); 
   }
 
   populateFilterOptions(): void {
@@ -78,28 +82,43 @@ export class CalendarComponent implements OnInit {
   }
 
   dayClicked({ day }: { day: MonthViewDay }): void {
-    if (isSameMonth(day.date, this.viewDate)) {
-      if ((isSameDay(this.viewDate, day.date) && this.activeDayIsOpen) || day.events.length === 0) {
-        this.activeDayIsOpen = false;
-      } else {
-        this.activeDayIsOpen = true;
-      }
-      this.cdr.detectChanges();
-    }
+    
   }
 
+  openModal(event: CalendarEvent, mouseEvent: MouseEvent): void {
+  mouseEvent.stopPropagation();
+  this.selectedEvent = event;
+  this.isModalOpen = true;
+}
+  closeModal(): void {
+    this.isModalOpen = false;
+    this.selectedEvent = null;
+  }
+  
   private mapToCalendarEvents(events: EventDto[]): CalendarEvent[] {
+    const typeColors = new Map<string, any>();
+    let colorIndex = 0;
+  
     return events.map(event => {
-      const colors = {
-        primary: '#1e90ff',
-        secondary: '#D1E8FF'
-      };
+      const type = event.type;
+      let eventColor = typeColors.get(type);
+      
+      if (!eventColor) {
+        eventColor = colors[colorIndex % colors.length];
+        typeColors.set(type, eventColor);
+        colorIndex++;
+      }
+  
       return {
         start: new Date(event.startTime),
         end: new Date(event.endTime),
         title: `${event.name}`,
-        color: colors,
-        allDay: false
+        color: eventColor,
+        allDay: false,
+        meta: {
+          description: event.description,
+          organizer: event.organizerName || 'Nepoznato'
+        }
       };
     });
   }
