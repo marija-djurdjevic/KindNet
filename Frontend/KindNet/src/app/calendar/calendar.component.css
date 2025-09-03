@@ -177,3 +177,34 @@
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+/* Stilovi za Markdown opis unutar modala */
+.markdown-description {
+  margin-top: 10px;
+}
+
+:host ::ng-deep .markdown-description h1 {
+  font-size: 1.5rem;
+  color: #232325;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+:host ::ng-deep .markdown-description h2 {
+  font-size: 1.3rem;
+  color: #607d8b;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+:host ::ng-deep .markdown-description h3 {
+  font-size: 1.1rem;
+  color: #9e9e9e;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+:host ::ng-deep .markdown-description ul,
+:host ::ng-deep .markdown-description ol {
+  padding-left: 20px;
+  margin-top: 5px;
+}

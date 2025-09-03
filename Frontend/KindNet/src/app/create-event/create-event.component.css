@@ -211,3 +211,90 @@ h2 {
   color: white;
   border: none;
 }
+
+/* Stilovi za Markdown */
+.help-icon {
+  cursor: pointer;
+}
+
+.markdown-preview-container {
+  width: 100%;
+  margin-top: -10px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+}
+
+.markdown-preview-container h4 {
+  margin: 0;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.markdown-preview-box {
+  padding: 15px;
+  background-color: #fafafa;
+}
+
+.markdown-preview-box h1, .markdown-preview-box h2, .markdown-preview-box h3 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+.markdown-preview-box ul, .markdown-preview-box ol {
+  padding-left: 20px;
+}
+
+.markdown-section-example {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  padding: 15px;
+  border-radius: 8px;
+}
+.markdown-syntax-col, .markdown-result-col {
+  flex: 1;
+  padding-right: 10px;
+  
+}
+
+:host ::ng-deep h1, :host ::ng-deep h2, :host ::ng-deep h3 {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-family: 'Arial', sans-serif;
+}
+
+:host ::ng-deep h1 {
+  font-size: 24px;
+  color: #232325;
+}
+
+:host ::ng-deep h2 {
+  font-size: 20px;
+  color: #607d8b;
+}
+
+:host ::ng-deep h3 {
+  font-size: 16px;
+  color: #9e9e9e;
+}
+.markdown-result-col h1 {
+  font-size: 24px;
+  color: #232325;
+}
+.markdown-result-col h2 {
+  font-size: 20px;
+  color: #607d8b;
+  margin-right: 150px;
+}
+.markdown-result-col h3 {
+  font-size: 16px;
+  color: #9e9e9e;
+}

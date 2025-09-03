@@ -90,7 +90,7 @@
     </div>
 
     <mat-card-content *ngIf="event.description">
-      <p class="event-description">{{ event.description }}</p>
+      <markdown [data]="event.description" class="event-description"></markdown>
     </mat-card-content>
 
       <div 

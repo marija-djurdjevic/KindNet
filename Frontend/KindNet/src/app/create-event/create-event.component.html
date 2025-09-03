@@ -1,7 +1,7 @@
 <div class="form-wrapper">
   <div class="form-container">
     <h2>{{ isEditMode ? 'Izmijeni događaj' : 'Kreiraj novi događaj' }}</h2>
-     <form class="event-form" #eventForm="ngForm">
+    <form class="event-form" #eventForm="ngForm">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Naziv događaja</mat-label>
         <input matInput placeholder="Naziv događaja" [(ngModel)]="event.name" name="name" required #name="ngModel">
@@ -13,10 +13,25 @@
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Opis</mat-label>
         <textarea matInput placeholder="Opis događaja" cdkTextareaAutosize cdkAutosizeMinRows="3" [(ngModel)]="event.description" name="description" required #description="ngModel"></textarea>
-          <mat-error *ngIf="description.invalid && (description.dirty || description.touched)">
+        <mat-error *ngIf="description.invalid && (description.dirty || description.touched)">
           Opis je obavezan.
         </mat-error>
+        <mat-icon
+          matSuffix
+          class="help-icon"
+          [matTooltip]="'Opis se može formatirati koristeći markdown. Klikni da vidiš sintaksu.'"
+          matTooltipPosition="above"
+          (click)="openMarkdownHelp()">
+          help_outline
+        </mat-icon>
       </mat-form-field>
+
+      <div *ngIf="event.description" class="markdown-preview-container">
+        <h4>Pregled opisa</h4>
+        <div class="markdown-preview-box">
+          <markdown [data]="event.description"></markdown>
+        </div>
+      </div>
 
       <div class="date-time-group">
         <mat-form-field appearance="outline" class="half-width">
@@ -24,14 +39,14 @@
           <input matInput [matDatepicker]="startDatePicker" [(ngModel)]="startTimeDate" name="startTimeDate" required #startDate="ngModel">
           <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
           <mat-datepicker #startDatePicker></mat-datepicker>
-           <mat-error *ngIf="startDate.invalid && (startDate.dirty || startDate.touched)">
+          <mat-error *ngIf="startDate.invalid && (startDate.dirty || startDate.touched)">
             Datum početka je obavezan.
           </mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" class="half-width">
           <mat-label>Vrijeme početka</mat-label>
           <input matInput type="time" [(ngModel)]="startTimeTime" name="startTimeTime" required #startTime="ngModel">
-           <mat-error *ngIf="startTime.invalid && (startTime.dirty || startTime.touched)">
+          <mat-error *ngIf="startTime.invalid && (startTime.dirty || startTime.touched)">
             Vrijeme početka je obavezno.
           </mat-error>
         </mat-form-field>
@@ -43,14 +58,14 @@
           <input matInput [matDatepicker]="endDatePicker" [(ngModel)]="endTimeDate" name="endTimeDate" required #endDate="ngModel">
           <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
           <mat-datepicker #endDatePicker></mat-datepicker>
-           <mat-error *ngIf="endDate.invalid && (endDate.dirty || endDate.touched)">
+          <mat-error *ngIf="endDate.invalid && (endDate.dirty || endDate.touched)">
             Datum završetka je obavezan.
           </mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" class="half-width">
           <mat-label>Vrijeme završetka</mat-label>
           <input matInput type="time" [(ngModel)]="endTimeTime" name="endTimeTime" required #endTime="ngModel">
-           <mat-error *ngIf="endTime.invalid && (endTime.dirty || endTime.touched)">
+          <mat-error *ngIf="endTime.invalid && (endTime.dirty || endTime.touched)">
             Vrijeme završetka je obavezno.
           </mat-error>
         </mat-form-field>
@@ -70,7 +85,7 @@
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Grad</mat-label>
           <input matInput placeholder="Unesite grad" [(ngModel)]="event.city" name="city" required #city="ngModel">
-           <mat-error *ngIf="city.invalid && (city.dirty || city.touched)">
+          <mat-error *ngIf="city.invalid && (city.dirty || city.touched)">
             Grad je obavezan.
           </mat-error>
         </mat-form-field>
@@ -86,7 +101,7 @@
             <mat-option value="Community">Društveni</mat-option>
             <mat-option value="Technology">Tehnološki</mat-option>
           </mat-select>
-           <mat-error *ngIf="type.invalid && (type.dirty || type.touched)">
+          <mat-error *ngIf="type.invalid && (type.dirty || type.touched)">
             Tip događaja je obavezan.
           </mat-error>
         </mat-form-field>
@@ -109,20 +124,20 @@
 
       <div class="button-container">
         <button mat-flat-button 
-            class="save-button" 
-            type="submit" 
-            [disabled]="!eventForm.form.valid"
-            (click)="onSubmit(eventForm, 'Draft')">
-        Sačuvaj nacrt
-    </button>
-    
-    <button mat-flat-button 
-            class="save-button" 
-            type="button" 
-            [disabled]="!eventForm.form.valid"
-            (click)="onSubmit(eventForm, 'Planned')">
-        Sačuvaj i objavi
-    </button>
+          class="save-button" 
+          type="submit" 
+          [disabled]="!eventForm.form.valid"
+          (click)="onSubmit(eventForm, 'Draft')">
+          Sačuvaj nacrt
+        </button>
+        
+        <button mat-flat-button 
+          class="save-button" 
+          type="button" 
+          [disabled]="!eventForm.form.valid"
+          (click)="onSubmit(eventForm, 'Planned')">
+          Sačuvaj i objavi
+        </button>
         <button mat-flat-button class="cancel-button" type="button" routerLink="/dogadjaji">Otkaži</button>
       </div>
     </form>
@@ -148,3 +163,74 @@
     </div>
   </div>
 </div>
+
+<ng-template #markdownHelpTemplate>
+  <h2 mat-dialog-title>Markdown sintaksa - Brzi vodič</h2>
+  <mat-dialog-content>
+    <p>Možete formatirati tekst koristeći jednostavne simbole. Na ovaj način možete kreirati jasne i pregledne opise događaja.</p>
+    
+    <h3>Stilovi teksta</h3>
+    <div class="markdown-section-example">
+      <div class="markdown-syntax-col">
+        <h4>Sintaksa:</h4>
+        <p><code>**podebljan tekst**</code></p>
+        <p><code>*nakošen tekst*</code></p>
+        <p><code>&lt;u&gt;podvučen tekst&lt;/u&gt;</code></p>
+      </div>
+      <div class="markdown-result-col">
+        <h4>Rezultat:</h4>
+        <p><b>podebljan tekst</b></p>
+        <p><i>nakošen tekst</i></p>
+        <p><u>podvučen tekst</u></p>
+      </div>
+    </div>
+
+    <h3>Naslovi</h3>
+    <p>Koristite hashtag (<code>#</code>) za kreiranje naslova. Što više hashtaga, to je naslov manji:</p>
+    <div class="markdown-section-example">
+      <div class="markdown-syntax-col">
+        <h4>Sintaksa:</h4>
+        <p><code># Naslov 1</code></p>
+        <p><code>## Naslov 2</code></p>
+        <p><code>### Naslov 3</code></p>
+      </div>
+      <div class="markdown-result-col">
+        <h4>Rezultat:</h4>
+        <h1>Naslov 1</h1>
+        <h2>Naslov 2</h2>
+        <h3>Naslov 3</h3>
+      </div>
+    </div>
+    
+    <h3>Liste</h3>
+    <p>Za liste koristite crtice ili brojeve:</p>
+    <div class="markdown-section-example">
+      <div class="markdown-syntax-col">
+        <h4>Sintaksa:</h4>
+        <p>Lista sa tačkama:</p>
+        <pre>- Prva stavka
+- Druga stavka</pre>
+        <p>Numerisana lista:</p>
+        <pre>1. Prva stavka
+2. Druga stavka</pre>
+      </div>
+      <div class="markdown-result-col">
+        <h4>Rezultat:</h4>
+        <p>Lista sa tačkama:</p>
+        <ul>
+          <li>Prva stavka</li>
+          <li>Druga stavka</li>
+        </ul>
+        <p>Numerisana lista:</p>
+        <ol>
+          <li>Prva stavka</li>
+          <li>Druga stavka</li>
+        </ol>
+      </div>
+    </div>
+
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Zatvori</button>
+  </mat-dialog-actions>
+</ng-template>

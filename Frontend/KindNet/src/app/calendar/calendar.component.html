@@ -84,10 +84,13 @@
     <button class="modal-close-btn" (click)="closeModal()">
       <mat-icon>close</mat-icon>
     </button>
-    <h2 class="modal-title">{{ selectedEvent?.title }}</h2>
+      <h2 class="modal-title">{{ selectedEvent?.title }}</h2>
     <div class="modal-body">
-      <p><b>Organizator:</b> {{ selectedEvent?.meta.organizer }}</p>
-      <p><b>Opis:</b> {{ selectedEvent?.meta.description }}</p>
+    <p><b>Organizator:</b> {{ selectedEvent?.meta.organizer }}</p>
+      <div class="markdown-body">
+        <p><b>Opis:</b></p>
+        <markdown [data]="selectedEvent?.meta.description"></markdown>
+      </div>
     </div>
   </div>
 </div>
