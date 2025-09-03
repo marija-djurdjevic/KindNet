@@ -24,8 +24,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatTooltip } from '@angular/material/tooltip';
-
+import { MarkdownModule } from 'ngx-markdown'; 
+import { MatDialogModule } from '@angular/material/dialog';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
@@ -71,7 +71,8 @@ export function tokenGetter() {
     MatOptionModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatTooltipModule,
+    MarkdownModule.forRoot(),
+    MatDialogModule,
     MatProgressSpinnerModule,
     MatCardModule,
     MatButtonModule,

@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { CreateEventDto, CreateEventPayload } from '../models/event.model';
 import { EventService } from '../services/event.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms'; 
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-create-event',
@@ -10,6 +11,8 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./create-event.component.css']
 })
 export class CreateEventComponent implements OnInit {
+
+  @ViewChild('markdownHelpTemplate') markdownHelpTemplate!: TemplateRef<any>;
 
   event: CreateEventDto = {
     name: '',
@@ -62,7 +65,8 @@ export class CreateEventComponent implements OnInit {
   constructor(
     private eventService: EventService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -253,5 +257,11 @@ export class CreateEventComponent implements OnInit {
       return this.skillSuggestions[eventType];
     }
     return [];
+  }
+
+  openMarkdownHelp() {
+    this.dialog.open(this.markdownHelpTemplate, {
+      width: '600px',
+    });
   }
 }
