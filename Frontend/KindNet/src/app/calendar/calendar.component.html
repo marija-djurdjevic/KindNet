@@ -70,10 +70,24 @@
         <div *ngFor="let event of day.events"
              class="event-title"
              [style.backgroundColor]="event.color.primary"
-             [style.color]="'white'">
+             [style.color]="'white'"
+             (click)="openModal(event, $event)">
           {{ event.title }}
         </div>
       </div>
     </ng-template>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="isModalOpen" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="modal-close-btn" (click)="closeModal()">
+      <mat-icon>close</mat-icon>
+    </button>
+    <h2 class="modal-title">{{ selectedEvent?.title }}</h2>
+    <div class="modal-body">
+      <p><b>Organizator:</b> {{ selectedEvent?.meta.organizer }}</p>
+      <p><b>Opis:</b> {{ selectedEvent?.meta.description }}</p>
+    </div>
   </div>
 </div>
