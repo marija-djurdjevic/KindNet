@@ -22,6 +22,7 @@ import localeSr from '@angular/common/locales/sr-Latn';
 registerLocaleData(localeSr);
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -77,6 +78,7 @@ export function tokenGetter() {
       useFactory: adapterFactory,
     }),
     MatExpansionModule,
+    MatCheckboxModule,
     MatListModule,
     MatChipsModule,
     MatTooltipModule,

@@ -26,12 +26,28 @@ export class CreateEventComponent implements OnInit {
 
   isEditMode = false;
   eventId: number | null = null;
+  showModal = false;
+  modalMessage = '';
+  modalAction: 'none' | 'overlap' | 'save' = 'none';
 
   startTimeDate: Date | null = null;
   startTimeTime: string = '';
   endTimeDate: Date | null = null;
   endTimeTime: string = '';
-  requiredSkillsString: string = '';
+
+  selectedSkills: string[] = [];
+  otherSkills: string = '';
+  suggestedSkills: string[] = [];
+  
+  private skillSuggestions: { [key: string]: string[] } = {
+    'Environmental': ['Reciklaža', 'Upravljanje otpadom', 'Biologija', 'Ekologija', 'Održivi razvoj', 'Čišćenje', 'Edukacija o klimatskim promjenama'],
+    'Cultural': ['Umjetnost', 'Istorija', 'Muzika', 'Organizacija događaja', 'Fotografija', 'Kustos', 'Likovna umjetnost', 'Prezentacija'],
+    'Educational': ['Podučavanje', 'Mentorstvo', 'Informatika', 'Prezentacione vještine', 'Javna nastava', 'Istraživanje', 'Izrada plana učenja', 'Analiza podataka'],
+    'Humanitarian': ['Prva pomoć', 'Komunikacija', 'Logistika', 'Empatija', 'Timski rad', 'Organizacione vještine', 'Pomoć u izbjegličkim kampovima', 'Psihološka podrška'],
+    'Sport': ['Trener', 'Fizička kondicija', 'Sportska medicina', 'Timski rad', 'Organizacija turnira', 'Sudija', 'Sportski marketing', 'Nutricionizam'],
+    'Community': ['Organizacija', 'Komunikacija', 'Liderstvo', 'Volonterski rad', 'Prikupljanje sredstava', 'Planiranje događaja', 'Odnosi s javnošću'],
+    'Technology': ['Programiranje', 'Dizajn', 'Mrežna administracija', 'Analiza podataka', 'Razvoj mobilnih aplikacija', 'Cyber sigurnost', 'UX/UI dizajn', 'Cloud computing'],
+  };
 
   private typeMapping: { [key: string]: number } = {
     'Environmental': 0,
@@ -46,10 +62,10 @@ export class CreateEventComponent implements OnInit {
   constructor(
     private eventService: EventService,
     private router: Router,
-     private route: ActivatedRoute
+    private route: ActivatedRoute
   ) { }
 
-    ngOnInit(): void {
+  ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const idParam = params.get('id');
       if (idParam) {
@@ -68,7 +84,9 @@ export class CreateEventComponent implements OnInit {
         this.startTimeTime = this.formatTime(eventData.startTime);
         this.endTimeDate = new Date(eventData.endTime);
         this.endTimeTime = this.formatTime(eventData.endTime);
-        this.requiredSkillsString = eventData.requiredSkills.join(', ');
+        this.selectedSkills = eventData.requiredSkills.filter((skill: string) => this.getSuggestedSkills(this.event.type).includes(skill));
+        this.otherSkills = eventData.requiredSkills.filter((skill: string) => !this.getSuggestedSkills(this.event.type).includes(skill)).join(', ');
+        this.onTypeChange();
       });
     }
   }
@@ -79,10 +97,25 @@ export class CreateEventComponent implements OnInit {
     const minutes = d.getMinutes().toString().padStart(2, '0');
     return `${hours}:${minutes}`;
   }
+  
+  onTypeChange() {
+    this.suggestedSkills = this.skillSuggestions[this.event.type] || [];
+  }
+
+  onSkillSelect(skill: string, event: any) {
+    if (event.checked) {
+      this.selectedSkills.push(skill);
+    } else {
+      const index = this.selectedSkills.indexOf(skill);
+      if (index > -1) {
+        this.selectedSkills.splice(index, 1);
+      }
+    }
+  }
 
   onSubmit(form: NgForm, status: string) {
     if (form.invalid || !this.startTimeDate || !this.endTimeDate || !this.startTimeTime || !this.endTimeTime) {
-      alert('Molimo vas popunite sva obavezna polja.');
+      this.showModalMessage('Molimo vas popunite sva obavezna polja.');
       return;
     }
     
@@ -95,33 +128,39 @@ export class CreateEventComponent implements OnInit {
     endDateTime.setHours(endHours, endMinutes, 0, 0);
 
     if (endDateTime <= startDateTime) {
-        alert('Vreme završetka mora biti nakon vremena početka.');
-        return;
+      this.showModalMessage('Vrijeme završetka mora biti nakon vremena početka.');
+      return;
+    }
+
+    const applicationDeadlineDate = new Date(this.event.applicationDeadline);
+    if (applicationDeadlineDate > startDateTime) {
+      this.showModalMessage('Rok za prijavu mora biti prije datuma početka događaja.');
+      return;
     }
 
     this.event.startTime = startDateTime;
     this.event.endTime = endDateTime;
     this.event.status = status;
-
-    this.event.requiredSkills = this.requiredSkillsString.split(',').map(skill => skill.trim()).filter(skill => skill.length > 0);
-    if (this.event.applicationDeadline > this.event.startTime) {
-      alert('Rok za prijavu mora biti pre datuma početka događaja.');
-      return;
+    
+    let allSkills = [...this.selectedSkills];
+    if (this.otherSkills) {
+      const manualSkills = this.otherSkills.split(',').map(skill => skill.trim()).filter(skill => skill.length > 0);
+      allSkills = [...allSkills, ...manualSkills];
     }
+    this.event.requiredSkills = allSkills;
 
-     if (this.isEditMode && this.eventId) {
-      this.updateEvent();
+    if (this.isEditMode && this.eventId) {
+      this.modalAction = 'save';
+      this.showModalMessage('Da li ste sigurni da želite ažurirati ovaj događaj?');
     } else {
       this.eventService.checkOverlap(this.event.city, this.event.startTime, this.event.endTime)
         .subscribe(isOverlapping => {
           if (isOverlapping) {
-            if (confirm('Događaj se preklapa sa drugim događajem u istom gradu. Želite li da nastavite?')) {
-              this.createEventWithForceCreate();
-            } else {
-              console.log('Kreiranje događaja je otkazano od strane korisnika.');
-            }
+            this.modalAction = 'overlap';
+            this.showModalMessage('Događaj se preklapa sa drugim događajem u istom gradu. Želite li da nastavite?');
           } else {
-            this.createEvent();
+            this.modalAction = 'save';
+            this.showModalMessage('Da li ste sigurni da želite kreirati ovaj događaj?');
           }
         });
     }
@@ -145,20 +184,18 @@ export class CreateEventComponent implements OnInit {
 
     this.eventService.createEvent(eventToSend)
       .subscribe(result => {
-        if (result && !result.isOverlapping) {
-          alert('Događaj uspješno kreiran!');
-          this.router.navigate(['/layout/events']);
-        }
+        this.showModalMessage('Događaj uspješno kreiran!');
+        this.router.navigate(['/layout/events']);
       });
   }
 
-   private updateEvent() {
+  private updateEvent() {
     this.eventService.updateEvent(this.eventId!, this.event)
       .subscribe(() => {
-        alert('Događaj uspješno ažuriran!');
+        this.showModalMessage('Događaj uspješno ažuriran!');
         this.router.navigate(['/layout/events']);
       }, (error: any) => {
-        alert('Došlo je do greške prilikom ažuriranja događaja.');
+        this.showModalMessage('Došlo je do greške prilikom ažuriranja događaja.');
         console.error('Update error:', error);
       });
   }
@@ -181,8 +218,40 @@ export class CreateEventComponent implements OnInit {
 
     this.eventService.createEvent(eventToSend)
       .subscribe(result => {
-        alert('Događaj uspješno kreiran uprkos preklapanju!');
+        this.showModalMessage('Događaj uspješno kreiran uprkos preklapanju!');
         this.router.navigate(['/layout/events']);
       });
+  }
+
+  showModalMessage(message: string) {
+    this.modalMessage = message;
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.modalMessage = '';
+    this.modalAction = 'none';
+  }
+
+  performModalAction() {
+    this.showModal = false;
+    if (this.modalAction === 'overlap') {
+      this.createEventWithForceCreate();
+    } else if (this.modalAction === 'save') {
+      if (this.isEditMode) {
+        this.updateEvent();
+      } else {
+        this.createEvent();
+      }
+    }
+    this.modalAction = 'none';
+  }
+
+  getSuggestedSkills(eventType: string | null): string[] {
+    if (eventType && this.skillSuggestions[eventType]) {
+      return this.skillSuggestions[eventType];
+    }
+    return [];
   }
 }
