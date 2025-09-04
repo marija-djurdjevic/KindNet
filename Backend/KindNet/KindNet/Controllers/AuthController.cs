@@ -21,7 +21,7 @@ namespace KindNet.Controllers
             var result = _authService.Register(request);
             if (result.IsFailed)
             {
-                return BadRequest(result.Errors.First().Message);
+                return BadRequest(new { message = result.Errors.First().Message });
             }
             return Ok(new { message = "Registration successful!" });
         }
@@ -32,7 +32,7 @@ namespace KindNet.Controllers
             var result = _authService.Login(request);
             if (result.IsFailed)
             {
-                return Unauthorized(result.Errors.First().Message);
+                return Unauthorized(new { message = result.Errors.First().Message });
             }
             return Ok(result.Value);
         }

@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ApplicationService } from '../services/application.service';
 import { EventApplication, VolunteerEventApplication } from '../models/event-application.model';
-import { groupBy } from 'rxjs/operators';
-import { from, toArray } from 'rxjs';
-import { KeyValue } from '@angular/common';
 import { AuthService } from '../services/auth.service';
+import { ToastService } from '../services/toast.service';
 
 @Component({
   selector: 'app-applications-dashboard',
@@ -17,7 +15,7 @@ export class ApplicationsDashboardComponent implements OnInit {
   volunteerApplications: VolunteerEventApplication[] = [];
   isLoading: boolean = true;
 
-   applicationStatusIconMapping: { [key: string]: string } = {
+  applicationStatusIconMapping: { [key: string]: string } = {
     'Pending': 'schedule',
     'Approved': 'check_circle',
     'Rejected': 'cancel'
@@ -29,7 +27,11 @@ export class ApplicationsDashboardComponent implements OnInit {
     'Rejected': 'Odbijena'
   };
 
-  constructor(private applicationService: ApplicationService, private authService: AuthService) {}
+  constructor(
+    private applicationService: ApplicationService,
+    private authService: AuthService,
+    private toastService: ToastService 
+  ) {}
 
   ngOnInit(): void {
     this.fetchApplications();
@@ -49,10 +51,6 @@ export class ApplicationsDashboardComponent implements OnInit {
       next: (data) => {
         this.eventApplications = data;
         this.groupApplicationsByEvent();
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Došlo je do greške prilikom dohvatanja prijava', err);
         this.isLoading = false;
       }
     });
@@ -87,9 +85,7 @@ export class ApplicationsDashboardComponent implements OnInit {
     this.applicationService.acceptApplication(applicationId).subscribe({
       next: () => {
         this.fetchApplications();
-      },
-      error: (err) => {
-        console.error('Greška prilikom prihvatanja prijave', err);
+        this.toastService.success('Prijava je uspješno prihvaćena.'); 
       }
     });
   }
@@ -98,27 +94,21 @@ export class ApplicationsDashboardComponent implements OnInit {
     this.applicationService.rejectApplication(applicationId).subscribe({
       next: () => {
         this.fetchApplications();
-      },
-      error: (err) => {
-        console.error('Greška prilikom odbijanja prijave', err);
+        this.toastService.success('Prijava je uspješno odbijena.'); 
       }
     });
   }
 
-   getApplicationsForVolunteer(): void {
+  getApplicationsForVolunteer(): void {
     this.applicationService.getApplicationsForVolunteer().subscribe({
       next: (applications) => {
         this.volunteerApplications = applications;
         this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Greška pri učitavanju prijava volontera', err);
-        this.isLoading = false;
       }
     });
   }
 
-    isOrganiser() {
+  isOrganiser() {
     return this.authService.isOrganizer();
   }
 

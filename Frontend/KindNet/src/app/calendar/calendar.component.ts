@@ -2,9 +2,9 @@ import { ChangeDetectorRef, Component, OnInit, ViewChild, TemplateRef, LOCALE_ID
 import { CalendarEvent, CalendarView } from 'angular-calendar';
 import { EventService } from '../services/event.service';
 import { EventDto } from '../models/event.model';
-import { isSameDay, isSameMonth } from 'date-fns';
 import { MonthViewDay } from 'calendar-utils';
 import { colors } from '../utils/colors'; 
+import { ToastService } from '../services/toast.service';
 
 @Component({
   selector: 'app-calendar',
@@ -35,7 +35,7 @@ export class CalendarComponent implements OnInit {
   allEventTypes: string[] = [];
   allOrganizations: string[] = [];
 
-  constructor(private eventService: EventService, private cdr: ChangeDetectorRef) { }
+  constructor(private eventService: EventService, private cdr: ChangeDetectorRef, private toastService: ToastService) { }
 
   ngOnInit(): void {
     this.populateFilterOptions(); 
@@ -74,9 +74,6 @@ export class CalendarComponent implements OnInit {
       (events: EventDto[]) => {
         this.events = this.mapToCalendarEvents(events);
         this.cdr.detectChanges();
-      },
-      (error) => {
-        console.error('Greška prilikom dohvaćanja događaja:', error);
       }
     );
   }
