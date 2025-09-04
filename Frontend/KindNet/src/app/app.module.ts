@@ -26,12 +26,14 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MarkdownModule } from 'ngx-markdown'; 
 import { MatDialogModule } from '@angular/material/dialog';
+import { ToastrModule } from 'ngx-toastr';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthService } from './services/auth.service';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { ErrorInterceptor } from './interceptors/error-interceptor.interceptor'; 
 import { HomeComponent } from './home/home.component';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -86,6 +88,10 @@ export function tokenGetter() {
     MatListModule,
     MatChipsModule,
     MatTooltipModule,
+    BrowserAnimationsModule, 
+     ToastrModule.forRoot({
+      positionClass: 'toast-bottom-right' 
+    }),
      JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
@@ -100,6 +106,11 @@ export function tokenGetter() {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
+    },
+     {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
+      multi: true 
     }
   ],
   

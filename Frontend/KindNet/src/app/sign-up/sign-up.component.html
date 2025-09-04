@@ -17,9 +17,6 @@
         </select>
       </div>
       <button type="submit" class="submit-button" [disabled]="!email || !password">Registruj se</button>
-      <div *ngIf="errorMessage" class="error-message">
-        {{ errorMessage }}
-      </div>
       <p class="link-text">Već imaš nalog? <a routerLink="/login">Prijavi se</a></p>
     </form>
   </div>

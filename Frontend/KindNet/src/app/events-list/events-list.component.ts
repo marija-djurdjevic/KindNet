@@ -1,10 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { EventService } from '../services/event.service';
 import { EventDto } from '../models/event.model';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { Observable } from 'rxjs';
 import { ApplicationService } from '../services/application.service';
+import { ToastService } from '../services/toast.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-events-list',
@@ -12,10 +14,18 @@ import { ApplicationService } from '../services/application.service';
   styleUrls: ['./events-list.component.css']
 })
 export class EventsListComponent implements OnInit {
+
+  @ViewChild('confirmDialogTemplate') confirmDialogTemplate!: TemplateRef<any>;
+
   events: EventDto[] = [];
   isLoading: boolean = true;
   applicationStatus: { [key: number]: boolean } = {};
   now: Date = new Date();
+  
+  showConfirmDialog = false;
+  dialogMessage = '';
+  dialogAction: 'cancel' | 'archive' = 'cancel';
+  selectedEventId: number | null = null;
 
   statusMapping: { [key: number]: string } = {
     0: 'Draft',
@@ -52,88 +62,95 @@ export class EventsListComponent implements OnInit {
     'Sport': 'sports_soccer',
     'Community': 'groups',
     'Technology': 'computer'
-};
+  };
 
-  constructor(private eventService: EventService, private router: Router, private authService: AuthService, private applicationService: ApplicationService) { }
+  constructor(
+    private eventService: EventService, 
+    private router: Router, 
+    private authService: AuthService, 
+    private applicationService: ApplicationService,
+    private toastService: ToastService,
+    private dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
     this.getEventsBasedOnRole();
   }
 
   getEventsBasedOnRole() {
-  this.isLoading = true;
-  let eventsObservable: Observable<any>; 
-  if (this.isOrganiser()) {
-  eventsObservable = this.eventService.getMyEvents();
-  } else {
-      eventsObservable = this.eventService.getAllEventsWithApplicationStatus();
-  }
-
-  eventsObservable.subscribe(
-    (data) => {
+    this.isLoading = true;
+    let eventsObservable: Observable<any>;
     if (this.isOrganiser()) {
-    this.events = data;
+      eventsObservable = this.eventService.getMyEvents();
     } else {
-    this.events = data.events.filter((event: { status: string; }) => event.status !== 'Archived' && event.status !== 'Draft');
-    this.applicationStatus = data.applicationStatus;
+      eventsObservable = this.eventService.getAllEventsWithApplicationStatus();
     }
-    console.log(this.events);
-    this.isLoading = false;
-    },
-    (error) => {
-    console.error('Došlo je do greške prilikom preuzimanja događaja:', error);
-    this.isLoading = false;
-    }
-    );
- }
+
+    eventsObservable.subscribe({
+      next: (data) => {
+        if (this.isOrganiser()) {
+          this.events = data;
+        } else {
+          this.events = data.events.filter((event: { status: string; }) => event.status !== 'Archived' && event.status !== 'Draft');
+          this.applicationStatus = data.applicationStatus;
+        }
+        this.isLoading = false;
+      }
+    });
+  }
 
   onEdit(eventId: number) {
     this.router.navigate(['/layout/create-event', eventId]);
   }
 
   onCancel(eventId: number) {
-    if (confirm('Da li ste sigurni da želite da otkažete ovaj događaj?')) {
-      this.eventService.cancelEvent(eventId).subscribe({
-        next: (response) => {
-          console.log('Događaj uspješno otkazan', response);
-          this.getMyEvents();
-        },
-        error: (error: { error: string; }) => {
-          console.error('Greška prilikom otkazivanja događaja:', error);
-          alert('Greška: ' + error.error);
-        }
-      });
-    }
+    this.selectedEventId = eventId;
+    this.dialogAction = 'cancel';
+    this.dialogMessage = 'Da li ste sigurni da želite da otkažete ovaj događaj?';
+    this.showConfirmDialog = true;
   }
 
   onArchive(eventId: number) {
-    if (confirm('Da li ste sigurni da želite da arhivirate ovaj događaj?')) {
-      this.eventService.archiveEvent(eventId).subscribe({
-        next: (response) => {
-          console.log('Događaj uspješno arhiviran', response);
-          this.getMyEvents();
-        },
-        error: (error: { error: string; }) => {
-          console.error('Greška prilikom arhiviranja događaja:', error);
-          alert('Greška: ' + error.error);
-        }
-      });
+    this.selectedEventId = eventId;
+    this.dialogAction = 'archive';
+    this.dialogMessage = 'Da li ste sigurni da želite da arhivirate ovaj događaj?';
+    this.showConfirmDialog = true;
+  }
+
+  confirmAction() {
+    this.showConfirmDialog = false;
+    if (this.selectedEventId) {
+      if (this.dialogAction === 'cancel') {
+        this.eventService.cancelEvent(this.selectedEventId).subscribe({
+          next: (response) => {
+            this.toastService.success('Događaj uspješno otkazan');
+            this.getMyEvents();
+          }
+        });
+      } else if (this.dialogAction === 'archive') {
+        this.eventService.archiveEvent(this.selectedEventId).subscribe({
+          next: (response) => {
+            this.toastService.success('Događaj uspješno arhiviran');
+            this.getMyEvents();
+          }
+        });
+      }
     }
+  }
+
+  cancelAction() {
+    this.showConfirmDialog = false;
+    this.selectedEventId = null;
   }
 
   getMyEvents() {
     this.isLoading = true;
-    this.eventService.getMyEvents().subscribe(
-      (data) => {
+    this.eventService.getMyEvents().subscribe({
+      next: (data) => {
         this.events = data;
-        console.log(this.events);
-        this.isLoading = false;
-      },
-      (error) => {
-        console.error('Došlo je do greške prilikom preuzimanja događaja:', error);
         this.isLoading = false;
       }
-    );
+    });
   }
 
   viewCalendar() {
@@ -147,13 +164,9 @@ export class EventsListComponent implements OnInit {
   onVolunteerApply(eventId: number) {
     this.applicationService.createApplication(eventId).subscribe({
       next: (response) => {
-        alert('Uspješno ste se prijavili na događaj!');
+        this.toastService.success('Uspješno ste se prijavili na događaj!');
         console.log('Prijavljivanje uspješno', response);
         this.getEventsBasedOnRole(); 
-      },
-      error: (error) => {
-        console.error('Greška prilikom prijave na događaj:', error);
-        alert('Greška: ' + error.error);
       }
     });
   }
@@ -162,7 +175,7 @@ export class EventsListComponent implements OnInit {
     return this.applicationService.checkApplicationStatus(eventId);
   }
 
-   getCardClasses(event: EventDto): { [key: string]: boolean } {
+  getCardClasses(event: EventDto): { [key: string]: boolean } {
     const classes: { [key: string]: boolean } = {
       'event-card': true
     };

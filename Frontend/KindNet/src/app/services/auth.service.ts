@@ -61,7 +61,6 @@ export class AuthService {
 
    public isOrganizer(): boolean {
     const role = this.getRole();
-    console.log(role);
     return role === 'OrganizationRep' || role === 'BusinessRep';
   }
 

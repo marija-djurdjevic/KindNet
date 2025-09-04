@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
+import { ToastService } from '../services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -11,9 +12,12 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
   email = '';
   password = '';
-  errorMessage = '';
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(
+    private authService: AuthService, 
+    private router: Router,
+    private toastService: ToastService
+  ) { }
 
   ngOnInit(): void { }
 
@@ -23,10 +27,6 @@ export class LoginComponent implements OnInit {
       next: (response) => {
         console.log('Login successful!', response);
         this.router.navigate(['/layout']); 
-      },
-      error: (error) => {
-        console.error('Login failed:', error);
-        this.errorMessage = error.error;
       }
     });
   }

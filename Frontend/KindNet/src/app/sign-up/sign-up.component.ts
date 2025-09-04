@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { ToastService } from '../services/toast.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -12,23 +13,21 @@ export class SignUpComponent implements OnInit {
   password = '';
   role = 'Volunteer';
   roles = ['Volunteer', 'OrganizationRep', 'BusinessRep'];
-  errorMessage = '';
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(
+    private authService: AuthService, 
+    private router: Router,
+    private toastService: ToastService
+  ) { }
 
   ngOnInit(): void { }
 
   onRegister(): void {
     const credentials = { email: this.email, password: this.password, role: this.role };
-    console.log(credentials);
     this.authService.register(credentials).subscribe({
       next: (response) => {
-        console.log('Registration successful!', response);
+        this.toastService.success('Uspješna registracija! Sada se možete prijaviti.');
         this.router.navigate(['/login']); 
-      },
-      error: (error) => {
-        console.error('Registration failed:', error);
-        this.errorMessage = error.error;
       }
     });
   }

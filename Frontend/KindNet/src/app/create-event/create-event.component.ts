@@ -1,14 +1,18 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, LOCALE_ID } from '@angular/core';
 import { CreateEventDto, CreateEventPayload } from '../models/event.model';
 import { EventService } from '../services/event.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms'; 
 import { MatDialog } from '@angular/material/dialog';
+import { ToastService } from '../services/toast.service'; 
 
 @Component({
   selector: 'app-create-event',
   templateUrl: './create-event.component.html',
-  styleUrls: ['./create-event.component.css']
+  styleUrls: ['./create-event.component.css'],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'sr-Latn' }
+  ]
 })
 export class CreateEventComponent implements OnInit {
 
@@ -66,7 +70,8 @@ export class CreateEventComponent implements OnInit {
     private eventService: EventService,
     private router: Router,
     private route: ActivatedRoute,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private toastService: ToastService 
   ) { }
 
   ngOnInit(): void {
@@ -158,13 +163,15 @@ export class CreateEventComponent implements OnInit {
       this.showModalMessage('Da li ste sigurni da želite ažurirati ovaj događaj?');
     } else {
       this.eventService.checkOverlap(this.event.city, this.event.startTime, this.event.endTime)
-        .subscribe(isOverlapping => {
-          if (isOverlapping) {
-            this.modalAction = 'overlap';
-            this.showModalMessage('Događaj se preklapa sa drugim događajem u istom gradu. Želite li da nastavite?');
-          } else {
-            this.modalAction = 'save';
-            this.showModalMessage('Da li ste sigurni da želite kreirati ovaj događaj?');
+        .subscribe({
+          next: isOverlapping => {
+            if (isOverlapping) {
+              this.modalAction = 'overlap';
+              this.showModalMessage('Događaj se preklapa sa drugim događajem u istom gradu. Želite li da nastavite?');
+            } else {
+              this.modalAction = 'save';
+              this.showModalMessage('Da li ste sigurni da želite kreirati ovaj događaj?');
+            }
           }
         });
     }
@@ -186,22 +193,21 @@ export class CreateEventComponent implements OnInit {
 
     console.log('Finalni podaci koji se šalju servisu:', eventToSend);
 
-    this.eventService.createEvent(eventToSend)
-      .subscribe(result => {
-        this.showModalMessage('Događaj uspješno kreiran!');
+    this.eventService.createEvent(eventToSend).subscribe({
+      next: result => {
+        this.toastService.success('Događaj uspješno kreiran!'); 
         this.router.navigate(['/layout/events']);
-      });
+      }
+    });
   }
 
   private updateEvent() {
-    this.eventService.updateEvent(this.eventId!, this.event)
-      .subscribe(() => {
-        this.showModalMessage('Događaj uspješno ažuriran!');
+    this.eventService.updateEvent(this.eventId!, this.event).subscribe({
+      next: () => {
+        this.toastService.success('Događaj uspješno ažuriran!'); 
         this.router.navigate(['/layout/events']);
-      }, (error: any) => {
-        this.showModalMessage('Došlo je do greške prilikom ažuriranja događaja.');
-        console.error('Update error:', error);
-      });
+      }
+    });
   }
 
   private createEventWithForceCreate() {
@@ -220,11 +226,12 @@ export class CreateEventComponent implements OnInit {
       Status: this.event.status
     };
 
-    this.eventService.createEvent(eventToSend)
-      .subscribe(result => {
-        this.showModalMessage('Događaj uspješno kreiran uprkos preklapanju!');
+    this.eventService.createEvent(eventToSend).subscribe({
+      next: result => {
+        this.toastService.success('Događaj uspješno kreiran uprkos preklapanju!'); 
         this.router.navigate(['/layout/events']);
-      });
+      }
+    });
   }
 
   showModalMessage(message: string) {
