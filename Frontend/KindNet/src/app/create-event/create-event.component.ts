@@ -160,7 +160,7 @@ export class CreateEventComponent implements OnInit {
 
     if (this.isEditMode && this.eventId) {
       this.modalAction = 'save';
-      this.showModalMessage('Da li ste sigurni da želite ažurirati ovaj događaj?');
+      this.showModalMessage('Da li ste sigurni da želite da ažurirate ovaj događaj?');
     } else {
       this.eventService.checkOverlap(this.event.city, this.event.startTime, this.event.endTime)
         .subscribe({
@@ -170,7 +170,7 @@ export class CreateEventComponent implements OnInit {
               this.showModalMessage('Događaj se preklapa sa drugim događajem u istom gradu. Želite li da nastavite?');
             } else {
               this.modalAction = 'save';
-              this.showModalMessage('Da li ste sigurni da želite kreirati ovaj događaj?');
+              this.showModalMessage('Da li ste sigurni da želite da kreirate ovaj događaj?');
             }
           }
         });
