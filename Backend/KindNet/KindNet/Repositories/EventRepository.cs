@@ -94,5 +94,32 @@
 
             return existingEvent;
         }
+        public async Task<IEnumerable<Event>> GetOrganizerEventsWithFiltersAndSortingAsync(
+            long organizerId,
+            EventStatus? status = null,
+            bool sortByStartTimeDescending = true)
+        {
+            var query = _context.Events
+                .Where(e => e.OrganizerId == organizerId)
+                .Include(e => e.Organizer)
+                .AsQueryable();
+
+            if (status.HasValue)
+            {
+                query = query.Where(e => e.Status == status.Value);
+            }
+
+            if (sortByStartTimeDescending)
+            {
+                query = query.OrderByDescending(e => e.StartTime);
+            }
+            else
+            {
+                query = query.OrderBy(e => e.StartTime);
+            }
+
+            return await query.ToListAsync();
+        }
     }
+
 }

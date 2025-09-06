@@ -269,6 +269,27 @@ namespace KindNet.Services
             };
         }
 
+        public async Task<IEnumerable<EventDto>> GetOrganizerEventsWithFiltersAndSortingAsync(
+            long organizerId,
+            EventStatus? status = null, 
+            bool sortByStartTimeDescending = true)
+        {
+            var events = await _eventRepository.GetOrganizerEventsWithFiltersAndSortingAsync(
+                organizerId,
+                status,
+                sortByStartTimeDescending
+            );
+
+            foreach (var eventItem in events)
+            {
+                CheckAndUpdateStatus(eventItem);
+            }
+
+            var eventDtos = events.Select(MapToEventDto).ToList();
+
+            return eventDtos;
+        }
+
 
     }
 }
