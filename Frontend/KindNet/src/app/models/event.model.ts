@@ -42,3 +42,11 @@ export interface CreateEventPayload {
   ApplicationDeadline: string;
   RequiredSkills: string[];
 }
+export enum EventStatus {
+  Draft = 0,
+  Planned = 1,
+  Active = 2,
+  Finished = 3,
+  Canceled = 4,
+  Archived = 5
+}
