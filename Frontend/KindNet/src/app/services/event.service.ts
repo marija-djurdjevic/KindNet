@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CreateEventDto, CreateEventPayload, CreateEventResultDto, EventDto } from '../models/event.model';
+import { CreateEventDto, CreateEventPayload, CreateEventResultDto, EventDto, EventStatus } from '../models/event.model';
 
 @Injectable({
   providedIn: 'root'
@@ -62,6 +62,15 @@ export class EventService {
 
   archiveEvent(eventId: number): Observable<any> {
     return this.http.put(`${this.apiUrl}/${eventId}/archive`, null);
+  }
+
+  getOrganizerEventsWithFiltersAndSorting(status?: EventStatus, sortByStartTimeDescending: boolean = true): Observable<EventDto[]> {
+    let params = new HttpParams();
+    if (status !== undefined && status !== null) {
+      params = params.set('status', status.toString());
+    }
+    params = params.set('sortByStartTimeDescending', sortByStartTimeDescending.toString());
+    return this.http.get<EventDto[]>(`${this.apiUrl}/my-events/filtered`, { params });
   }
 
 }
