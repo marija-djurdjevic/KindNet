@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using KindNet.Models.Dto;
 using KindNet.Services;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using KindNet.Dtos;
 using KindNet.Models;
-using Microsoft.AspNetCore.Authorization;
 using KindNet.Models.Enums;
 
 namespace KindNet.Controllers

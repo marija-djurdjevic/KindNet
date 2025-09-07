@@ -15,11 +15,13 @@ namespace KindNet.Services
     public class ApplicationService 
     {
         private readonly IApplicationRepository _applicationRepository;
+        private readonly INotificationService _notificationService;
         private readonly AppDbContext _context;
 
-        public ApplicationService(IApplicationRepository applicationRepository, AppDbContext context)
+        public ApplicationService(IApplicationRepository applicationRepository, INotificationService notificationService, AppDbContext context)
         {
             _applicationRepository = applicationRepository;
+            _notificationService = notificationService; 
             _context = context;
         }
 
@@ -80,8 +82,11 @@ namespace KindNet.Services
 
         public async Task<EventApplication> CreateApplicationAsync(long volunteerUserId, long eventId)
         {
-            var eventExists = await _context.Events.AnyAsync(e => e.Id == eventId);
-            if (!eventExists)
+            var eventData = await _context.Events
+               .Include(e => e.Organizer)
+               .FirstOrDefaultAsync(e => e.Id == eventId);
+
+            if (eventData == null)
             {
                 throw new ArgumentException("Događaj ne postoji.");
             }
@@ -97,6 +102,15 @@ namespace KindNet.Services
                 throw new UnauthorizedAccessException("Samo volonteri mogu da se prijave na događaje.");
             }
 
+            var volunteerProfile = await _context.VolunteerProfiles
+              .FirstOrDefaultAsync(vp => vp.UserId == volunteerUserId);
+
+            if (volunteerProfile == null)
+            {
+                Console.WriteLine("Nije pronađen volonterski profil");
+            }
+
+
             var newApplication = new EventApplication
             {
                 VolunteerUserId = volunteerUserId,
@@ -106,6 +120,23 @@ namespace KindNet.Services
             };
 
             await _applicationRepository.AddApplicationAsync(newApplication);
+
+            try
+            {
+                var message = $"{volunteerProfile.FirstName} {volunteerProfile.LastName} se prijavio/la na vaš događaj '{eventData.Name}'.";
+
+                await _notificationService.CreateNotificationAsync(
+                    eventData.OrganizerId,
+                    message,
+                    NotificationType.NewApplication,
+                    eventData.Id
+                );
+               
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Greška prilikom kreiranja notifikacije: {ex.Message}");
+            }
 
             return newApplication;
         }
@@ -128,7 +159,48 @@ namespace KindNet.Services
                 throw new UnauthorizedAccessException("Nemate dozvolu da mijenjate status ove prijave.");
             }
 
-            return await _applicationRepository.UpdateApplicationStatusAsync(applicationId, status);
+            var result = await _applicationRepository.UpdateApplicationStatusAsync(applicationId, status);
+
+            if (result)
+            {
+                try
+                {
+                    var eventName = eventData.Name;
+                    var message = string.Empty;
+                    NotificationType type = NotificationType.ApplicationApproved;
+
+                    if (status == ApplicationStatus.Approved)
+                    {
+                        message = $"Vaša prijava za događaj '{eventName}' je prihvaćena!";
+                        type = NotificationType.ApplicationApproved;
+
+                    }
+                    else if (status == ApplicationStatus.Rejected)
+                    {
+                        message = $"Vaša prijava za događaj '{eventName}' je odbijena.";
+                        type = NotificationType.ApplicationRejected;
+
+                    }
+
+                    if (!string.IsNullOrEmpty(message))
+                    {
+                       
+                        await _notificationService.CreateNotificationAsync(
+                            application.VolunteerUserId,
+                            message,
+                            type,
+                            eventData.Id
+                        );
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Greška prilikom kreiranja notifikacije: {ex.Message}");
+                }
+            }
+
+            return result;
         }
 
         public async Task<bool> ApplicationExistsForUserAsync(long volunteerUserId, long eventId)

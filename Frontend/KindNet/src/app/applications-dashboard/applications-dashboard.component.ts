@@ -27,6 +27,11 @@ export class ApplicationsDashboardComponent implements OnInit {
     'Rejected': 'Odbijena'
   };
 
+  
+  showModal = false;
+  modalMessage = '';
+  applicationIdToReject: number | null = null;
+
   constructor(
     private applicationService: ApplicationService,
     private authService: AuthService,
@@ -91,12 +96,8 @@ export class ApplicationsDashboardComponent implements OnInit {
   }
 
   onReject(applicationId: number): void {
-    this.applicationService.rejectApplication(applicationId).subscribe({
-      next: () => {
-        this.fetchApplications();
-        this.toastService.success('Prijava je uspješno odbijena.'); 
-      }
-    });
+    this.showModalMessage('Da li ste sigurni da želite da odbijete ovu prijavu?');
+    this.applicationIdToReject = applicationId; 
   }
 
   getApplicationsForVolunteer(): void {
@@ -114,5 +115,27 @@ export class ApplicationsDashboardComponent implements OnInit {
 
   getApplicationStatusClass(status: string): string {
     return status.toLowerCase();
+  }
+
+  showModalMessage(message: string) {
+    this.modalMessage = message;
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.modalMessage = '';
+  }
+
+  performModalAction(): void {
+  if (this.applicationIdToReject !== null) {
+    this.applicationService.rejectApplication(this.applicationIdToReject).subscribe({
+      next: () => {
+        this.fetchApplications();
+        this.toastService.success('Prijava je uspješno odbijena.');
+        this.closeModal(); 
+      }
+    });
+    }
   }
 }

@@ -1,7 +1,10 @@
 <nav>
   <div class="logo">KindNet</div>
   <div class="nav-links">
-    <ng-container *ngIf="isLoggedIn$ | async">
+     <ng-container *ngIf="isLoggedIn$ | async">
+      <button class="icon-button">
+        <mat-icon>notifications</mat-icon>
+      </button>
       <button class="nav-button" (click)="onLogout()">Logout</button>
     </ng-container>
 
