@@ -117,3 +117,30 @@
   </mat-card>
 </div>
 </div>
+<div class="modal-overlay" *ngIf="showConfirmDialog">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h4 class="modal-title">Obavještenje</h4>
+      <button type="button" class="close" (click)="cancelAction()">
+        &times;
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>{{ dialogMessage }}</p>
+    </div>
+    <div class="modal-footer">
+      <button 
+        type="button" 
+        class="btn btn-secondary" 
+        (click)="cancelAction()">
+        Otkaži
+      </button>
+      <button 
+        type="button" 
+        class="btn btn-primary" 
+        (click)="confirmAction()">
+        Potvrdi
+      </button>
+    </div>
+  </div>
+</div>

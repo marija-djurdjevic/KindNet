@@ -27,6 +27,49 @@
         <mat-icon>menu</mat-icon>
       </button>
       <span style="flex: 1 1 auto;"></span> 
+      <button (click)="toggleNotifications()" class="icon-button" [attr.data-count]="unreadNotifications">
+        <mat-icon>notifications</mat-icon>
+        <span *ngIf="unreadNotifications > 0" class="notification-badge"></span>
+      </button>
+      <div *ngIf="showNotifications" id="nott" class="notification-dropdown">
+  <div class="dropdown-header">
+    <span class="header-title">Obavještenja</span>
+    <button class="mark-all-button" (click)="markAllAsRead()">
+      Označi sve kao pročitano
+    </button>
+  </div>
+  
+  <div class="notifications-list">
+    <ng-container *ngIf="notifications.length > 0; else noNotifications">
+      <div class="notification-item" 
+           *ngFor="let notification of notifications" 
+           [ngClass]="{'unread-notification': !notification.isRead}"
+           (click)="markAsRead(notification)">
+        
+        <div class="notification-content">
+          <mat-icon class="status-icon" [ngClass]="{'read': notification.isRead, 'unread': !notification.isRead}">
+            {{ notification.isRead ? 'check_circle' : 'circle' }}
+          </mat-icon>
+          <span class="notification-message">
+            {{ notification.message }}
+          </span>
+        </div>
+        
+        <div class="notification-actions">
+          <button class="action-button" matTooltip="Obriši" (click)="deleteNotification(notification.id)" disableRipple>
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #noNotifications>
+      <div class="no-notifications">
+        Nemate novih notifikacija.
+      </div>
+    </ng-template>
+  </div>
+</div>
       <button mat-icon-button (click)="logout()">
         <mat-icon>logout</mat-icon>
       </button>

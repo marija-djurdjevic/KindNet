@@ -10,5 +10,6 @@ namespace KindNet.Models.Interfaces
 
         Task<EventApplication> GetApplicationByIdAsync(long applicationId);
         Task<bool> UpdateApplicationStatusAsync(long applicationId, ApplicationStatus status);
+        Task<IEnumerable<EventApplication>> GetApplicationsForEventAsync(long eventId);
     }
 }

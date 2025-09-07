@@ -24,7 +24,7 @@ export class EventsListComponent implements OnInit {
   
   showConfirmDialog = false;
   dialogMessage = '';
-  dialogAction: 'cancel' | 'archive' = 'cancel';
+  dialogAction: 'cancel' | 'archive' | 'apply' = 'cancel';
   selectedEventId: number | null = null;
 
   statusMapping: { [key: number]: string } = {
@@ -134,6 +134,13 @@ export class EventsListComponent implements OnInit {
             this.getMyEvents();
           }
         });
+      } else if(this.dialogAction === 'apply') {
+        this.applicationService.createApplication(this.selectedEventId).subscribe({
+         next: (response) => {
+          this.toastService.success('Uspješno ste se prijavili na događaj!');
+          this.getEventsBasedOnRole(); 
+      }
+    });
       }
     }
   }
@@ -162,13 +169,10 @@ export class EventsListComponent implements OnInit {
   }
 
   onVolunteerApply(eventId: number) {
-    this.applicationService.createApplication(eventId).subscribe({
-      next: (response) => {
-        this.toastService.success('Uspješno ste se prijavili na događaj!');
-        console.log('Prijavljivanje uspješno', response);
-        this.getEventsBasedOnRole(); 
-      }
-    });
+    this.selectedEventId = eventId;
+    this.dialogAction = 'apply';
+    this.dialogMessage = 'Da li ste sigurni da želite da se prijavite na ovaj događaj?';
+    this.showConfirmDialog = true;
   }
 
   hasAppliedOnEvent(eventId: number): Observable<boolean> {

@@ -54,5 +54,14 @@ namespace KindNet.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<IEnumerable<EventApplication>> GetApplicationsForEventAsync(long eventId)
+        {
+            return await _context.EventApplications
+           .Where(ea => ea.EventId == eventId)
+           .Include(ea => ea.VolunteerUser)
+           .Include(ea => ea.Event)
+           .ToListAsync();
+        }
     }
 }

@@ -68,6 +68,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddHostedService<EventStatusUpdaterService>();
 builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
 builder.Services.AddScoped<ApplicationService>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {

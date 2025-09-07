@@ -11,11 +11,13 @@ namespace KindNet.Services
     {
         private readonly IEventRepository _eventRepository;
         private readonly IApplicationRepository _applicationRepository;
+        private readonly INotificationService _notificationService;
 
-        public EventService(IEventRepository eventRepository, IApplicationRepository applicationRepository)
+        public EventService(IEventRepository eventRepository, IApplicationRepository applicationRepository, INotificationService notificationService)
         {
             _eventRepository = eventRepository;
             _applicationRepository = applicationRepository;
+            _notificationService = notificationService;
         }
 
         public async Task<bool> IsEventOverlapping(string city, DateTime startTime, DateTime endTime)
@@ -176,6 +178,29 @@ namespace KindNet.Services
 
             eventToCancel.Status = EventStatus.Canceled;
             await _eventRepository.UpdateAsync(eventToCancel);
+
+            var applications = await _applicationRepository.GetApplicationsForEventAsync(eventId);
+
+            var userIds = applications
+                .Where(app => app.Status != ApplicationStatus.Rejected)
+                .Select(app => app.VolunteerUserId)
+                .ToList();
+
+            try
+            {
+                var message = $"Događaj '{eventToCancel.Name}' je otkazan.";
+
+                await _notificationService.CreateNotificationsForMultipleUsersAsync(
+                    userIds,
+                    message,
+                    NotificationType.EventCancelled,
+                    eventToCancel.Id
+                );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Greška prilikom slanja notifikacija za otkazan događaj: {ex.Message}");
+            }
 
             return true; 
         }
