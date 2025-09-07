@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { EventService } from '../services/event.service';
-import { EventDto } from '../models/event.model';
+import { EventDto, EventStatus } from '../models/event.model';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { Observable } from 'rxjs';
@@ -26,6 +26,21 @@ export class EventsListComponent implements OnInit {
   dialogMessage = '';
   dialogAction: 'cancel' | 'archive' | 'apply' = 'cancel';
   selectedEventId: number | null = null;
+
+   selectedStatus: EventStatus | null = null;
+   sortByNewest: boolean = true;
+   activeFilter: 'status' | 'sort' | null = null;
+   selectedStatusName: string | null = 'Status';
+   sortOptionName: string = 'Najnoviji prvi';
+
+    eventStatuses = [
+    { value: EventStatus.Draft, name: 'Nacrt' },
+    { value: EventStatus.Planned, name: 'Planiran' },
+    { value: EventStatus.Active, name: 'Aktivan' },
+    { value: EventStatus.Finished, name: 'Završen' },
+    { value: EventStatus.Canceled, name: 'Otkazan' },
+    { value: EventStatus.Archived, name: 'Arhiviran' },
+];
 
   statusMapping: { [key: number]: string } = {
     0: 'Draft',
@@ -77,26 +92,55 @@ export class EventsListComponent implements OnInit {
     this.getEventsBasedOnRole();
   }
 
-  getEventsBasedOnRole() {
-    this.isLoading = true;
-    let eventsObservable: Observable<any>;
-    if (this.isOrganiser()) {
-      eventsObservable = this.eventService.getMyEvents();
-    } else {
-      eventsObservable = this.eventService.getAllEventsWithApplicationStatus();
+  toggleFilter(filter: 'status' | 'sort'): void {
+        this.activeFilter = this.activeFilter === filter ? null : filter;
     }
 
-    eventsObservable.subscribe({
-      next: (data) => {
-        if (this.isOrganiser()) {
-          this.events = data;
-        } else {
-          this.events = data.events.filter((event: { status: string; }) => event.status !== 'Archived' && event.status !== 'Draft');
-          this.applicationStatus = data.applicationStatus;
-        }
-        this.isLoading = false;
+  applyStatusFilter(statusValue: EventStatus | null): void {
+    this.selectedStatus = statusValue;
+    this.selectedStatusName = statusValue !== null ? (this.eventStatuses.find(s => s.value === statusValue)?.name ?? null) : 'Status';
+    this.activeFilter = null;
+    this.getEventsBasedOnRole();
+  }
+
+  applySort(newestFirst: boolean): void {
+    this.sortByNewest = newestFirst;
+    this.sortOptionName = newestFirst ? 'Najnoviji prvi' : 'Najstariji prvi';
+    this.activeFilter = null; 
+    this.getEventsBasedOnRole();
+  }
+
+   getEventsBasedOnRole() {
+      this.isLoading = true;
+      let eventsObservable: Observable<any>;
+      if (this.isOrganiser()) {
+          eventsObservable = this.eventService.getOrganizerEventsWithFiltersAndSorting(
+              this.selectedStatus !== null ? this.selectedStatus : undefined,
+              this.sortByNewest
+          );
+      } else {
+          eventsObservable = this.eventService.getAllEventsWithApplicationStatus();
       }
-    });
+
+      eventsObservable.subscribe({
+          next: (data) => {
+              if (this.isOrganiser()) {
+                  this.events = data;
+              } else {
+                  this.events = data.events.filter((event: { status: string; }) => event.status !== 'Archived' && event.status !== 'Draft');
+                  this.applicationStatus = data.applicationStatus;
+              }
+              this.isLoading = false;
+          }
+      });
+    }
+
+  onFilterChange() {
+      this.getEventsBasedOnRole();
+  }
+
+  onSortChange() {
+      this.getEventsBasedOnRole();
   }
 
   onEdit(eventId: number) {
@@ -124,14 +168,14 @@ export class EventsListComponent implements OnInit {
         this.eventService.cancelEvent(this.selectedEventId).subscribe({
           next: (response) => {
             this.toastService.success('Događaj uspješno otkazan');
-            this.getMyEvents();
+             this.getEventsBasedOnRole();
           }
         });
       } else if (this.dialogAction === 'archive') {
         this.eventService.archiveEvent(this.selectedEventId).subscribe({
           next: (response) => {
             this.toastService.success('Događaj uspješno arhiviran');
-            this.getMyEvents();
+             this.getEventsBasedOnRole();
           }
         });
       } else if(this.dialogAction === 'apply') {
@@ -148,16 +192,6 @@ export class EventsListComponent implements OnInit {
   cancelAction() {
     this.showConfirmDialog = false;
     this.selectedEventId = null;
-  }
-
-  getMyEvents() {
-    this.isLoading = true;
-    this.eventService.getMyEvents().subscribe({
-      next: (data) => {
-        this.events = data;
-        this.isLoading = false;
-      }
-    });
   }
 
   viewCalendar() {

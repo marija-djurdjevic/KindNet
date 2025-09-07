@@ -221,5 +221,32 @@ namespace KindNet.Controllers
             return Ok(result);
         }
 
+        [HttpGet("my-events/filtered")]
+        public async Task<IActionResult> GetMyEventsWithFiltersAndSorting(
+            [FromQuery] EventStatus? status,
+            [FromQuery] bool sortByStartTimeDescending = true)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("id");
+                if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out long organizerId))
+                {
+                    return Unauthorized("Korisnički ID claim ('id') nije pronađen ili je nevažeći u tokenu.");
+                }
+
+                var eventDtos = await _eventService.GetOrganizerEventsWithFiltersAndSortingAsync(
+                    organizerId,
+                    status,
+                    sortByStartTimeDescending);
+
+                return Ok(eventDtos);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Greška prilikom dohvatanja događaja: {ex.Message}");
+                return StatusCode(500, "Došlo je do greške prilikom obrade zahteva.");
+            }
+        }
+
     }
 }
