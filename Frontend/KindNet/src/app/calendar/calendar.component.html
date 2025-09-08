@@ -1,0 +1,96 @@
+<div class="calendar-container">
+  <div class="header-container">
+    <div class="left-controls">
+      <button mat-flat-button mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate">
+        <mat-icon>chevron_left</mat-icon> Prethodni
+      </button>
+      <button mat-flat-button mwlCalendarToday [(viewDate)]="viewDate">
+        <mat-icon>refresh</mat-icon> Danas
+      </button>
+      <button mat-flat-button mwlCalendarNextView [view]="view" [(viewDate)]="viewDate">
+        Sledeći <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+
+    <div class="filters-container">
+      <div class="filter-group">
+        <button mat-flat-button class="filter-button" (click)="toggleFilter('city')">
+          <span>{{ selectedCity || 'Grad' }}</span>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <div *ngIf="activeFilter === 'city'" class="filter-options">
+          <div class="filter-option" (click)="applyFilter('city', null)">Svi gradovi</div>
+          <div *ngFor="let city of allCities" class="filter-option" (click)="applyFilter('city', city)">{{ city }}</div>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <button mat-flat-button class="filter-button" (click)="toggleFilter('type')">
+          <span>{{ selectedType || 'Tip događaja' }}</span>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <div *ngIf="activeFilter === 'type'" class="filter-options">
+          <div class="filter-option" (click)="applyFilter('type', null)">Svi tipovi</div>
+          <div *ngFor="let type of allEventTypes" class="filter-option" (click)="applyFilter('type', type)">{{ type }}</div>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <button mat-flat-button class="filter-button" (click)="toggleFilter('organization')">
+          <span>{{ selectedOrganization || 'Organizator' }}</span>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <div *ngIf="activeFilter === 'organization'" class="filter-options">
+          <div class="filter-option" (click)="applyFilter('organization', null)">Svi organizatori</div>
+          <div *ngFor="let org of allOrganizations" class="filter-option" (click)="applyFilter('organization', org)">{{ org }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="current-month-title">
+      <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'sr-Latn' }}</h3>
+    </div>
+  </div>
+
+  <div class="calendar-view-container">
+    <mwl-calendar-month-view
+      [viewDate]="viewDate"
+      [events]="events"
+      (dayClicked)="dayClicked($event)"
+      [activeDayIsOpen]="activeDayIsOpen"
+      [cellTemplate]="cellTemplate"
+      [locale]="'sr-Latn'">
+    </mwl-calendar-month-view>
+
+    <ng-template #cellTemplate let-day="day">
+      <div class="cal-cell-top">
+        <span class="cal-day-number">{{ day.date | date:'d' }}</span>
+      </div>
+      <div class="event-titles-container">
+        <div *ngFor="let event of day.events"
+             class="event-title"
+             [style.backgroundColor]="event.color.primary"
+             [style.color]="'white'"
+             (click)="openModal(event, $event)">
+          {{ event.title }}
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="isModalOpen" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="modal-close-btn" (click)="closeModal()">
+      <mat-icon>close</mat-icon>
+    </button>
+      <h2 class="modal-title">{{ selectedEvent?.title }}</h2>
+    <div class="modal-body">
+    <p><b>Organizator:</b> {{ selectedEvent?.meta.organizer }}</p>
+      <div class="markdown-body">
+        <p><b>Opis:</b></p>
+        <markdown [data]="selectedEvent?.meta.description"></markdown>
+      </div>
+    </div>
+  </div>
+</div>

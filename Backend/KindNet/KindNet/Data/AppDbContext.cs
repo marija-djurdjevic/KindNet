@@ -10,5 +10,6 @@
         public DbSet<VolunteerProfile> VolunteerProfiles { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<EventApplication> EventApplications { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
     }
 }

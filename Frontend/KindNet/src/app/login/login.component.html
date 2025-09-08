@@ -1,0 +1,17 @@
+<div class="main-container">
+  <div class="login-container">
+    <h2 class="form-title">Prijavi se na KindNet</h2>
+    <form class="login-form" (ngSubmit)="onLogin()">
+      <div class="form-group">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" id="email" [(ngModel)]="email" name="email" class="form-input" required>
+      </div>
+      <div class="form-group">
+        <label for="password" class="form-label">Lozinka</label>
+        <input type="password" id="password" [(ngModel)]="password" name="password" class="form-input" required>
+      </div>
+      <button type="submit" class="submit-button" [disabled]="!email || !password">Prijavi se</button>
+      <p class="link-text">Nemaš nalog? <a routerLink="/sign-up">Registruj se</a></p>
+    </form>
+  </div>
+</div>

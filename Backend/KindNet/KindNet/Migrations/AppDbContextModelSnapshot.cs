@@ -31,6 +31,9 @@ namespace KindNet.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<DateTime>("ApplicationDeadline")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("text");
@@ -48,6 +51,10 @@ namespace KindNet.Migrations
 
                     b.Property<long>("OrganizerId")
                         .HasColumnType("bigint");
+
+                    b.Property<List<string>>("RequiredSkills")
+                        .IsRequired()
+                        .HasColumnType("text[]");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("timestamp with time zone");
@@ -92,6 +99,38 @@ namespace KindNet.Migrations
                     b.HasIndex("VolunteerUserId");
 
                     b.ToTable("EventApplications");
+                });
+
+            modelBuilder.Entity("KindNet.Models.Notification", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("EventId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("KindNet.Models.OrganizationProfile", b =>

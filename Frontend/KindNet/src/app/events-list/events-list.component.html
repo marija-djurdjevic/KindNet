@@ -1,0 +1,172 @@
+<div class="events-list-container">
+    <div class="header">
+        <h2>Događaji</h2>
+        <button *ngIf="isOrganiser()" mat-flat-button color="accent" routerLink="/layout/create-event">
+            <mat-icon>add</mat-icon> Kreiraj događaj
+        </button>
+    </div>
+
+    <div *ngIf="isOrganiser()" class="filter-sort-container filter-sort-container--right">
+        <div class="filter-group">
+            <button mat-flat-button class="filter-button filter-button--status" (click)="toggleFilter('status')">
+                <span>{{ selectedStatusName || 'Status ' }}</span>
+                <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <div *ngIf="activeFilter === 'status'" class="filter-options">
+                <div class="filter-option" (click)="applyStatusFilter(null)">Svi statusi</div>
+                <div *ngFor="let status of eventStatuses" class="filter-option" (click)="applyStatusFilter(status.value)">
+                    {{ status.name }}
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <button mat-flat-button class="filter-button" (click)="toggleFilter('sort')">
+                <span>{{ sortOptionName }}</span>
+                <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <div *ngIf="activeFilter === 'sort'" class="filter-options">
+                <div class="filter-option" (click)="applySort(true)">Najnoviji prvi</div>
+                <div class="filter-option" (click)="applySort(false)">Najstariji prvi</div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-spinner">
+        <mat-spinner></mat-spinner>
+        <p>Učitavanje događaja...</p>
+    </div>
+
+    <div *ngIf="!isLoading && events.length === 0" class="no-events">
+        <mat-icon>info</mat-icon>
+        <p>Trenutno nema dostupnih događaja.</p>
+    </div>
+
+    <div class="event-list" *ngIf="!isLoading && events.length > 0">
+        <mat-card
+            class="event-card"
+            *ngFor="let event of events"
+            [ngClass]="getCardClasses(event)">
+            <div class="card-main-content">
+                <div class="event-info">
+                    <div class="event-title-line">
+                        <mat-icon class="type-icon">{{ typeIconMapping[event.type] }}</mat-icon>
+                        <h3 class="event-name">{{ event.name }}</h3>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-item">
+                            <mat-icon>location_on</mat-icon>
+                            <span>{{ event.city }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <mat-icon>schedule</mat-icon>
+                            <span>{{ event.startTime | date:'dd.MM.yyyy HH:mm' }} - {{ event.endTime | date:'dd.MM.yy HH:mm' }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <mat-icon>event</mat-icon>
+                            <span>Rok za prijavu: {{ event.applicationDeadline | date:'dd.MM.yyyy' }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-meta">
+                    <div class="tag-and-actions">
+                        <span class="tag status-tag" [ngClass]="'status-' + event.status.toLowerCase()">
+                            {{ event.status }}
+                        </span>
+                        <button
+                            *ngIf="event.status === 'Planned' && isOrganiser()"
+                            mat-icon-button
+                            color="warn"
+                            class="cancel-button"
+                            matTooltip="Otkaži događaj"
+                            matTooltipClass="custom-tooltip"
+                            (click)="onCancel(event.id)">
+                            <mat-icon>cancel</mat-icon>
+                        </button>
+                        <button
+                            *ngIf="event.status === 'Finished' && isOrganiser()"
+                            mat-icon-button
+                            color="primary"
+                            class="archive-button"
+                            matTooltip="Arhiviraj događaj"
+                            matTooltipClass="custom-tooltip"
+                            (click)="onArchive(event.id)">
+                            <mat-icon>inventory</mat-icon>
+                        </button>
+                        <button
+                            *ngIf="event.status === 'Draft' && isOrganiser()"
+                            mat-icon-button
+                            color="primary"
+                            class="edit-button"
+                            (click)="onEdit(event.id)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </div>
+                    <span class="tag type-tag">
+                        {{ event.type }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="skills-container" *ngIf="event.requiredSkills && event.requiredSkills.length > 0">
+                <span class="skill-tag" *ngFor="let skill of event.requiredSkills">
+                    {{ skill }}
+                </span>
+            </div>
+
+            <mat-card-content *ngIf="event.description">
+                <markdown [data]="event.description" class="event-description"></markdown>
+            </mat-card-content>
+
+            <div
+                class="volunteer-actions">
+                <button
+                    *ngIf="!isOrganiser() && event.status === 'Planned' && !applicationStatus[event.id] && isApplicationDeadlineMet(event)"
+                    mat-flat-button
+                    color="primary"
+                    class="apply-button"
+                    (click)="onVolunteerApply(event.id)">
+                    <mat-icon>volunteer_activism</mat-icon> Prijavi se
+                </button>
+                <button
+                    *ngIf="!isOrganiser() && applicationStatus[event.id]"
+                    mat-icon-button
+                    matTooltip="Prijava je poslata!"
+                    (click)="navigateToApplications()">
+                    <mat-icon color="primary">article</mat-icon>
+                </button>
+                <div *ngIf="!isOrganiser() && !isApplicationDeadlineMet(event) && !applicationStatus[event.id]" class="deadline-expired-message">
+                    <mat-icon color="warn" matTooltip="Rok za prijavu je istekao">warning_amber</mat-icon>
+                </div>
+            </div>
+        </mat-card>
+    </div>
+</div>
+<div class="modal-overlay" *ngIf="showConfirmDialog">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h4 class="modal-title">Obavještenje</h4>
+            <button type="button" class="close" (click)="cancelAction()">
+                &times;
+            </button>
+        </div>
+        <div class="modal-body">
+            <p>{{ dialogMessage }}</p>
+        </div>
+        <div class="modal-footer">
+            <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="cancelAction()">
+                Otkaži
+            </button>
+            <button
+                type="button"
+                class="btn btn-primary"
+                (click)="confirmAction()">
+                Potvrdi
+            </button>
+        </div>
+    </div>
+</div>
