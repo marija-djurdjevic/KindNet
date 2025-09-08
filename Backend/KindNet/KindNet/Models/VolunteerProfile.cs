@@ -22,5 +22,7 @@
         public int TotalApprovedApplications { get; set; }
         public int TotalNoShows { get; set; }
         public double ReliabilityScore { get; set; }
+
+        public List<Badge> Badges { get; set; }
     }
 }
