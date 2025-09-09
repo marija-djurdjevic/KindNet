@@ -11,28 +11,29 @@ export class ErrorInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(request).pipe(
-  catchError((error: HttpErrorResponse) => {
-    let errorMessage = 'Dogodila se nepoznata greška.';
+      catchError((error: HttpErrorResponse) => {
+        let errorMessage = 'Dogodila se nepoznata greška.';
 
-    if (typeof error.error === 'string') {
-      errorMessage = error.error;
-    }
-    else if (error.error && error.error.message) {
-      errorMessage = error.error.message;
-    }
-    else if (error.status === 401) {
-      errorMessage = 'Nemate dozvolu za pristup.';
-    } else if (error.status === 404) {
-      errorMessage = 'Traženi sadržaj nije pronađen.';
-    } else if (error.status === 500) {
-      errorMessage = 'Greška na serveru.';
-    } else {
-      errorMessage = `Greška: ${error.status} - ${error.statusText}`;
-    }
+        if (typeof error.error === 'string') {
+          errorMessage = error.error;
+        } else if (error.error && error.error.message) {
+          errorMessage = error.error.message;
+        } else if (error.status === 401) {
+          errorMessage = 'Nemate dozvolu za pristup.';
+        } else if (error.status === 404) {
+          errorMessage = 'Traženi sadržaj nije pronađen.';
+        } else if (error.status === 500) {
+          errorMessage = 'Greška na serveru.';
+        } else {
+          errorMessage = `Greška: ${error.status} - ${error.statusText}`;
+        }
 
-    this.toastService.error(errorMessage);
-    return throwError(() => new Error(errorMessage));
-  })
-);
-}
+        if (!(error.status === 404 && request.url.includes('/profiles/volunteer'))) {
+          this.toastService.error(errorMessage);
+        }
+
+        return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
 }

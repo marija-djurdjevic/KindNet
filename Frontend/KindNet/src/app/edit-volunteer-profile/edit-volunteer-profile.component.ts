@@ -37,35 +37,66 @@ export class EditVolunteerProfileComponent implements OnInit{
         });
     }
 
-    ngOnInit(): void {
-        this.loadProfileData();
-    }
+suggestedSkills: string[] = [
+  'Organizacija događaja', 'Komunikacija', 'Rad u timu', 'Pisanje izveštaja',
+  'Marketing', 'Fotografija', 'Dizajn', 'IT veštine', 'Edukacija', 'Mentorstvo',
+  'Logistika', 'Planiranje', 'Kreativnost', 'Volontersko iskustvo'
+];
 
-    loadProfileData(): void {
-        this.profileService.getVolunteerProfile().subscribe({
-            next: (profile: VolunteerProfile) => {
-                this.profileForm.patchValue({
-                    firstName: profile.firstName,
-                    lastName: profile.lastName,
-                    city: profile.city,
-                    contactPhone: profile.contactPhone,
-                    skills: profile.skills || [],
-                    interests: profile.interests || []
-                });
-                this.isNewProfile = false;
-                this.isLoading = false;
-            },
-            error: (err: HttpErrorResponse) => {
-                if (err.status === 404) {
-                    this.isNewProfile = true;
-                    this.isLoading = false;
-                } else {
-                    this.toastService.error('Greška pri učitavanju profila.'); 
-                    this.isLoading = false;
-                }
-            }
-        });
+suggestedInterests: string[] = [
+  'Životna sredina', 'Obrazovanje', 'Sport', 'Kultura', 'Zdravlje', 'Tehnologija',
+  'Humanitarni rad', 'Muzika', 'Umjetnost', 'Psihologija', 'Deca i omladina', 'Stariji građani',
+  'Putovanja', 'Zajednica'
+];
+
+toggleSkill(skill: string): void {
+  const skills = this.profileForm.get('skills')?.value || [];
+  const index = skills.indexOf(skill);
+  if (index === -1) skills.push(skill);
+  else skills.splice(index, 1);
+  this.profileForm.get('skills')?.setValue(skills);
+}
+
+toggleInterest(interest: string): void {
+  const interests = this.profileForm.get('interests')?.value || [];
+  const index = interests.indexOf(interest);
+  if (index === -1) interests.push(interest);
+  else interests.splice(index, 1);
+  this.profileForm.get('interests')?.setValue(interests);
+}
+
+  ngOnInit(): void {
+    this.loadProfileData();
+  }
+
+  loadProfileData(): void {
+  this.profileService.getVolunteerProfile().subscribe({
+    next: (profile: VolunteerProfile) => {
+      this.profileForm.patchValue({
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        city: profile.city,
+        contactPhone: profile.contactPhone,
+        skills: profile.skills || [],
+        interests: profile.interests || []
+      });
+      this.isNewProfile = false;
+      this.isLoading = false;
+    },
+    error: (err) => {
+      const message = (err instanceof Error) ? err.message : '';
+
+      if (message.includes('Profile not found')) {
+        this.isNewProfile = true;
+        this.isLoading = false;
+        this.toastService.info('Molimo kreirajte svoj profil.');
+      } else {
+        this.isLoading = false;
+        console.error('Nepoznata greška pri učitavanju profila:', err);
+      }
     }
+  });
+}
 
     onSubmit(): void {
         if (this.profileForm.valid) {
