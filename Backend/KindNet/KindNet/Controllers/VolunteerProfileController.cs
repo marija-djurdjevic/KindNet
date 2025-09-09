@@ -48,7 +48,7 @@ namespace KindNet.Controllers
             }
 
             _volunteerProfileService.CreateOrUpdateProfile(userId, profileDto);
-            return Ok("Profile created or updated successfully.");
+            return NoContent();
         }
     }
 }

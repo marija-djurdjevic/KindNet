@@ -8,6 +8,8 @@ import { EventsListComponent } from './events-list/events-list.component';
 import { CreateEventComponent } from './create-event/create-event.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { ApplicationsDashboardComponent } from './applications-dashboard/applications-dashboard.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { EditVolunteerProfileComponent } from './edit-volunteer-profile/edit-volunteer-profile.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -22,7 +24,9 @@ const routes: Routes = [
       { path: 'create-event', component: CreateEventComponent },
       { path: 'create-event/:id', component: CreateEventComponent },
       { path: 'calendar', component: CalendarComponent },
-      { path: 'events-applications', component: ApplicationsDashboardComponent }
+      { path: 'events-applications', component: ApplicationsDashboardComponent },
+      { path: 'user-profile', component: UserProfileComponent }, 
+      { path: 'user-profile/edit', component: EditVolunteerProfileComponent }
     ]
   },
   

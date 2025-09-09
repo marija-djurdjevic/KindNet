@@ -1,0 +1,91 @@
+<div class="edit-profile-container">
+
+    <div *ngIf="isLoading" class="loading-spinner">
+        <mat-spinner></mat-spinner>
+        <p>Učitavanje profila...</p>
+    </div>
+
+    <mat-card class="edit-profile-card" *ngIf="!isLoading">
+        <mat-card-header>
+            <mat-card-title>{{ isNewProfile ? 'Kreiranje profila' : 'Ažuriranje profila' }}</mat-card-title>
+            <mat-card-subtitle>{{ isNewProfile ? 'Unesite svoje podatke za kreiranje profila.' : 'Ažurirajte svoje podatke i sačuvajte izmjene.' }}</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-divider></mat-divider>
+
+        <mat-card-content>
+            <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+                <div class="form-row">
+                    <mat-form-field appearance="outline" class="form-field">
+                        <mat-label>Ime</mat-label>
+                        <input matInput formControlName="firstName">
+                        <mat-icon matSuffix>person</mat-icon>
+                        <mat-error *ngIf="profileForm.get('firstName')?.hasError('required')">Ime je obavezno.</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="form-field">
+                        <mat-label>Prezime</mat-label>
+                        <input matInput formControlName="lastName">
+                        <mat-icon matSuffix>person</mat-icon>
+                        <mat-error *ngIf="profileForm.get('lastName')?.hasError('required')">Prezime je obavezno.</mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                    <mat-form-field appearance="outline" class="form-field">
+                        <mat-label>Grad</mat-label>
+                        <input matInput formControlName="city">
+                        <mat-icon matSuffix>location_city</mat-icon>
+                        <mat-error *ngIf="profileForm.get('city')?.hasError('required')">Grad je obavezan.</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="form-field">
+                        <mat-label>Kontakt telefon</mat-label>
+                        <input matInput formControlName="contactPhone">
+                        <mat-icon matSuffix>phone</mat-icon>
+                    </mat-form-field>
+                </div>
+
+                <mat-form-field appearance="outline" class="full-width-field">
+                    
+                    <mat-chip-grid #skillChipList aria-label="Lista veština" formControlName="skills">
+                        <mat-chip *ngFor="let skill of profileForm.get('skills')?.value" [removable]="true" (removed)="removeSkill(skill)">
+                            {{ skill }}
+                            <mat-icon matChipRemove>cancel</mat-icon>
+                        </mat-chip>
+                        <input placeholder="Dodaj vještine..."
+                               [matChipInputFor]="skillChipList"
+                               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                               [matChipInputAddOnBlur]="true"
+                               (matChipInputTokenEnd)="addSkill($event)">
+                    </mat-chip-grid>
+                    <mat-hint>Unesite vještinu i pritisnite Enter.</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width-field">
+                    
+                    <mat-chip-grid #interestChipList aria-label="Lista interesovanja" formControlName="interests">
+                        <mat-chip *ngFor="let interest of profileForm.get('interests')?.value" [removable]="true" (removed)="removeInterest(interest)">
+                            {{ interest }}
+                            <mat-icon matChipRemove>cancel</mat-icon>
+                        </mat-chip>
+                        <input placeholder="Dodaj interesovanja..."
+                               [matChipInputFor]="interestChipList"
+                               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                               [matChipInputAddOnBlur]="true"
+                               (matChipInputTokenEnd)="addInterest($event)">
+                    </mat-chip-grid>
+                    <mat-hint>Unesite interesovanje i pritisnite Enter.</mat-hint>
+                </mat-form-field>
+
+                <div class="form-actions">
+                    <button mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid || isLoading">
+                        <mat-icon>save</mat-icon>
+                        Sačuvaj profil
+                    </button>
+                    <button mat-button type="button" [routerLink]="['/layout/user-profile']">Odustani</button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>

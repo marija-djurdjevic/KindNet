@@ -1,0 +1,67 @@
+.edit-profile-container {
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: calc(100vh - 64px);
+}
+
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.edit-profile-card {
+    width: 100%;
+    max-width: 700px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+}
+
+.mat-card-header .mat-card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.mat-card-header .mat-card-subtitle {
+    font-size: 1rem;
+    color: #888;
+}
+
+.mat-divider {
+    margin: 16px 0;
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+}
+
+.form-field {
+    width: 100%;
+}
+
+.full-width-field {
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.mat-chip-list-input {
+    min-width: 150px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 24px;
+}
+.form-actions button[type="submit"] {
+  background-color: #e07a5f !important;
+  color: white !important; 
+}
