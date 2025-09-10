@@ -1,3 +1,5 @@
+import { ResourceRequest } from "./resource.model";
+
 export interface CreateEventDto {
   name: string;
   description: string;
@@ -9,6 +11,7 @@ export interface CreateEventDto {
   forceCreate: boolean;
   applicationDeadline: Date;
   requiredSkills: string[];
+  resourceRequests: ResourceRequest[]; 
 }
 
 export interface EventDto {
@@ -23,6 +26,7 @@ export interface EventDto {
   applicationDeadline: Date;
   requiredSkills: string[];
   organizerName: string;
+  resourceRequests: ResourceRequest[]; 
 }
 
 export interface CreateEventResultDto {
@@ -41,6 +45,7 @@ export interface CreateEventPayload {
   ForceCreate: boolean;
   ApplicationDeadline: string;
   RequiredSkills: string[];
+  resourceRequests: ResourceRequest[]; 
 }
 export enum EventStatus {
   Draft = 0,

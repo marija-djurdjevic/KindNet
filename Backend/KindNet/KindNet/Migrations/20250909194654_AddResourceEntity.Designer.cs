@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using KindNet.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KindNet.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250909194654_AddResourceEntity")]
+    partial class AddResourceEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,69 +25,6 @@ namespace KindNet.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("KindNet.Models.Badge", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("IconUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<long?>("VolunteerProfileId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("VolunteerProfileId");
-
-                    b.ToTable("Badges");
-                });
-
-            modelBuilder.Entity("KindNet.Models.BusinessProfile", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ContactPhone")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsVerified")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("BusinessProfiles");
-                });
 
             modelBuilder.Entity("KindNet.Models.Event", b =>
                 {
@@ -395,24 +335,6 @@ namespace KindNet.Migrations
                     b.ToTable("VolunteerProfiles");
                 });
 
-            modelBuilder.Entity("KindNet.Models.Badge", b =>
-                {
-                    b.HasOne("KindNet.Models.VolunteerProfile", null)
-                        .WithMany("Badges")
-                        .HasForeignKey("VolunteerProfileId");
-                });
-
-            modelBuilder.Entity("KindNet.Models.BusinessProfile", b =>
-                {
-                    b.HasOne("KindNet.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("KindNet.Models.Event", b =>
                 {
                     b.HasOne("KindNet.Models.OrganizationProfile", "Organizer")
@@ -494,20 +416,15 @@ namespace KindNet.Migrations
 
                     b.Navigation("User");
                 });
-              
-             modelBuilder.Entity("KindNet.Models.Event", b =>
-             {
-                 b.Navigation("ResourcesRequests");
-             });
 
-             modelBuilder.Entity("KindNet.Models.ResourceRequest", b =>
-                 {
-                     b.Navigation("Fulfillments");
-                 });
-
-            modelBuilder.Entity("KindNet.Models.VolunteerProfile", b =>
+            modelBuilder.Entity("KindNet.Models.Event", b =>
                 {
-                    b.Navigation("Badges");
+                    b.Navigation("ResourcesRequests");
+                });
+
+            modelBuilder.Entity("KindNet.Models.ResourceRequest", b =>
+                {
+                    b.Navigation("Fulfillments");
                 });
 #pragma warning restore 612, 618
         }
