@@ -13,5 +13,7 @@
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<ResourceRequest> ResourceRequests { get; set; }
         public DbSet<ResourceFulfillment> ResourceFulfillments { get; set; }    
+        public DbSet<BusinessProfile> BusinessProfiles { get; set;}
+        public DbSet<Badge> Badges { get; set; }
     }
 }

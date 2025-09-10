@@ -28,6 +28,9 @@ import { MarkdownModule } from 'ngx-markdown';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { ToastrModule } from 'ngx-toastr';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
@@ -43,6 +46,8 @@ import { CreateEventComponent } from './create-event/create-event.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { ApplicationsDashboardComponent } from './applications-dashboard/applications-dashboard.component';
 import { CreateResourceDialogComponent } from './create-resource-dialog/create-resource-dialog.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { EditVolunteerProfileComponent } from './edit-volunteer-profile/edit-volunteer-profile.component';
 
 export function tokenGetter() {
   return localStorage.getItem('jwt');
@@ -58,7 +63,9 @@ export function tokenGetter() {
     CreateEventComponent,
     CalendarComponent,
     ApplicationsDashboardComponent,
-    CreateResourceDialogComponent
+    CreateResourceDialogComponent,
+    UserProfileComponent,
+    EditVolunteerProfileComponent
   ],
 
   imports: [
@@ -102,7 +109,9 @@ export function tokenGetter() {
         tokenGetter: tokenGetter,
         allowedDomains: ["localhost:7200"], 
       }
-    })
+    }),
+    ReactiveFormsModule,
+    MatSnackBarModule
   ],
 
    providers: [
