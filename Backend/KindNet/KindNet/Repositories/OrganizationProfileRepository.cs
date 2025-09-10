@@ -1,10 +1,11 @@
 ﻿using KindNet.Data;
 using KindNet.Models;
+using KindNet.Models.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace KindNet.Repositories
 {
-    public class OrganizationProfileRepository
+    public class OrganizationProfileRepository : IOrganizationProfileRepository
     {
         private readonly AppDbContext _context;
 

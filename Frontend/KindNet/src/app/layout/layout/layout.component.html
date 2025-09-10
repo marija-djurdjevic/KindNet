@@ -15,7 +15,7 @@
       <a mat-list-item routerLink="/layout/events-applications">
         <mat-icon>list_alt</mat-icon> Prijave
       </a>
-      <a mat-list-item routerLink="/layout/user-profile">
+      <a mat-list-item [routerLink]="getProfileLink()">
         <mat-icon>person</mat-icon> Profil
       </a>
     </mat-nav-list>

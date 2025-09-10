@@ -20,3 +20,14 @@ export interface VolunteerProfileDto {
   skills: string[];
   interests: string[];
 }
+export interface OrganizationProfile {
+  id?: number;
+  name: string;
+  city: string;
+  description: string;
+  contactPhone: string;
+  website: string;
+  isVerified?: boolean;
+  galleryImageUrls: string[];
+  activityAreas: string[];
+}

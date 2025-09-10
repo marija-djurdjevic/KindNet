@@ -72,6 +72,11 @@ builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IVolunteerProfileRepository, VolunteerProfileRepository>();
 builder.Services.AddScoped<VolunteerProfileService>();
+builder.Services.AddScoped<IOrganizationProfileRepository, OrganizationProfileRepository>();
+builder.Services.AddScoped<OrganizationProfileService>();
+builder.Services.AddScoped<IBusinessProfileRepository, BusinessProfileRepository>();
+builder.Services.AddScoped<BusinessProfileService>();
+
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

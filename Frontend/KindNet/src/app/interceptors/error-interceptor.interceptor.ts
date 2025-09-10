@@ -28,7 +28,7 @@ export class ErrorInterceptor implements HttpInterceptor {
           errorMessage = `Greška: ${error.status} - ${error.statusText}`;
         }
 
-        if (!(error.status === 404 && request.url.includes('/profiles/volunteer'))) {
+        if (!(error.status === 404 && request.url.includes('/profiles/'))) {
           this.toastService.error(errorMessage);
         }
 

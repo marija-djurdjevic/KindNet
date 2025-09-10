@@ -1,0 +1,48 @@
+<div class="edit-organization-profile-container">
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner></mat-spinner>
+    <p>Učitavanje profila organizacije...</p>
+  </div>
+
+  <mat-card *ngIf="!isLoading && profile">
+    <mat-card-header>
+      <mat-card-title>{{ profile.name }}</mat-card-title>
+      <mat-card-subtitle>{{ profile.city }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="profile-field">
+        <strong>Opis:</strong>
+        <p>{{ profile.description }}</p>
+      </div>
+
+      <div class="profile-field" *ngIf="profile.contactPhone">
+        <strong>Kontakt telefon:</strong>
+        <p>{{ profile.contactPhone }}</p>
+      </div>
+
+      <div class="profile-field" *ngIf="profile.website">
+        <strong>Website:</strong>
+        <p>{{ profile.website }}</p>
+      </div>
+
+      <div class="profile-field" *ngIf="profile.activityAreas?.length">
+        <strong>Oblasti aktivnosti:</strong>
+        <ul>
+          <li *ngFor="let area of profile.activityAreas">{{ area }}</li>
+        </ul>
+      </div>
+
+      <div class="profile-field" *ngIf="profile.galleryImageUrls?.length">
+        <strong>Galerija:</strong>
+        <div class="gallery">
+          <img *ngFor="let url of profile.galleryImageUrls" [src]="url" alt="Gallery image" />
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div *ngIf="isProfileMissing && !isLoading">
+    <p>Nemate kreiran profil. Molimo kreirajte ga.</p>
+  </div>
+</div>
