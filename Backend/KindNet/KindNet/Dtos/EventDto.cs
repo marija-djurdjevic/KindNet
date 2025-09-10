@@ -31,5 +31,6 @@ namespace KindNet.Dtos
         public List<string> RequiredSkills { get; set; }
 
         public string? OrganizerName {get; set;}
+        public List<ResourceRequestDto> ResourceRequests { get; set; } = new();
     }
 }

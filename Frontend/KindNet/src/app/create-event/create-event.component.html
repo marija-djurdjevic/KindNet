@@ -112,6 +112,7 @@
         <div class="skills-checkbox-group">
           <mat-checkbox *ngFor="let skill of suggestedSkills"
                         [value]="skill"
+                        [checked]="selectedSkills.includes(skill)"
                         (change)="onSkillSelect(skill, $event)">
             {{ skill }}
           </mat-checkbox>
@@ -121,6 +122,37 @@
           <input matInput placeholder="Npr. programiranje, komunikacija, dizajn" [(ngModel)]="otherSkills" name="otherSkills">
         </mat-form-field>
       </div>
+
+    <div class="resources-section">
+  <button mat-stroked-button color="primary" type="button" (click)="addResource()">
+    <mat-icon>add</mat-icon> Dodaj zahtjev za resurs
+  </button>
+
+  <div class="resource-cards-container" *ngIf="event.resourceRequests.length > 0">
+  <mat-card *ngFor="let resource of event.resourceRequests; let i = index" class="resource-card">
+    <mat-card-content>
+      <div class="resource-header">
+        <h3 class="resource-name">{{ resource.itemName }}</h3>
+         <div class="category-badge" [ngClass]="getCategoryClass(resource.category)" [matTooltip]="getResourceCategoryName(resource.category)">
+    <mat-icon>{{ getCategoryIcon(resource.category) }}</mat-icon>
+  </div>
+      </div>
+      <div class="resource-details">
+        <div class="detail-item">
+          <span class="quantity-badge">{{ resource.quantityNeeded }}</span>
+          <p>Potrebna količina</p>
+        </div>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-icon-button color="warn" (click)="removeResource(i)" matTooltip="Ukloni resurs">
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
+</div>
+
 
       <div class="button-container">
         <button mat-flat-button 

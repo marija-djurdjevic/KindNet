@@ -3,7 +3,6 @@ using KindNet.Models.Interfaces;
 using KindNet.Models.Enums;
 using KindNet.Dtos;
 using KindNet.Repositories;
-using Microsoft.Extensions.Logging;
 
 namespace KindNet.Services
 {
@@ -12,12 +11,14 @@ namespace KindNet.Services
         private readonly IEventRepository _eventRepository;
         private readonly IApplicationRepository _applicationRepository;
         private readonly INotificationService _notificationService;
+        private readonly ResourceService _resourceService;
 
-        public EventService(IEventRepository eventRepository, IApplicationRepository applicationRepository, INotificationService notificationService)
+        public EventService(IEventRepository eventRepository, IApplicationRepository applicationRepository, INotificationService notificationService, ResourceService resourceService)
         {
             _eventRepository = eventRepository;
             _applicationRepository = applicationRepository;
             _notificationService = notificationService;
+            _resourceService = resourceService;
         }
 
         public async Task<bool> IsEventOverlapping(string city, DateTime startTime, DateTime endTime)
@@ -54,9 +55,27 @@ namespace KindNet.Services
 
             var createdEvent = await _eventRepository.AddAsync(newEvent);
 
-            var createdEventDto = MapToEventDto(createdEvent);
+            if (eventDto.ResourceRequests.Any())
+            {
+                foreach (var resDto in eventDto.ResourceRequests)
+                {
+                    await _resourceService.CreateRequestAsync(new CreateResourceRequestDto
+                    {
+                        EventId = createdEvent.Id,
+                        ItemName = resDto.ItemName,
+                        Category = resDto.Category,
+                        QuantityNeeded = resDto.QuantityNeeded
+                    });
+                }
+            }
 
-            return new CreateEventResultDto { CreatedEvent = createdEventDto, IsOverlapping = false };
+            var createdEventDto = await MapToEventDtoWithResourcesAsync(createdEvent);
+
+            return new CreateEventResultDto
+            {
+                CreatedEvent = createdEventDto,
+                IsOverlapping = false
+            };
         }
 
         public async Task<Event> GetEventByIdAsync(long id)
@@ -71,34 +90,40 @@ namespace KindNet.Services
 
         public async Task<EventDto> GetEventDtoByIdAsync(long id)
         {
-            var foundEvent = await _eventRepository.GetByIdAsync(id);
-            if (foundEvent == null) return null;
+            var eventItem = await _eventRepository.GetByIdAsync(id);
+            if (eventItem == null) return null;
 
-            CheckAndUpdateStatus(foundEvent);
-            var eventDto = MapToEventDto(foundEvent);
-            return eventDto;
+            await CheckAndUpdateStatusAsync(eventItem);
+
+            return await MapToEventDtoWithResourcesAsync(eventItem);
         }
 
         public async Task<IEnumerable<EventDto>> GetAllEventDtosAsync()
         {
             var events = await _eventRepository.GetAllAsync();
-            var eventDtos = events.Select(e =>
+            var eventDtos = new List<EventDto>();
+            foreach (var eventItem in events)
             {
-                CheckAndUpdateStatus(e); 
-                return MapToEventDto(e);
-            }).ToList();
+                await CheckAndUpdateStatusAsync(eventItem);
+                var dto = await MapToEventDtoWithResourcesAsync(eventItem);
+                eventDtos.Add(dto);
+            }
 
             return eventDtos;
+
         }
+
         public async Task<IEnumerable<EventDto>> GetAllEventsByOrganizerIdAsync(long organizerId)
         {
             var events = await _eventRepository.GetAllByOrganizerIdAsync(organizerId);
 
-            var eventDtos = events.Select(e =>
+            var eventDtos = new List<EventDto>();
+            foreach (var eventItem in events)
             {
-                CheckAndUpdateStatus(e);
-                return MapToEventDto(e);
-            }).ToList();
+                await CheckAndUpdateStatusAsync(eventItem);
+                var dto = await MapToEventDtoWithResourcesAsync(eventItem);
+                eventDtos.Add(dto);
+            }
 
             return eventDtos;
         }
@@ -107,11 +132,13 @@ namespace KindNet.Services
         {
             var events = await _eventRepository.GetPlannedAndActiveEventsAsync();
 
-            var eventDtos = events.Select(e =>
+            var eventDtos = new List<EventDto>();
+            foreach (var eventItem in events)
             {
-                CheckAndUpdateStatus(e);
-                return MapToEventDto(e);
-            }).ToList();
+                await CheckAndUpdateStatusAsync(eventItem);
+                var dto = await MapToEventDtoWithResourcesAsync(eventItem);
+                eventDtos.Add(dto);
+            }
 
             return eventDtos;
         }
@@ -120,13 +147,14 @@ namespace KindNet.Services
         {
             var events = await _eventRepository.GetPlannedAndActiveEventsWithFiltersAsync(city, type, organizationName);
 
-            var eventDtos = events.Select(e =>
+            var eventDtos = new List<EventDto>();
+            foreach (var eventItem in events)
             {
-                CheckAndUpdateStatus(e);
-                var dto = MapToEventDto(e);
-                dto.OrganizerName = e.Organizer?.Name;
-                return dto;
-            }).ToList();
+                await CheckAndUpdateStatusAsync(eventItem);
+                var dto = await MapToEventDtoWithResourcesAsync(eventItem);
+                dto.OrganizerName = eventItem.Organizer?.Name;
+                eventDtos.Add(dto);
+            }
 
             return eventDtos;
         }
@@ -150,10 +178,20 @@ namespace KindNet.Services
             existingEvent.Type = eventDto.Type;
             existingEvent.Status = eventDto.Status;
 
+            var resourceRequests = eventDto.ResourceRequests.Select(dto => new ResourceRequest
+            {
+                ItemName = dto.ItemName,
+                QuantityNeeded = dto.QuantityNeeded,
+                Category = dto.Category,
+                EventId = id 
+            }).ToList();
+
+            await _resourceService.SyncEventResourcesAsync(existingEvent.Id, resourceRequests);
+
             var updatedEvent = await _eventRepository.UpdateAsync(existingEvent);
 
-            var updatedEventDto = MapToEventDto(updatedEvent);
-            return updatedEventDto;
+            await CheckAndUpdateStatusAsync(updatedEvent);
+            return await MapToEventDtoWithResourcesAsync(updatedEvent);
         }
 
         public async Task<bool> CancelEventAsync(long eventId)
@@ -231,10 +269,17 @@ namespace KindNet.Services
 
             foreach (var eventItem in allEvents)
             {
-                CheckAndUpdateStatus(eventItem);
+                await CheckAndUpdateStatusAsync(eventItem);
             }
 
-            var eventDtos = allEvents.Select(MapToEventDto).ToList();
+            var eventDtos = new List<EventDto>();
+
+            foreach (var eventItem in allEvents)
+            {
+                var dto = await MapToEventDtoWithResourcesAsync(eventItem);
+                eventDtos.Add(dto);
+            }
+
             var applicationStatus = new Dictionary<long, bool>();
 
             if (volunteerId.HasValue)
@@ -260,24 +305,37 @@ namespace KindNet.Services
             };
         }
 
-        private void CheckAndUpdateStatus(Event eventItem)
+        private async Task CheckAndUpdateStatusAsync(Event eventItem)
         {
-            var now = DateTime.UtcNow;
+            if (eventItem.Status == EventStatus.Canceled || eventItem.Status == EventStatus.Archived)
+                return;
 
-            if (eventItem.Status == EventStatus.Planned && now >= eventItem.StartTime && now <= eventItem.EndTime)
+            var now = DateTime.UtcNow;
+            EventStatus? newStatus = null;
+
+            if (eventItem.Status == EventStatus.Planned)
             {
-                eventItem.Status = EventStatus.Active;
-                _eventRepository.UpdateAsync(eventItem);
+                if (now >= eventItem.StartTime && now <= eventItem.EndTime)
+                    newStatus = EventStatus.Active;
+                else if (now > eventItem.EndTime)
+                    newStatus = EventStatus.Finished;
             }
             else if (eventItem.Status == EventStatus.Active && now > eventItem.EndTime)
             {
-                eventItem.Status = EventStatus.Finished;
-                _eventRepository.UpdateAsync(eventItem);
+                newStatus = EventStatus.Finished;
+            }
+
+            if (newStatus.HasValue && newStatus.Value != eventItem.Status)
+            {
+                eventItem.Status = newStatus.Value;
+                await _eventRepository.UpdateAsync(eventItem); 
             }
         }
 
-        private EventDto MapToEventDto(Event eventItem)
+        private async Task<EventDto> MapToEventDtoWithResourcesAsync(Event eventItem)
         {
+            var resourceRequests = await _resourceService.GetRequestsByEventAsync(eventItem.Id);
+
             return new EventDto
             {
                 Id = eventItem.Id,
@@ -290,23 +348,26 @@ namespace KindNet.Services
                 Status = eventItem.Status,
                 ApplicationDeadline = eventItem.ApplicationDeadline,
                 RequiredSkills = eventItem.RequiredSkills,
-                OrganizerName = eventItem.Organizer?.Name
+                OrganizerName = eventItem.Organizer?.Name,
+                ResourceRequests = resourceRequests.ToList()
             };
         }
 
-        public async Task<IEnumerable<EventDto>> GetOrganizerEventsWithFiltersAndSortingAsync(
-    long organizerId,
-    EventStatus? status = null,
-    bool sortByStartTimeDescending = true)
+        public async Task<IEnumerable<EventDto>> GetOrganizerEventsWithFiltersAndSortingAsync(long organizerId, EventStatus? status = null, bool sortByStartTimeDescending = true)
         {
-           
             var events = await _eventRepository.GetOrganizerEventsWithFiltersAndSortingAsync(
                 organizerId,
                 status,
                 sortByStartTimeDescending
             );
 
-            var eventDtos = events.Select(MapToEventDto).ToList();
+            var eventDtos = new List<EventDto>();
+            foreach (var eventItem in events)
+            {
+                await CheckAndUpdateStatusAsync(eventItem);
+                var dto = await MapToEventDtoWithResourcesAsync(eventItem);
+                eventDtos.Add(dto);
+            }
 
             return eventDtos;
         }
