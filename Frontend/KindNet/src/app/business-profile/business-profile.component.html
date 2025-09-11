@@ -12,7 +12,7 @@
         <div class="card-title-group">
           <div>
             <mat-card-title>{{ profile.name }}</mat-card-title>
-            <mat-card-subtitle>{{ profile.city }}</mat-card-subtitle>
+            
           </div>
         </div>
         <div class="header-actions">
@@ -24,10 +24,18 @@
       </mat-card-header>
       <mat-card-content>
         <div class="contact-info-block">
+            <div class="detail-item" *ngIf="profile.city">
+        <mat-icon>location_city</mat-icon>
+        <span>{{ profile.city }}</span>
+      </div>
           <div class="detail-item" *ngIf="profile.contactPhone">
             <mat-icon>phone</mat-icon>
             <span>{{ profile.contactPhone }}</span>
           </div>
+          <div class="detail-item" *ngIf="userEmail">
+        <mat-icon>email</mat-icon>
+        <span>{{ userEmail }}</span>
+      </div>
         </div>
       </mat-card-content>
     </mat-card>

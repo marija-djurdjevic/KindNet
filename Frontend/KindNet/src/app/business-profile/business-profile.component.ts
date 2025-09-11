@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BusinessProfile } from '../models/profiles.model';
 import { ProfileService } from '../services/profile.service';
 import { ToastService } from '../services/toast.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-business-profile',
@@ -15,14 +16,17 @@ export class BusinessProfileComponent implements OnInit {
   currentIndex = 0;
   isLightboxOpen = false;
   currentImage: string | null = null;
+  userEmail: string | null = null;
 
   constructor(
     private profileService: ProfileService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.loadProfile();
+    this.userEmail = this.authService.getUserEmail(); 
   }
 
   loadProfile(): void {
