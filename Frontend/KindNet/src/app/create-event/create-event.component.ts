@@ -5,6 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms'; 
 import { MatDialog } from '@angular/material/dialog';
 import { ToastService } from '../services/toast.service'; 
+import { ResourceCategory, ResourceRequest } from '../models/resource.model';
+import { CreateResourceDialogComponent } from '../create-resource-dialog/create-resource-dialog.component';
 
 @Component({
   selector: 'app-create-event',
@@ -28,7 +30,8 @@ export class CreateEventComponent implements OnInit {
     requiredSkills: [], 
     type: '',
     forceCreate: false,
-    status: 'Draft'
+    status: 'Draft',
+    resourceRequests: []
   };
 
   isEditMode = false;
@@ -45,6 +48,7 @@ export class CreateEventComponent implements OnInit {
   selectedSkills: string[] = [];
   otherSkills: string = '';
   suggestedSkills: string[] = [];
+  resourceRequests: ResourceRequest[] = [];
   
   private skillSuggestions: { [key: string]: string[] } = {
     'Environmental': ['Reciklaža', 'Upravljanje otpadom', 'Biologija', 'Ekologija', 'Održivi razvoj', 'Čišćenje', 'Edukacija o klimatskim promjenama'],
@@ -89,6 +93,7 @@ export class CreateEventComponent implements OnInit {
     if (this.eventId) {
       this.eventService.getEventById(this.eventId).subscribe(eventData => {
         this.event = eventData;
+        console.log(eventData);
         this.startTimeDate = new Date(eventData.startTime);
         this.startTimeTime = this.formatTime(eventData.startTime);
         this.endTimeDate = new Date(eventData.endTime);
@@ -157,7 +162,7 @@ export class CreateEventComponent implements OnInit {
       allSkills = [...allSkills, ...manualSkills];
     }
     this.event.requiredSkills = allSkills;
-
+    console.log(this.event);
     if (this.isEditMode && this.eventId) {
       this.modalAction = 'save';
       this.showModalMessage('Da li ste sigurni da želite da ažurirate ovaj događaj?');
@@ -188,7 +193,8 @@ export class CreateEventComponent implements OnInit {
       RequiredSkills: this.event.requiredSkills,
       Type: this.typeMapping[this.event.type],
       ForceCreate: this.event.forceCreate,
-      Status: this.event.status 
+      Status: this.event.status,
+      resourceRequests: this.event.resourceRequests
     };
 
     console.log('Finalni podaci koji se šalju servisu:', eventToSend);
@@ -223,7 +229,8 @@ export class CreateEventComponent implements OnInit {
       RequiredSkills: this.event.requiredSkills,
       Type: this.typeMapping[this.event.type],
       ForceCreate: this.event.forceCreate,
-      Status: this.event.status
+      Status: this.event.status,
+      resourceRequests: this.event.resourceRequests
     };
 
     this.eventService.createEvent(eventToSend).subscribe({
@@ -271,4 +278,84 @@ export class CreateEventComponent implements OnInit {
       width: '600px',
     });
   }
+
+  addResource() {
+  const dialogRef = this.dialog.open(CreateResourceDialogComponent, {
+    width: '450px',
+    disableClose: true,
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      this.event.resourceRequests.push({
+        eventId: 0,
+        itemName: result.name,
+        quantityNeeded: result.quantity,
+        category: result.category
+      });
+    }
+  });
+  }
+
+  removeResource(index: number) {
+    this.event.resourceRequests.splice(index, 1);
+  }
+
+  getResourceCategoryName(categoryValue: string | number): string {
+     if (typeof categoryValue === 'string') {
+    return categoryValue;
+  }
+    return ResourceCategory[categoryValue];
+  }
+
+getCategoryClass(category: string | number): string {
+  if (typeof category === 'number') {
+    category = ResourceCategory[category];
+  }
+
+  switch (category) {
+    case 'Oprema':
+      return 'category-badge-equipment';
+    case 'Hrana':
+      return 'category-badge-food';
+    case 'Piće':
+      return 'category-badge-drink';
+    case 'Prostor':
+      return 'category-badge-space';
+    case 'Prevoz':
+      return 'category-badge-transport';
+    case 'Materijal':
+      return 'category-badge-material';
+    case 'Ostalo':
+      return 'category-badge-other';
+    default:
+      return 'category-badge-default';
+  }
 }
+
+getCategoryIcon(category: string | number): string {
+  if (typeof category === 'number') {
+    category = ResourceCategory[category];
+  }
+
+  switch (category) {
+    case 'Oprema':
+      return 'chair';
+    case 'Prostor':
+      return 'meeting_room';
+    case 'Prevoz':
+      return 'directions_car';
+    case 'Materijal':
+      return 'build';
+    case 'Hrana':
+      return 'restaurant';
+    case 'Piće':
+      return 'liquor';
+    case 'Ostalo':
+      return 'more_horiz';
+    default:
+      return 'help_outline'; 
+  }
+}
+}
+

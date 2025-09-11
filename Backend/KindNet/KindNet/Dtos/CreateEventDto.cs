@@ -25,5 +25,7 @@
         [Required]
         public DateTime ApplicationDeadline { get; set; }
         public List<string> RequiredSkills { get; set; }
+        public List<CreateResourceRequestDto> ResourceRequests { get; set; } = new();
+
     }
 }
