@@ -74,6 +74,11 @@ builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
 builder.Services.AddScoped<ResourceService>();
 builder.Services.AddScoped<IVolunteerProfileRepository, VolunteerProfileRepository>();
 builder.Services.AddScoped<VolunteerProfileService>();
+builder.Services.AddScoped<IOrganizationProfileRepository, OrganizationProfileRepository>();
+builder.Services.AddScoped<OrganizationProfileService>();
+builder.Services.AddScoped<IBusinessProfileRepository, BusinessProfileRepository>();
+builder.Services.AddScoped<BusinessProfileService>();
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {

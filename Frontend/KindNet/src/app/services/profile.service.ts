@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { VolunteerProfile, VolunteerProfileDto } from '../models/profiles.model';
+import { VolunteerProfile, VolunteerProfileDto, OrganizationProfile } from '../models/profiles.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProfileService {
   private apiUrl = 'https://localhost:7200/api/profiles'; 
+  private organizationUrl = 'https://localhost:7200/api/profiles/organization';
 
   constructor(private http: HttpClient) { }
 
@@ -17,4 +18,12 @@ export class ProfileService {
   updateVolunteerProfile(profileDto: VolunteerProfileDto): Observable<any> {
     return this.http.post(`${this.apiUrl}/volunteer`, profileDto);
   }
+
+  getOrganizationProfile(): Observable<OrganizationProfile> {
+    return this.http.get<OrganizationProfile>(this.organizationUrl);
+  }
+  createOrUpdateOrganizationProfile(profile: OrganizationProfile): Observable<any> {
+    return this.http.post<any>(this.organizationUrl, profile);
+  }
+
 }

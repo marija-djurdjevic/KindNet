@@ -11,12 +11,14 @@ import { NotificationService } from 'src/app/services/notification.service';
 
 export class LayoutComponent {
 
-
+  role: string | null = null;
   unreadNotifications: number = 0;
   notifications: UserNotification[] = [];
   showNotifications: boolean = false;
 
-  constructor(private authService: AuthService, private router: Router, private notificationService: NotificationService) { }
+  constructor(private authService: AuthService, private router: Router, private notificationService: NotificationService) { 
+    this.role = this.authService.getRole();
+  }
   
   ngOnInit(): void {
     this.getNotifications();
@@ -88,4 +90,13 @@ export class LayoutComponent {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
+  getProfileLink(): string {
+    if (this.role === 'Volunteer') {
+      return '/layout/user-profile';
+    } else if (this.role === 'OrganizationRep') {
+      return '/layout/organization-profile';
+    } else {
+      return '/layout'; 
+  }
+}
 }

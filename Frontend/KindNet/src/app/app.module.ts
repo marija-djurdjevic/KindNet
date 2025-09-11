@@ -47,6 +47,8 @@ import { ApplicationsDashboardComponent } from './applications-dashboard/applica
 import { CreateResourceDialogComponent } from './create-resource-dialog/create-resource-dialog.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { EditVolunteerProfileComponent } from './edit-volunteer-profile/edit-volunteer-profile.component';
+import { EditOrganizationProfileComponent } from './edit-organization-profile/edit-organization-profile.component';
+import { OrganizationProfileComponent } from './organization-profile/organization-profile.component';
 
 export function tokenGetter() {
   return localStorage.getItem('jwt');
@@ -64,7 +66,9 @@ export function tokenGetter() {
     ApplicationsDashboardComponent,
     CreateResourceDialogComponent,
     UserProfileComponent,
-    EditVolunteerProfileComponent
+    EditVolunteerProfileComponent,
+    EditOrganizationProfileComponent,
+    OrganizationProfileComponent
   ],
 
   imports: [
