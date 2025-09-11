@@ -5,7 +5,7 @@ import { LayoutModule } from './layout/layout.module';
 import { MatIconModule } from '@angular/material/icon'; 
 import { MatFormFieldModule } from '@angular/material/form-field'; 
 import { MatInputModule } from '@angular/material/input'; 
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
 import { MatSelectModule } from '@angular/material/select'; 
 import { MatOptionModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -26,8 +26,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MarkdownModule } from 'ngx-markdown'; 
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatTableModule } from '@angular/material/table';
 import { ToastrModule } from 'ngx-toastr';
-import { ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { AppComponent } from './app.component';
@@ -44,6 +44,7 @@ import { EventsListComponent } from './events-list/events-list.component';
 import { CreateEventComponent } from './create-event/create-event.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { ApplicationsDashboardComponent } from './applications-dashboard/applications-dashboard.component';
+import { CreateResourceDialogComponent } from './create-resource-dialog/create-resource-dialog.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { EditVolunteerProfileComponent } from './edit-volunteer-profile/edit-volunteer-profile.component';
 import { EditOrganizationProfileComponent } from './edit-organization-profile/edit-organization-profile.component';
@@ -65,6 +66,7 @@ export function tokenGetter() {
     CreateEventComponent,
     CalendarComponent,
     ApplicationsDashboardComponent,
+    CreateResourceDialogComponent,
     UserProfileComponent,
     EditVolunteerProfileComponent,
     EditOrganizationProfileComponent,
@@ -104,6 +106,8 @@ export function tokenGetter() {
     MatChipsModule,
     MatTooltipModule,
     BrowserAnimationsModule, 
+    ReactiveFormsModule,
+    MatTableModule,
      ToastrModule.forRoot({
       positionClass: 'toast-bottom-right' 
     }),
