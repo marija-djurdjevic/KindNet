@@ -18,7 +18,6 @@ namespace KindNet.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Business")]
         public ActionResult<BusinessProfile> GetMyProfile()
         {
             var userIdString = User.FindFirst("id")?.Value;
@@ -37,7 +36,6 @@ namespace KindNet.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Business")]
         public IActionResult CreateOrUpdateMyProfile([FromBody] BusinessProfileDto profileDto)
         {
             var userIdString = User.FindFirst("id")?.Value;
@@ -47,7 +45,7 @@ namespace KindNet.Controllers
             }
 
             _businessProfileService.CreateOrUpdateProfile(userId, profileDto);
-            return Ok("Profile created or updated successfully.");
+            return NoContent();
         }
     }
 }

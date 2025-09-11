@@ -48,6 +48,8 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { EditVolunteerProfileComponent } from './edit-volunteer-profile/edit-volunteer-profile.component';
 import { EditOrganizationProfileComponent } from './edit-organization-profile/edit-organization-profile.component';
 import { OrganizationProfileComponent } from './organization-profile/organization-profile.component';
+import { EditBusinessProfileComponent } from './edit-business-profile/edit-business-profile.component';
+import { BusinessProfileComponent } from './business-profile/business-profile.component';
 
 export function tokenGetter() {
   return localStorage.getItem('jwt');
@@ -66,7 +68,9 @@ export function tokenGetter() {
     UserProfileComponent,
     EditVolunteerProfileComponent,
     EditOrganizationProfileComponent,
-    OrganizationProfileComponent
+    OrganizationProfileComponent,
+    EditBusinessProfileComponent,
+    BusinessProfileComponent
   ],
 
   imports: [
