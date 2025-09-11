@@ -82,7 +82,6 @@ onLogin(): void {
         });
       } 
       else {
-        // druge uloge ili fallback
         this.router.navigate(['/layout']);
       }
     },

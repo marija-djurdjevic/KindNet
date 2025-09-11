@@ -96,7 +96,7 @@ export class LayoutComponent {
     } else if (this.role === 'OrganizationRep') {
       return '/layout/organization-profile';
     } else {
-      return '/login'; 
+      return '/layout'; 
   }
 }
 }
