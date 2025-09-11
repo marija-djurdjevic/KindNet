@@ -31,3 +31,20 @@ export interface OrganizationProfile {
   galleryImageUrls: string[];
   activityAreas: string[];
 }
+export interface BusinessProfile {
+  id: string;
+  name: string;
+  city: string;
+  contactPhone: string;
+  description: string;
+  galleryImageUrls: string[];
+  supportedEventsCount: number;
+  isVerified: boolean;  
+}
+export interface BusinessProfileDto {
+  name: string;
+  city: string;
+  contactPhone: string;
+  description: string;
+  galleryImageUrls: string[];
+}

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { VolunteerProfile, VolunteerProfileDto, OrganizationProfile } from '../models/profiles.model';
+import { VolunteerProfile, VolunteerProfileDto, OrganizationProfile, BusinessProfile } from '../models/profiles.model';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +9,7 @@ import { VolunteerProfile, VolunteerProfileDto, OrganizationProfile } from '../m
 export class ProfileService {
   private apiUrl = 'https://localhost:7200/api/profiles'; 
   private organizationUrl = 'https://localhost:7200/api/profiles/organization';
+  private businessUrl = 'https://localhost:7200/api/profiles/business';
 
   constructor(private http: HttpClient) { }
 
@@ -25,5 +26,11 @@ export class ProfileService {
   createOrUpdateOrganizationProfile(profile: OrganizationProfile): Observable<any> {
     return this.http.post<any>(this.organizationUrl, profile);
   }
+  getBusinessProfile(): Observable<BusinessProfile> {
+  return this.http.get<BusinessProfile>(this.businessUrl);
+}
+  createOrUpdateBusinessProfile(profile: BusinessProfile): Observable<any> {
+    return this.http.post<any>(this.businessUrl, profile);
+}
 
 }

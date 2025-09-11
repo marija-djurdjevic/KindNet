@@ -81,6 +81,18 @@ onLogin(): void {
           }
         });
       } 
+      else if (role === 'BusinessRep') {
+        this.profileService.getBusinessProfile().subscribe({
+          next: () => this.router.navigate(['/layout']),
+          error: (err) => {
+            if (err instanceof Error && err.message.includes('Profile not found')) {
+              this.router.navigate(['/layout/business-profile/edit']);
+            } else {
+              this.router.navigate(['/layout']);
+            }
+          }
+        });
+      } 
       else {
         this.router.navigate(['/layout']);
       }
