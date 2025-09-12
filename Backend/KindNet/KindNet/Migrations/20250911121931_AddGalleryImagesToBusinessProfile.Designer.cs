@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using KindNet.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KindNet.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250911121931_AddGalleryImagesToBusinessProfile")]
+    partial class AddGalleryImagesToBusinessProfile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -256,69 +259,6 @@ namespace KindNet.Migrations
                     b.ToTable("OrganizationProfiles");
                 });
 
-            modelBuilder.Entity("KindNet.Models.ResourceFulfillment", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("AgreementTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<long>("ProviderId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("QuantityProvided")
-                        .HasColumnType("integer");
-
-                    b.Property<long>("RequestId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProviderId");
-
-                    b.HasIndex("RequestId");
-
-                    b.ToTable("ResourceFulfillments");
-                });
-
-            modelBuilder.Entity("KindNet.Models.ResourceRequest", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<int>("Category")
-                        .HasColumnType("integer");
-
-                    b.Property<long>("EventId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("ItemName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("QuantityFulfilled")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("QuantityNeeded")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EventId");
-
-                    b.ToTable("ResourceRequests");
-                });
-
             modelBuilder.Entity("KindNet.Models.User", b =>
                 {
                     b.Property<long>("Id")
@@ -462,36 +402,6 @@ namespace KindNet.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("KindNet.Models.ResourceFulfillment", b =>
-                {
-                    b.HasOne("KindNet.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("ProviderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KindNet.Models.ResourceRequest", "Request")
-                        .WithMany("Fulfillments")
-                        .HasForeignKey("RequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Request");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("KindNet.Models.ResourceRequest", b =>
-                {
-                    b.HasOne("KindNet.Models.Event", "Event")
-                        .WithMany("ResourcesRequests")
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Event");
-                });
-
             modelBuilder.Entity("KindNet.Models.VolunteerProfile", b =>
                 {
                     b.HasOne("KindNet.Models.User", "User")
@@ -501,16 +411,6 @@ namespace KindNet.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("KindNet.Models.Event", b =>
-                {
-                    b.Navigation("ResourcesRequests");
-                });
-
-            modelBuilder.Entity("KindNet.Models.ResourceRequest", b =>
-                {
-                    b.Navigation("Fulfillments");
                 });
 
             modelBuilder.Entity("KindNet.Models.VolunteerProfile", b =>

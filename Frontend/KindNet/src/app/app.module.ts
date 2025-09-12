@@ -50,6 +50,10 @@ import { EditVolunteerProfileComponent } from './edit-volunteer-profile/edit-vol
 import { BusinessRepHomeComponent } from './business-rep-home/business-rep-home.component';
 import { DonationDialogComponent } from './donation-dialog/donation-dialog.component';
 import { ThankYouDialogComponent } from './thank-you-dialog/thank-you-dialog.component';
+import { EditOrganizationProfileComponent } from './edit-organization-profile/edit-organization-profile.component';
+import { OrganizationProfileComponent } from './organization-profile/organization-profile.component';
+import { EditBusinessProfileComponent } from './edit-business-profile/edit-business-profile.component';
+import { BusinessProfileComponent } from './business-profile/business-profile.component';
 
 export function tokenGetter() {
   return localStorage.getItem('jwt');
@@ -70,7 +74,11 @@ export function tokenGetter() {
     EditVolunteerProfileComponent,
     BusinessRepHomeComponent,
     DonationDialogComponent,
-    ThankYouDialogComponent
+    ThankYouDialogComponent,
+    EditOrganizationProfileComponent,
+    OrganizationProfileComponent,
+    EditBusinessProfileComponent,
+    BusinessProfileComponent
   ],
 
   imports: [

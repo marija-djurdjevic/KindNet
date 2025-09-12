@@ -30,7 +30,9 @@ namespace KindNet.Services
                     Name = profileDto.Name,
                     City = profileDto.City,
                     ContactPhone = profileDto.ContactPhone,
-                    IsVerified = false
+                    IsVerified = false,
+                    Description = profileDto.Description,
+                    GalleryImageUrls = profileDto.GalleryImageUrls
                 };
                 _businessProfileRepository.Add(newProfile);
             }
@@ -39,6 +41,8 @@ namespace KindNet.Services
                 existingProfile.Name = profileDto.Name;
                 existingProfile.City = profileDto.City;
                 existingProfile.ContactPhone = profileDto.ContactPhone;
+                existingProfile.Description = profileDto.Description;
+                existingProfile.GalleryImageUrls = profileDto.GalleryImageUrls;
 
                 _businessProfileRepository.Update(existingProfile);
             }

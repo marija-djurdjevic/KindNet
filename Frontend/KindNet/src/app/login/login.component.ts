@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void { }
 
 
-  onLogin(): void {
+  /*onLogin(): void {
   const credentials = { email: this.email, password: this.password };
 
   this.authService.login(credentials).subscribe({
@@ -48,6 +48,61 @@ export class LoginComponent implements OnInit {
       this.toastService.error('Neuspješno prijavljivanje. Provjerite podatke.');
     }
   });
+}*/
+
+onLogin(): void {
+  const credentials = { email: this.email, password: this.password };
+
+  this.authService.login(credentials).subscribe({
+    next: () => {
+      const role = this.authService.getRole();
+
+      if (role === 'Volunteer') {
+        this.profileService.getVolunteerProfile().subscribe({
+          next: () => this.router.navigate(['/layout']),
+          error: (err) => {
+            if (err instanceof Error && err.message.includes('Profile not found')) {
+              this.router.navigate(['/layout/user-profile/edit']);
+            } else {
+              this.router.navigate(['/layout']);
+            }
+          }
+        });
+      } 
+      else if (role === 'OrganizationRep') {
+        this.profileService.getOrganizationProfile().subscribe({
+          next: () => this.router.navigate(['/layout']),
+          error: (err) => {
+            if (err instanceof Error && err.message.includes('Profile not found')) {
+              this.router.navigate(['/layout/organization-profile/edit']);
+            } else {
+              this.router.navigate(['/layout']);
+            }
+          }
+        });
+      } 
+      else if (role === 'BusinessRep') {
+        this.profileService.getBusinessProfile().subscribe({
+          next: () => this.router.navigate(['/layout']),
+          error: (err) => {
+            if (err instanceof Error && err.message.includes('Profile not found')) {
+              this.router.navigate(['/layout/business-profile/edit']);
+            } else {
+              this.router.navigate(['/layout']);
+            }
+          }
+        });
+      } 
+      else {
+        this.router.navigate(['/layout']);
+      }
+    },
+    error: (err) => {
+      console.error('Login nije uspio', err);
+      this.toastService.error('Neuspješno prijavljivanje. Provjerite podatke.');
+    }
+  });
 }
+
 
 }
