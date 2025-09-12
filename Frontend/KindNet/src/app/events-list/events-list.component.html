@@ -68,6 +68,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="volunteer-actions">
+                <div *ngIf="isOrganiser()" class="organiser-actions">
+                    <button
+                        mat-flat-button
+                        color="primary"
+                        class="resource-button"
+                        (click)="onViewResources(event.id)">
+                        <mat-icon>shopping_bag</mat-icon>
+                        <span>Potrebni resursi</span>
+                    </button>
+                    </div>
+                </div>
 
                 <div class="event-meta">
                     <div class="tag-and-actions">
@@ -134,10 +146,13 @@
                     mat-icon-button
                     matTooltip="Prijava je poslata!"
                     (click)="navigateToApplications()">
-                    <mat-icon color="primary">article</mat-icon>
-                </button>
-                <div *ngIf="!isOrganiser() && !isApplicationDeadlineMet(event) && !applicationStatus[event.id]" class="deadline-expired-message">
-                    <mat-icon color="warn" matTooltip="Rok za prijavu je istekao">warning_amber</mat-icon>
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+                    <i class="fa-solid fa-clipboard-check"></i>
+
+            </button>
+                <div *ngIf="!isOrganiser() && !isApplicationDeadlineMet(event) && !applicationStatus[event.id]" matTooltip="Rok za prijavu je istekao.">
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+                     <i class="fa-solid fa-circle-info info-icon-warning"></i>
                 </div>
             </div>
         </mat-card>

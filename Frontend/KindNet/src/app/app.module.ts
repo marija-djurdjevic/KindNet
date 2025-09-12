@@ -29,7 +29,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { ToastrModule } from 'ngx-toastr';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
@@ -47,6 +47,9 @@ import { ApplicationsDashboardComponent } from './applications-dashboard/applica
 import { CreateResourceDialogComponent } from './create-resource-dialog/create-resource-dialog.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { EditVolunteerProfileComponent } from './edit-volunteer-profile/edit-volunteer-profile.component';
+import { BusinessRepHomeComponent } from './business-rep-home/business-rep-home.component';
+import { DonationDialogComponent } from './donation-dialog/donation-dialog.component';
+import { ThankYouDialogComponent } from './thank-you-dialog/thank-you-dialog.component';
 import { EditOrganizationProfileComponent } from './edit-organization-profile/edit-organization-profile.component';
 import { OrganizationProfileComponent } from './organization-profile/organization-profile.component';
 import { EditBusinessProfileComponent } from './edit-business-profile/edit-business-profile.component';
@@ -69,6 +72,9 @@ export function tokenGetter() {
     CreateResourceDialogComponent,
     UserProfileComponent,
     EditVolunteerProfileComponent,
+    BusinessRepHomeComponent,
+    DonationDialogComponent,
+    ThankYouDialogComponent,
     EditOrganizationProfileComponent,
     OrganizationProfileComponent,
     EditBusinessProfileComponent,
@@ -108,6 +114,7 @@ export function tokenGetter() {
     BrowserAnimationsModule, 
     ReactiveFormsModule,
     MatTableModule,
+    MatProgressBarModule,
      ToastrModule.forRoot({
       positionClass: 'toast-bottom-right' 
     }),

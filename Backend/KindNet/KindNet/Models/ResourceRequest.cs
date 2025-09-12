@@ -24,7 +24,7 @@ namespace KindNet.Models
 
         public int QuantityFulfilled { get; set; } = 0;
 
-        public ResourceRequestStatus Status { get; set; } = ResourceRequestStatus.Open;
+        public ResourceRequestStatus Status { get; set; } = ResourceRequestStatus.Otvoren;
 
         public List<ResourceFulfillment> Fulfillments { get; set; } = new();
     }

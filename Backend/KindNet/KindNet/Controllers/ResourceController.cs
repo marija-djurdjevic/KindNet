@@ -1,12 +1,12 @@
 ﻿using KindNet.Dtos;
 using KindNet.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.Design;
 
 namespace KindNet.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/resources")]
     public class ResourcesController : ControllerBase
     {
         private readonly ResourceService _resourceService;
@@ -16,44 +16,35 @@ namespace KindNet.Controllers
             _resourceService = resourceService;
         }
 
-       /* [HttpGet("{id}")]
-        public async Task<ActionResult<ResourceDto>> GetById(long id)
+        [HttpPost("fulfillments")]
+        [Authorize] 
+        public async Task<IActionResult> CreateFulfillment([FromBody] CreateResourceFulfillmentDto dto)
         {
-            var resource = await _resourceService.GetByIdAsync(id);
-            if (resource == null) return NotFound();
-            return Ok(resource);
+            var userIdClaim = User.FindFirst("id");
+
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Korisnički ID claim ('id') nije pronađen u tokenu.");
+            }
+
+            if (!long.TryParse(userIdClaim.Value, out long businessRepId))
+            {
+                return Unauthorized($"Nevažeći format korisničkog ID-a ('{userIdClaim.Value}') u tokenu. Očekuje se numerička vrednost.");
+            }
+
+            try
+            {
+                var result = await _resourceService.CreateFulfillmentAsync(dto, businessRepId);
+                if (result == null)
+                {
+                    return BadRequest("Nije moguće procesuirati donaciju. Proverite da li zahtev postoji i da li je količina validna.");
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Došlo je do greške na serveru.");
+            }
         }
-
-        [HttpGet("event/{eventId}")]
-        public async Task<ActionResult<IEnumerable<ResourceDto>>> GetByEventId(long eventId)
-        {
-            var resources = await _resourceService.GetByEventIdAsync(eventId);
-            return Ok(resources);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult<ResourceDto>> Create([FromBody] ResourceDto dto)
-        {
-            var created = await _resourceService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<ActionResult<ResourceDto>> Update(long id, [FromBody] ResourceDto dto)
-        {
-            if (id != dto.Id) return BadRequest("Mismatched resource id");
-
-            var updated = await _resourceService.UpdateAsync(dto);
-            return Ok(updated);
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(long id)
-        {
-            var deleted = await _resourceService.DeleteAsync(id);
-            if (!deleted) return NotFound();
-
-            return NoContent();
-        }*/
     }
 }

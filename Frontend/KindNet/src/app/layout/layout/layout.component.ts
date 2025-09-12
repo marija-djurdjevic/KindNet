@@ -90,15 +90,20 @@ export class LayoutComponent {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
-  getProfileLink(): string {
-    if (this.role === 'Volunteer') {
-      return '/layout/user-profile';
-    } else if (this.role === 'OrganizationRep') {
-      return '/layout/organization-profile';
-    } else if (this.role === 'BusinessRep') {
-      return '/layout/business-profile';
-    } else {
-      return '/layout'; 
+
+  isBusinessRep(): boolean {
+    return this.authService.getRole() === 'BusinessRep';
   }
-}
+  
+  getProfileLink(): string {
+      if (this.role === 'Volunteer') {
+        return '/layout/user-profile';
+      } else if (this.role === 'OrganizationRep') {
+        return '/layout/organization-profile';
+      } else if (this.role === 'BusinessRep') {
+        return '/layout/business-profile';
+      } else {
+        return '/layout'; 
+    }
+  }
 }

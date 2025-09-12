@@ -13,8 +13,8 @@ namespace KindNet.Models
         public ResourceRequest Request { get; set; }
 
         [ForeignKey("User")]
-        public long ProviderUserId { get; set; }
-        public User Provider { get; set; }
+        public long ProviderId { get; set; }
+        public User User { get; set; }
 
         [Required]
         public int QuantityProvided { get; set; }

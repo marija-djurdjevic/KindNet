@@ -1,0 +1,31 @@
+<h2 mat-dialog-title>Resurs: {{ data.resource.itemName }}</h2>
+
+<mat-dialog-content>
+  <p>
+    Potrebno je još: <strong>{{ data.neededQuantity }}</strong>
+  </p>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Količina/Broj</mat-label>
+    <input
+      matInput
+      type="number"
+      [(ngModel)]="donationAmount"
+      [max]="data.neededQuantity"
+      min="1"
+      required
+      #quantityInput="ngModel">
+    <mat-error *ngIf="quantityInput.errors?.['required']">Količina je obavezna.</mat-error>
+    <mat-error *ngIf="quantityInput.errors?.['max']">Količina ne sme biti veća od {{ data.neededQuantity }}.</mat-error>
+    <mat-error *ngIf="quantityInput.errors?.['min']">Količina mora biti bar 1.</mat-error>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Odustani</button>
+  <button
+    mat-flat-button
+    class="save-button"
+    [disabled]="!donationAmount || quantityInput.invalid"
+    (click)="onConfirm()">
+    Potvrdi donaciju
+  </button>

@@ -288,10 +288,13 @@ export class CreateEventComponent implements OnInit {
   dialogRef.afterClosed().subscribe(result => {
     if (result) {
       this.event.resourceRequests.push({
+        id: 0,
         eventId: 0,
         itemName: result.name,
         quantityNeeded: result.quantity,
-        category: result.category
+        category: result.category,
+        quantityFulfilled: result.quantityFulfilled,
+        status: result.status
       });
     }
   });
@@ -342,7 +345,7 @@ getCategoryIcon(category: string | number): string {
     case 'Oprema':
       return 'chair';
     case 'Prostor':
-      return 'meeting_room';
+      return 'location_on';
     case 'Prevoz':
       return 'directions_car';
     case 'Materijal':

@@ -381,31 +381,8 @@ mat-card-actions {
   padding: 0.5rem 0;
 }
 
-.category-badge-equipment {
-  color: #ffc107; 
-}
-
-.category-badge-food {
-  color: #28a745;}
-
-.category-badge-drink {
-  color: #007bff; 
-}
-
-.category-badge-space {
-  color: #6c757d;
-}
-
-.category-badge-transport {
-  color: #dc3545;
-}
-
-.category-badge-material {
-  color: #17a2b8; 
-}
-
-.category-badge-other {
-  color: #fd7e14; 
+.category-badge {
+  color: #0d6efd; 
 }
 
 .category-badge {

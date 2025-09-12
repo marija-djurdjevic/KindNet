@@ -11,10 +11,12 @@ import { ApplicationsDashboardComponent } from './applications-dashboard/applica
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { EditVolunteerProfileComponent } from './edit-volunteer-profile/edit-volunteer-profile.component';
 import { ProfileGuard } from './guards/profile.guard';
+import { BusinessRepHomeComponent } from './business-rep-home/business-rep-home.component';
 import { OrganizationProfileComponent } from './organization-profile/organization-profile.component';
 import { EditOrganizationProfileComponent } from './edit-organization-profile/edit-organization-profile.component';
 import { EditBusinessProfileComponent } from './edit-business-profile/edit-business-profile.component';
 import { BusinessProfileComponent } from './business-profile/business-profile.component';
+
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -32,6 +34,7 @@ const routes: Routes = [
       { path: 'events-applications', component: ApplicationsDashboardComponent },
       { path: 'user-profile', component: UserProfileComponent }, 
       { path: 'user-profile/edit', component: EditVolunteerProfileComponent },
+      { path: "businessRep-home", component: BusinessRepHomeComponent},
       { path: 'organization-profile', component: OrganizationProfileComponent },
       { path: 'organization-profile/edit', component: EditOrganizationProfileComponent},
       { path: 'business-profile', component: BusinessProfileComponent},

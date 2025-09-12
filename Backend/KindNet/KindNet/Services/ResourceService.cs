@@ -23,22 +23,33 @@ namespace KindNet.Services
                 Category = dto.Category,
                 QuantityNeeded = dto.QuantityNeeded,
                 QuantityFulfilled = 0,
-                Status = ResourceRequestStatus.Open
+                Status = ResourceRequestStatus.Otvoren
             };
 
             var saved = await _resourceRepository.AddAsync(request);
             return MapToDto(saved);
         }
 
-        // ➤ Kreiranje fulfillmenta
-        public async Task<ResourceFulfillmentDto> CreateFulfillmentAsync(CreateResourceFulfillmentDto dto)
+        public async Task<ResourceFulfillmentDto> CreateFulfillmentAsync(CreateResourceFulfillmentDto dto, long BusinessRepId)
         {
+            var request = await _resourceRepository.GetRequestByIdAsync(dto.RequestId);
+            if (request == null || request.Status == ResourceRequestStatus.Ispunjen)
+            {
+                return null; 
+            }
+
+            var neededQuantity = request.QuantityNeeded - request.QuantityFulfilled;
+            if (dto.QuantityProvided <= 0 || dto.QuantityProvided > neededQuantity)
+            {
+                return null; 
+            }
+
             var fulfillment = new ResourceFulfillment
             {
                 RequestId = dto.RequestId,
-                ProviderUserId = dto.ProviderUserId,
+                ProviderId = BusinessRepId,
                 QuantityProvided = dto.QuantityProvided,
-                AgreementTime = DateTime.UtcNow
+                AgreementTime = DateTime.UtcNow,
             };
 
             var saved = await _resourceRepository.AddAsync(fulfillment);
@@ -108,7 +119,7 @@ namespace KindNet.Services
                     Category = newResource.Category,
                     QuantityNeeded = newResource.QuantityNeeded,
                     QuantityFulfilled = 0,
-                    Status = ResourceRequestStatus.Open
+                    Status = ResourceRequestStatus.Otvoren
                 };
                 await _resourceRepository.AddAsync(newResource); 
             }
@@ -130,11 +141,11 @@ namespace KindNet.Services
         private static ResourceFulfillmentDto MapToDto(ResourceFulfillment fulfillment) =>
             new()
             {
-                Id = fulfillment.Id,
                 RequestId = fulfillment.RequestId,
-                ProviderUserId = fulfillment.ProviderUserId,
                 QuantityProvided = fulfillment.QuantityProvided,
-                AgreementTime = fulfillment.AgreementTime
+                Id = fulfillment.Id,
+                AgreementTime = fulfillment.AgreementTime,
+                ProviderUserId = fulfillment.ProviderId
             };
     
     }

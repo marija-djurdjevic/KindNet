@@ -1,0 +1,68 @@
+.thank-you-dialog-panel {
+  overflow: hidden;
+  position: relative;
+  background-color: #ffffff;
+}
+
+.thank-you-dialog-panel .confetti-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.thank-you-dialog-panel .thank-you-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  position: relative;
+  z-index: 1; 
+}
+
+@keyframes confetti-fall {
+  0% { transform: translateY(-100%); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translateY(100%); }
+}
+
+.thank-you-dialog-panel h2.mat-dialog-title {
+  color: #e07a5f;
+  font-weight: bold;
+  font-size: 2em;
+  margin-bottom: 8px;
+  animation: fade-in 1s ease-out;
+}
+
+.thank-you-dialog-panel .mat-dialog-content {
+  color: #495057;
+  font-size: 1.1em;
+  line-height: 1.5;
+  animation: fade-in 1.5s ease-out;
+}
+
+.thank-you-dialog-panel .mat-dialog-actions {
+  margin-top: 24px;
+}
+
+.save-button {
+    background-color: #e07a5f !important;
+    color: white;
+}
+
+.thank-you-dialog-panel .mat-flat-button {
+  background-color: #e07a5f !important;
+  color: white;
+  transition: transform 0.3s ease;
+  animation: pulse-button 1s infinite alternate;
+}
+
+.thank-you-dialog-panel .mat-flat-button:hover {
+  transform: scale(1.05);
+}
+
