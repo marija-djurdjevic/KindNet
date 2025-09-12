@@ -11,6 +11,7 @@ import { ApplicationsDashboardComponent } from './applications-dashboard/applica
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { EditVolunteerProfileComponent } from './edit-volunteer-profile/edit-volunteer-profile.component';
 import { ProfileGuard } from './guards/profile.guard';
+import { BusinessRepHomeComponent } from './business-rep-home/business-rep-home.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -27,7 +28,8 @@ const routes: Routes = [
       { path: 'calendar', component: CalendarComponent },
       { path: 'events-applications', component: ApplicationsDashboardComponent },
       { path: 'user-profile', component: UserProfileComponent }, 
-      { path: 'user-profile/edit', component: EditVolunteerProfileComponent }
+      { path: 'user-profile/edit', component: EditVolunteerProfileComponent },
+      { path: "businessRep-home", component: BusinessRepHomeComponent}
     ]
   },
   

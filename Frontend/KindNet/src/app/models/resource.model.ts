@@ -8,17 +8,26 @@ export enum ResourceCategory {
   Ostalo = 6
 }
 
+export enum ResourceRequestStatus {
+  Otvoren = 0,
+  Djelimicno = 1,
+  Ispunjen = 2
+}
+
 export interface ResourceRequest {
+  id: number;
   eventId: number;
   itemName: string;               
   quantityNeeded: number;           
   category: ResourceCategory; 
+  quantityFulfilled: number;
+  status: ResourceRequestStatus;
 }
 
 export interface ResourceFulfillment {
   id: number;                 
-  resourceRequestId: number;  
-  providerId: number;         
-  providedQuantity: number;   
-  providedAt: Date;           
+  requestId: number;  
+  providerUserId: number;         
+  quantityProvided: number;   
+  agreementTime: Date;           
 }

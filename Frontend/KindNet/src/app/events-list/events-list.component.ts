@@ -236,4 +236,8 @@ export class EventsListComponent implements OnInit {
   navigateToApplications() {
     this.router.navigate(['layout/events-applications']);
   }
+
+  onViewResources(arg0: number) {
+      throw new Error('Method not implemented.');
+  }
 }

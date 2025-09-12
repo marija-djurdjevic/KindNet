@@ -28,9 +28,8 @@ import { MarkdownModule } from 'ngx-markdown';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { ToastrModule } from 'ngx-toastr';
-import { ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
@@ -48,6 +47,9 @@ import { ApplicationsDashboardComponent } from './applications-dashboard/applica
 import { CreateResourceDialogComponent } from './create-resource-dialog/create-resource-dialog.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { EditVolunteerProfileComponent } from './edit-volunteer-profile/edit-volunteer-profile.component';
+import { BusinessRepHomeComponent } from './business-rep-home/business-rep-home.component';
+import { DonationDialogComponent } from './donation-dialog/donation-dialog.component';
+import { ThankYouDialogComponent } from './thank-you-dialog/thank-you-dialog.component';
 
 export function tokenGetter() {
   return localStorage.getItem('jwt');
@@ -65,7 +67,10 @@ export function tokenGetter() {
     ApplicationsDashboardComponent,
     CreateResourceDialogComponent,
     UserProfileComponent,
-    EditVolunteerProfileComponent
+    EditVolunteerProfileComponent,
+    BusinessRepHomeComponent,
+    DonationDialogComponent,
+    ThankYouDialogComponent
   ],
 
   imports: [
@@ -101,6 +106,7 @@ export function tokenGetter() {
     BrowserAnimationsModule, 
     ReactiveFormsModule,
     MatTableModule,
+    MatProgressBarModule,
      ToastrModule.forRoot({
       positionClass: 'toast-bottom-right' 
     }),

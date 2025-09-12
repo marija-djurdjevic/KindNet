@@ -3,7 +3,7 @@
     <div class="app-title">KindNet</div>
     
     <mat-nav-list class="nav-list">
-      <a mat-list-item routerLink="/layout/">
+      <a *ngIf="isBusinessRep()" mat-list-item routerLink="/layout/businessRep-home">
         <mat-icon>home</mat-icon> Početna stranica
       </a>
       <a mat-list-item routerLink="/layout/events">
@@ -12,7 +12,7 @@
       <a mat-list-item routerLink="/layout/calendar">
         <mat-icon>calendar_month</mat-icon> Kalendar
       </a>
-      <a mat-list-item routerLink="/layout/events-applications">
+      <a *ngIf="!isBusinessRep()" mat-list-item routerLink="/layout/events-applications">
         <mat-icon>list_alt</mat-icon> Prijave
       </a>
       <a mat-list-item routerLink="/layout/user-profile">

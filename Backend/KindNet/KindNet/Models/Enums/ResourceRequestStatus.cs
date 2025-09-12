@@ -2,8 +2,8 @@
 {
     public enum ResourceRequestStatus
     {
-        Open,
-        Pending,
-        Fulfilled
+        Otvoren,
+        Djelimicno,
+        Ispunjen
     }
 }

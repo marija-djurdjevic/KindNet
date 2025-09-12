@@ -88,4 +88,8 @@ export class LayoutComponent {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
+
+  isBusinessRep(): boolean {
+    return this.authService.getRole() === 'BusinessRep';
+  }
 }

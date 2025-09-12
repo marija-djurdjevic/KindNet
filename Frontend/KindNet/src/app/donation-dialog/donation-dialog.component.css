@@ -1,0 +1,9 @@
+.save-button {
+  background-color: #e07a5f !important;
+  color: white !important;
+}
+
+.save-button[disabled] {
+  background-color: #ccc !important;
+  color: #666 !important;
+}

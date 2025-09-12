@@ -37,9 +37,9 @@ namespace KindNet.Repositories
             request.QuantityFulfilled += fulfillment.QuantityProvided;
 
             if (request.QuantityFulfilled >= request.QuantityNeeded)
-                request.Status = ResourceRequestStatus.Fulfilled;
+                request.Status = ResourceRequestStatus.Ispunjen;
             else
-                request.Status = ResourceRequestStatus.Pending;
+                request.Status = ResourceRequestStatus.Otvoren;
 
             await _context.SaveChangesAsync();
             return fulfillment;
