@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EventService } from '../services/event.service';
 import { EventDto } from '../models/event.model';
 import { ResourceService } from '../services/resource.service';
-import { ResourceFulfillment, ResourceRequest, ResourceRequestStatus } from '../models/resource.model';
+import { ResourceFulfillment, ResourceRequest, ResourceRequestDetailDto, ResourceRequestStatus } from '../models/resource.model';
 import { DonationDialogComponent } from '../donation-dialog/donation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastService } from '../services/toast.service';
@@ -59,7 +59,7 @@ export class BusinessRepHomeComponent implements OnInit {
   'Ostalo': 'more_horiz'
 };
 
-  openDonationDialog(resource: ResourceRequest): void {
+  openDonationDialog(resource: ResourceRequestDetailDto): void {
     const neededQuantity = resource.quantityNeeded - (resource.quantityFulfilled || 0);
     const dialogRef = this.dialog.open(DonationDialogComponent, {
       width: '400px',
@@ -85,13 +85,6 @@ export class BusinessRepHomeComponent implements OnInit {
             const resourceInEvent = event.resourceRequests.find(r => r.id === response.requestId);
             if (resourceInEvent) {
               resourceInEvent.quantityFulfilled = (resourceInEvent.quantityFulfilled || 0) + response.quantityProvided;
-
-              if (resourceInEvent.quantityFulfilled >= resourceInEvent.quantityNeeded) {
-                resourceInEvent.status = ResourceRequestStatus.Ispunjen;
-                this.loadData();
-              } else if (resourceInEvent.quantityFulfilled > 0) {
-                resourceInEvent.status = ResourceRequestStatus.Djelimicno;
-              }
                 confetti({
                     particleCount: 150,
                     spread: 180,

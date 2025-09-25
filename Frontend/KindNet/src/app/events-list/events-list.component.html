@@ -74,7 +74,7 @@
                         mat-flat-button
                         color="primary"
                         class="resource-button"
-                        (click)="onViewResources(event.id)">
+                        (click)="onViewResources(event)">
                         <mat-icon>shopping_bag</mat-icon>
                         <span>Potrebni resursi</span>
                     </button>
@@ -182,6 +182,62 @@
                 (click)="confirmAction()">
                 Potvrdi
             </button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" *ngIf="showResourcesModal" (click)="closeResourcesModal()">
+    <div class="modal-dialog resources-modal" (click)="$event.stopPropagation()">
+        
+        <div class="modal-header">
+            <h4 class="modal-title" *ngIf="selectedEventForResources">
+                Potrebni resursi za događaj: "<strong>{{ selectedEventForResources.name }}</strong>"
+            </h4>
+            <button type="button" class="close" (click)="closeResourcesModal()">&times;</button>
+        </div>
+
+        <div class="modal-body" *ngIf="selectedEventForResources">
+            
+            <div *ngIf="selectedEventForResources.resourceRequests.length > 0; else noResources" class="resources-list">
+                
+                <div *ngFor="let resource of selectedEventForResources.resourceRequests" class="resource-item">
+                    
+                    <div class="resource-header">
+                        <span class="item-name">{{ resource.itemName }}</span>
+                        <span class="category-tag">{{ resource.category }}</span>
+                    </div>
+
+                    <div class="fulfillment-info">
+                        Obezbijeđeno: <strong>{{ resource.quantityFulfilled || 0 }} / {{ resource.quantityNeeded }}</strong>
+                    </div>
+
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" [style.width.%]="calculateFulfillmentPercentage(resource)"></div>
+                    </div>
+
+                    <div *ngIf="resource.fulfillments.length > 0" class="fulfillments-section">
+                        <h5>Donacije:</h5>
+                        <ul class="fulfillments-list">
+                            <li *ngFor="let fulfillment of resource.fulfillments">
+                                <span><mat-icon>business</mat-icon> {{ fulfillment.providerName }}</span>
+                                <strong>{{ fulfillment.quantityProvided }} kom.</strong>
+                            </li>
+                        </ul>
+                    </div>
+                     <div *ngIf="resource.fulfillments.length === 0" class="no-fulfillments">
+                        <p>Još uvek nema donacija za ovaj resurs.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <ng-template #noResources>
+                <div class="no-events">
+                    <mat-icon>info_outline</mat-icon>
+                    <p>Za ovaj događaj nisu definisani potrebni resursi.</p>
+                </div>
+            </ng-template>
+
         </div>
     </div>
 </div>

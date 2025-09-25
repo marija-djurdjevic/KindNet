@@ -41,5 +41,17 @@ namespace KindNet.Repositories
             _context.BusinessProfiles.Remove(entity);
             _context.SaveChanges();
         }
+
+        public async Task<Dictionary<long, BusinessProfile>> GetProfilesByUserIdsAsync(List<long> userIds)
+        {
+            if (userIds == null || !userIds.Any())
+            {
+                return new Dictionary<long, BusinessProfile>();
+            }
+
+            return await _context.BusinessProfiles
+                .Where(p => userIds.Contains(p.UserId))
+                .ToDictionaryAsync(p => p.UserId);
+        }
     }
 }

@@ -1,4 +1,4 @@
-import { ResourceRequest } from "./resource.model";
+import { ResourceRequest, ResourceRequestDetailDto } from "./resource.model";
 
 export interface CreateEventDto {
   name: string;
@@ -26,7 +26,7 @@ export interface EventDto {
   applicationDeadline: Date;
   requiredSkills: string[];
   organizerName: string;
-  resourceRequests: ResourceRequest[]; 
+  resourceRequests: ResourceRequestDetailDto[]; 
 }
 
 export interface CreateEventResultDto {

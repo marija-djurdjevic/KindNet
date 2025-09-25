@@ -169,7 +169,6 @@
 .resource-category { 
   font-size: 0.8rem; 
   color: #6c757d;
-  text-transform: uppercase; 
   letter-spacing: 0.5px;
 }
 
@@ -190,9 +189,13 @@
 }
 
 .progress-text strong { color: #000; }
-mat-progress-bar { border-radius: 4px; }
+mat-progress-bar { border-radius: 5px; }
 
-
+mat-progress-bar {
+  --mdc-linear-progress-active-indicator-color: #4caf50;
+  --mdc-linear-progress-track-height: 15px;
+  --mdc-linear-progress-active-indicator-height: 15px;
+}
 .offer-button {
   height: 40px;
   width: 150px;

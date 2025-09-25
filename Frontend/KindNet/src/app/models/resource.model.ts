@@ -31,3 +31,23 @@ export interface ResourceFulfillment {
   quantityProvided: number;   
   agreementTime: Date;           
 }
+
+export interface ResourceFulfillmentDetailDto {
+  id: number;                 
+  requestId: number;  
+  providerUserId: number;         
+  quantityProvided: number;   
+  agreementTime: Date;  
+  providerName: string;
+}
+
+export interface ResourceRequestDetailDto {
+  id: number;
+  eventId: number;
+  itemName: string;               
+  quantityNeeded: number;           
+  category: ResourceCategory; 
+  quantityFulfilled: number;
+  status: ResourceRequestStatus;
+  fulfillments: ResourceFulfillmentDetailDto[]; 
+}

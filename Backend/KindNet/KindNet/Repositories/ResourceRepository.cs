@@ -66,9 +66,10 @@ namespace KindNet.Repositories
         public async Task<IEnumerable<ResourceRequest>> GetByEventIdAsync(long eventId)
         {
             return await _context.ResourceRequests
-                .Include(r => r.Fulfillments)
-                .Where(r => r.EventId == eventId)
-                .ToListAsync();
+            .Where(r => r.EventId == eventId) 
+            .Include(r => r.Fulfillments)   
+            .ThenInclude(f => f.User)
+        .ToListAsync();
         }
 
         //Svi fulfillmenti za određeni request
@@ -77,6 +78,7 @@ namespace KindNet.Repositories
             return await _context.ResourceFulfillments
                 .Where(f => f.RequestId == requestId)
                 .ToListAsync();
+
         }
 
         //Fulfillment po id

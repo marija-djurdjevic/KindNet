@@ -45,7 +45,7 @@
               {{ event.status }}
             </span>
           </div>
-          <span class="tag type-tag">
+          <span class="tag type-tag"  [ngClass]="'tag-'+ event.type.toLowerCase()">
             {{ event.type }}
           </span>
         </div>

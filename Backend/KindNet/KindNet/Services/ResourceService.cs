@@ -2,16 +2,19 @@
 using KindNet.Models;
 using KindNet.Dtos;
 using KindNet.Models.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace KindNet.Services
 {
     public class ResourceService 
     {
         private readonly IResourceRepository _resourceRepository;
+        private readonly IBusinessProfileRepository _businessProfileRepository;
 
-        public ResourceService(IResourceRepository resourceRepository)
+        public ResourceService(IResourceRepository resourceRepository, IBusinessProfileRepository businessProfileRepository)
         {
             _resourceRepository = resourceRepository;
+            _businessProfileRepository = businessProfileRepository;
         }
 
         public async Task<ResourceRequestDto> CreateRequestAsync(CreateResourceRequestDto dto)
@@ -59,7 +62,14 @@ namespace KindNet.Services
         public async Task<IEnumerable<ResourceRequestDto>> GetRequestsByEventAsync(long eventId)
         {
             var requests = await _resourceRepository.GetByEventIdAsync(eventId);
-            return requests.Select(MapToDto);
+            var providerUserIds = requests
+              .SelectMany(r => r.Fulfillments)
+              .Select(f => f.User.Id)
+              .Distinct()
+              .ToList();
+
+            var businessProfiles = await _businessProfileRepository.GetProfilesByUserIdsAsync(providerUserIds);
+            return requests.Select(req => MapToDtoDetail(req, businessProfiles)).ToList();
         }
 
         public async Task<IEnumerable<ResourceFulfillmentDto>> GetFulfillmentsByRequestAsync(long requestId)
@@ -126,8 +136,9 @@ namespace KindNet.Services
         }
 
 
-        private static ResourceRequestDto MapToDto(ResourceRequest request) =>
-            new()
+        public static ResourceRequestDto MapToDtoDetail(ResourceRequest request, Dictionary<long, BusinessProfile> profiles)
+        {
+            return new()
             {
                 Id = request.Id,
                 EventId = request.EventId,
@@ -135,8 +146,28 @@ namespace KindNet.Services
                 Category = request.Category,
                 QuantityNeeded = request.QuantityNeeded,
                 QuantityFulfilled = request.QuantityFulfilled,
-                Status = request.Status
+                Status = request.Status,
+                Fulfillments = request.Fulfillments?
+                                    .Select(ful => MapToDtoDetail(ful, profiles))
+                                    .ToList() ?? new List<ResourceFulfillmentDto>()
             };
+        }
+
+        private static ResourceRequestDto MapToDto(ResourceRequest request) =>
+              new()
+              {
+                  Id = request.Id,
+                  EventId = request.EventId,
+                  ItemName = request.ItemName,
+                  Category = request.Category,
+                  QuantityNeeded = request.QuantityNeeded,
+                  QuantityFulfilled = request.QuantityFulfilled,
+                  Status = request.Status,
+                  Fulfillments = request.Fulfillments?
+                      .Select(MapToDto)
+                      .ToList() ?? new List<ResourceFulfillmentDto>()
+              };
+
 
         private static ResourceFulfillmentDto MapToDto(ResourceFulfillment fulfillment) =>
             new()
@@ -147,6 +178,21 @@ namespace KindNet.Services
                 AgreementTime = fulfillment.AgreementTime,
                 ProviderUserId = fulfillment.ProviderId
             };
-    
+
+        private static ResourceFulfillmentDto MapToDtoDetail(ResourceFulfillment fulfillment, Dictionary<long, BusinessProfile>? profiles)
+        {
+            profiles.TryGetValue(fulfillment.ProviderId, out var profile);
+
+            return new()
+            {
+                RequestId = fulfillment.RequestId,
+                QuantityProvided = fulfillment.QuantityProvided,
+                Id = fulfillment.Id,
+                AgreementTime = fulfillment.AgreementTime,
+                ProviderUserId = fulfillment.ProviderId,
+                ProviderName = profile?.Name ?? "Nepoznat donator"
+            };
+        }
+
     }
 }
