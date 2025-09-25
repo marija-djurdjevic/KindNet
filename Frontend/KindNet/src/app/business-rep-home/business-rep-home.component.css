@@ -129,7 +129,7 @@
   grid-template-columns: 150px 2fr 150px; 
   align-items: center;
   padding: 12px 16px;
-  background-color: #f8f9fa;
+  background-color: #f5f5f5;
   border: 1px solid #e9ecef;
   border-radius: 8px;
   border-left: 4px solid transparent;
@@ -197,7 +197,6 @@ mat-progress-bar { border-radius: 4px; }
   height: 40px;
   width: 150px;
   font-weight: 500;
-  border-radius: 20px;
   padding: 0 16px;
   justify-self: end;
 }
