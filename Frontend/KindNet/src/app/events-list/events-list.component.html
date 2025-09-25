@@ -84,7 +84,7 @@
                 <div class="event-meta">
                     <div class="tag-and-actions">
                         <span class="tag status-tag" [ngClass]="'status-' + event.status.toLowerCase()">
-                            {{ event.status }}
+                            {{  translateStatus(event.status) }}
                         </span>
                         <button
                             *ngIf="event.status === 'Planned' && isOrganiser()"
@@ -116,7 +116,7 @@
                         </button>
                     </div>
                     <span class="tag type-tag">
-                        {{ event.type }}
+                        {{ translateType(event.type) }}
                     </span>
                 </div>
             </div>

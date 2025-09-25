@@ -6,7 +6,7 @@
       <a *ngIf="isBusinessRep()" mat-list-item routerLink="/layout/businessRep-home">
         <mat-icon>home</mat-icon> Početna stranica
       </a>
-      <a mat-list-item routerLink="/layout/events">
+      <a *ngIf="!isBusinessRep()" mat-list-item routerLink="/layout/events">
         <mat-icon>event</mat-icon> Događaji
       </a>
       <a mat-list-item routerLink="/layout/calendar">

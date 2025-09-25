@@ -42,11 +42,11 @@
         <div class="event-meta">
           <div class="tag-and-actions">
             <span class="tag status-tag" [ngClass]="'status-' + event.status.toLowerCase()">
-              {{ event.status }}
+              {{ translateStatus(event.status) }}
             </span>
           </div>
           <span class="tag type-tag"  [ngClass]="'tag-'+ event.type.toLowerCase()">
-            {{ event.type }}
+            {{ translateType(event.type) }}
           </span>
         </div>
       </div>

@@ -22,34 +22,6 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void { }
 
-
-  /*onLogin(): void {
-  const credentials = { email: this.email, password: this.password };
-
-  this.authService.login(credentials).subscribe({
-    next: () => {
-      this.profileService.getVolunteerProfile().subscribe({
-        next: () => {
-          this.router.navigate(['/layout']);
-        },
-        error: (err) => {
-          console.error('Greška pri provjeri profila', err);
-          const message = (err instanceof Error) ? err.message : '';
-          if (message.includes('Profile not found')) {
-            this.router.navigate(['/layout/user-profile/edit']);
-          } else {
-            this.router.navigate(['/layout']);
-          }
-        }
-      });
-    },
-    error: (err) => {
-      console.error('Login nije uspio', err);
-      this.toastService.error('Neuspješno prijavljivanje. Provjerite podatke.');
-    }
-  });
-}*/
-
 onLogin(): void {
   const credentials = { email: this.email, password: this.password };
 
@@ -96,10 +68,6 @@ onLogin(): void {
       else {
         this.router.navigate(['/layout']);
       }
-    },
-    error: (err) => {
-      console.error('Login nije uspio', err);
-      this.toastService.error('Neuspješno prijavljivanje. Provjerite podatke.');
     }
   });
 }
