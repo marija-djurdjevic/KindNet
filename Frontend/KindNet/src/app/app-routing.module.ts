@@ -33,11 +33,14 @@ const routes: Routes = [
       { path: 'calendar', component: CalendarComponent },
       { path: 'events-applications', component: ApplicationsDashboardComponent },
       { path: 'user-profile', component: UserProfileComponent }, 
+      { path: 'user-profile/:userId', component: UserProfileComponent }, 
       { path: 'user-profile/edit', component: EditVolunteerProfileComponent },
-      { path: "businessRep-home", component: BusinessRepHomeComponent},
+      { path: 'businessRep-home', component: BusinessRepHomeComponent},
       { path: 'organization-profile', component: OrganizationProfileComponent },
+      { path: 'organization-profile/:userId', component: OrganizationProfileComponent },
       { path: 'organization-profile/edit', component: EditOrganizationProfileComponent},
       { path: 'business-profile', component: BusinessProfileComponent},
+      { path: 'business-profile/:userId', component: BusinessProfileComponent }, 
       { path: 'business-profile/edit', component: EditBusinessProfileComponent}
     ]
   },

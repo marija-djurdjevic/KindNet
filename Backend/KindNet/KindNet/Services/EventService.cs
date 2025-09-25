@@ -219,6 +219,7 @@ namespace KindNet.Services
 
             var applications = await _applicationRepository.GetApplicationsForEventAsync(eventId);
 
+
             var userIds = applications
                 .Where(app => app.Status != ApplicationStatus.Rejected)
                 .Select(app => app.VolunteerUserId)
@@ -238,6 +239,19 @@ namespace KindNet.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"Greška prilikom slanja notifikacija za otkazan događaj: {ex.Message}");
+            }
+
+            var applicationsToReject = applications
+              .Where(app => app.Status == ApplicationStatus.Pending)
+              .ToList();
+
+            if (applicationsToReject.Any())
+            {
+                foreach (var app in applicationsToReject)
+                {
+                    app.Status = ApplicationStatus.Rejected;
+                }
+                await _applicationRepository.UpdateRangeAsync(applicationsToReject);
             }
 
             return true; 
@@ -349,6 +363,7 @@ namespace KindNet.Services
                 ApplicationDeadline = eventItem.ApplicationDeadline,
                 RequiredSkills = eventItem.RequiredSkills,
                 OrganizerName = eventItem.Organizer?.Name,
+                OrganizerId = eventItem.OrganizerId,
                 ResourceRequests = resourceRequests.ToList()
             };
         }

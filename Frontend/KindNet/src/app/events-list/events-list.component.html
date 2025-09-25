@@ -54,6 +54,15 @@
                         <h3 class="event-name">{{ event.name }}</h3>
                     </div>
                     <div class="event-details">
+                          <div class="detail-item">
+                            <mat-icon>person</mat-icon>
+                            <span>Organizator: 
+                                <a  matTooltip="Pogledaj profil oganizacije" 
+                                            matTooltipPosition="above" [routerLink]="['/layout/organization-profile', event.organizerId]" class="organizer-link">
+                                    {{ event.organizerName }}
+                                </a>
+                            </span>
+                        </div>
                         <div class="detail-item">
                             <mat-icon>location_on</mat-icon>
                             <span>{{ event.city }}</span>
@@ -219,8 +228,14 @@
                         <h5>Donacije:</h5>
                         <ul class="fulfillments-list">
                             <li *ngFor="let fulfillment of resource.fulfillments">
-                                <span><mat-icon>business</mat-icon> {{ fulfillment.providerName }}</span>
-                                <strong>{{ fulfillment.quantityProvided }} kom.</strong>
+                          <a [routerLink]="['/layout/business-profile', fulfillment.providerUserId]" 
+                            class="provider-link"
+                            matTooltip="Pogledaj profil firme" 
+                            matTooltipPosition="above">
+                            <mat-icon>business</mat-icon>
+                            <span>{{ fulfillment.providerName }}</span>
+                            </a>          
+                            <strong>{{ fulfillment.quantityProvided }} kom.</strong>
                             </li>
                         </ul>
                     </div>

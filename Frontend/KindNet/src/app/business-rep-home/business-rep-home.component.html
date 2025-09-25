@@ -34,9 +34,14 @@
               <span>{{ event.startTime | date:'dd.MM.yyyy HH:mm' }} - {{ event.endTime | date:'dd.MM.yy HH:mm' }}</span>
             </div>
              <div class="detail-item">
-                 <mat-icon>person</mat-icon>
-                 <span>Organizator: {{ event.organizerName }}</span>
-             </div>
+            <mat-icon>person</mat-icon>
+            <span>Organizator: 
+                <a  matTooltip="Pogledaj profil oganizacije" 
+                            matTooltipPosition="above" [routerLink]="['/layout/organization-profile', event.organizerId]" class="organizer-link">
+                    {{ event.organizerName }}
+                </a>
+            </span>
+        </div>
           </div>
         </div>
         <div class="event-meta">

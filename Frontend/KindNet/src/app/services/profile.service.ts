@@ -16,6 +16,11 @@ export class ProfileService {
   getVolunteerProfile(): Observable<VolunteerProfile> {
     return this.http.get<VolunteerProfile>(`${this.apiUrl}/volunteer`);
   }
+
+   getVolunteerProfileByUserId(userId: number): Observable<VolunteerProfile> {
+    return this.http.get<VolunteerProfile>(`${this.apiUrl}/volunteer/user/${userId}`);
+  }
+  
   updateVolunteerProfile(profileDto: VolunteerProfileDto): Observable<any> {
     return this.http.post(`${this.apiUrl}/volunteer`, profileDto);
   }
@@ -23,12 +28,22 @@ export class ProfileService {
   getOrganizationProfile(): Observable<OrganizationProfile> {
     return this.http.get<OrganizationProfile>(this.organizationUrl);
   }
+
+  getOrganizationProfileByUserId(userId: number): Observable<OrganizationProfile> {
+    return this.http.get<OrganizationProfile>(`${this.organizationUrl}/user/${userId}`);
+  }
+
   createOrUpdateOrganizationProfile(profile: OrganizationProfile): Observable<any> {
     return this.http.post<any>(this.organizationUrl, profile);
   }
   getBusinessProfile(): Observable<BusinessProfile> {
-  return this.http.get<BusinessProfile>(this.businessUrl);
-}
+    return this.http.get<BusinessProfile>(this.businessUrl);
+  }
+
+  getBusinessProfileByUserId(userId: number): Observable<BusinessProfile> {
+    return this.http.get<BusinessProfile>(`${this.businessUrl}/user/${userId}`);
+  }
+
   createOrUpdateBusinessProfile(profile: BusinessProfile): Observable<any> {
     return this.http.post<any>(this.businessUrl, profile);
 }

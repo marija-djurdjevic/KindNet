@@ -137,8 +137,11 @@ export class EventsListComponent implements OnInit {
                   this.events = data;
                   console.log(this.events);
               } else {
-                  this.events = data.events.filter((event: { status: string; }) => event.status !== 'Archived' && event.status !== 'Draft' && event.status !== 'Archived' );
+                  console.log(data.events);
+                  this.events = data.events.filter((event: { status: string; }) => event.status !== 'Archived' && event.status !== 'Draft' && event.status !== 'Canceled' );
                   this.applicationStatus = data.applicationStatus;
+                  console.log(this.events);
+
               }
               this.isLoading = false;
           }

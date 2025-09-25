@@ -531,3 +531,13 @@
     font-size: 0.9em;
     text-align: center;
 }
+
+.provider-link {
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.provider-link:hover {
+  text-decoration: underline;
+}

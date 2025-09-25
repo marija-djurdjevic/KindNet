@@ -26,6 +26,7 @@ export interface EventDto {
   applicationDeadline: Date;
   requiredSkills: string[];
   organizerName: string;
+  organizerId: number;
   resourceRequests: ResourceRequestDetailDto[]; 
 }
 

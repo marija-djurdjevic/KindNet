@@ -50,5 +50,19 @@ namespace KindNet.Controllers
             _volunteerProfileService.CreateOrUpdateProfile(userId, profileDto);
             return NoContent();
         }
+
+
+        [HttpGet("user/{userId}")]
+        public ActionResult<ActionResult<BusinessProfileDto>> GetProfileByUserId([FromRoute] long userId)
+        {
+            var profile = _volunteerProfileService.GetProfileByUserId(userId);
+
+            if (profile == null)
+            {
+                return NotFound(new { message = "Profile not found" });
+            }
+            return Ok(profile);
+        }
+
     }
 }

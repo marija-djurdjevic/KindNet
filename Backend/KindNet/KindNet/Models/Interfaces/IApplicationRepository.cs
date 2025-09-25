@@ -1,4 +1,5 @@
 ﻿using KindNet.Models.Enums;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace KindNet.Models.Interfaces
 {
@@ -11,5 +12,6 @@ namespace KindNet.Models.Interfaces
         Task<EventApplication> GetApplicationByIdAsync(long applicationId);
         Task<bool> UpdateApplicationStatusAsync(long applicationId, ApplicationStatus status);
         Task<IEnumerable<EventApplication>> GetApplicationsForEventAsync(long eventId);
+        Task UpdateRangeAsync(IEnumerable<EventApplication> applications);
     }
 }
