@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { ApplicationService } from '../services/application.service';
 import { ToastService } from '../services/toast.service';
 import { MatDialog } from '@angular/material/dialog';
+import { ResourceRequestDetailDto } from '../models/resource.model';
 
 @Component({
   selector: 'app-events-list',
@@ -32,6 +33,9 @@ export class EventsListComponent implements OnInit {
    activeFilter: 'status' | 'sort' | null = null;
    selectedStatusName: string | null = 'Status';
    sortOptionName: string = 'Najnoviji prvi';
+
+  showResourcesModal = false;
+  selectedEventForResources: EventDto | null = null;
 
     eventStatuses = [
     { value: EventStatus.Draft, name: 'Nacrt' },
@@ -120,12 +124,14 @@ export class EventsListComponent implements OnInit {
           );
       } else {
           eventsObservable = this.eventService.getAllEventsWithApplicationStatus();
+          
       }
 
       eventsObservable.subscribe({
           next: (data) => {
               if (this.isOrganiser()) {
                   this.events = data;
+                  console.log(this.events);
               } else {
                   this.events = data.events.filter((event: { status: string; }) => event.status !== 'Archived' && event.status !== 'Draft');
                   this.applicationStatus = data.applicationStatus;
@@ -237,7 +243,22 @@ export class EventsListComponent implements OnInit {
     this.router.navigate(['layout/events-applications']);
   }
 
-  onViewResources(arg0: number) {
-      throw new Error('Method not implemented.');
+   // METODA ZA OTVARANJE MODALA
+  onViewResources(event: EventDto): void {
+    this.selectedEventForResources = event;
+    this.showResourcesModal = true;
+  }
+
+  // METODA ZA ZATVARANJE MODALA
+  closeResourcesModal(): void {
+    this.showResourcesModal = false;
+    this.selectedEventForResources = null;
+  }
+
+  calculateFulfillmentPercentage(resource: ResourceRequestDetailDto): number {
+    if (!resource.quantityNeeded || resource.quantityNeeded === 0) {
+      return 100;
+    }
+    return (resource.quantityFulfilled / resource.quantityNeeded) * 100;
   }
 }

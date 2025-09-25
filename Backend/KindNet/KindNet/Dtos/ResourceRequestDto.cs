@@ -11,5 +11,6 @@ namespace KindNet.Dtos
         public int QuantityNeeded { get; set; }
         public int QuantityFulfilled { get; set; }
         public ResourceRequestStatus Status { get; set; }
+        public List<ResourceFulfillmentDto> Fulfillments { get; set; } = new();
     }
 }

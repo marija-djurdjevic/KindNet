@@ -49,9 +49,12 @@
         public async Task<IEnumerable<Event>> GetAllByOrganizerIdAsync(long organizerId)
         {
             return await _context.Events
-                .Where(e => e.OrganizerId == organizerId)
-                .Include(e => e.Organizer)
-                .ToListAsync();
+         .Where(e => e.OrganizerId == organizerId)
+         .Include(e => e.Organizer)
+         .Include(e => e.ResourcesRequests)
+             .ThenInclude(r => r.Fulfillments)
+                 .ThenInclude(f => f.User)
+         .ToListAsync();
         }
         public async Task<IEnumerable<Event>> GetPlannedAndActiveEventsAsync()
         {

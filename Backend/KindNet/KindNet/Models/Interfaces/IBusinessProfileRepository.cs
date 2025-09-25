@@ -7,5 +7,6 @@
         void Add(BusinessProfile entity);
         void Update(BusinessProfile entity);
         void Remove(BusinessProfile entity);
+        Task<Dictionary<long, BusinessProfile>> GetProfilesByUserIdsAsync(List<long> userIds);
     }
 }
