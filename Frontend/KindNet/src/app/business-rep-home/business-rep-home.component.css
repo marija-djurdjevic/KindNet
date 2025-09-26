@@ -223,9 +223,5 @@ mat-progress-bar {
 .provider-link {
   cursor: pointer;
   text-decoration: none;
-  color: inherit;
-}
-
-.provider-link:hover {
-  text-decoration: underline;
+   color: #008080;
 }

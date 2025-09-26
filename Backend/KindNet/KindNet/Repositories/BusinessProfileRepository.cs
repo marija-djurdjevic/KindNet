@@ -19,6 +19,11 @@ namespace KindNet.Repositories
             return _context.BusinessProfiles.FirstOrDefault(p => p.UserId == userId);
         }
 
+        public async Task<BusinessProfile> GetByUserIdAsync(long userId)
+        {
+            return await _context.BusinessProfiles.FirstOrDefaultAsync(p => p.UserId == userId);
+        }
+
         public BusinessProfile GetById(long id)
         {
             return _context.BusinessProfiles.Find(id);

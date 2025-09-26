@@ -5,6 +5,7 @@
         EventCancelled,
         NewApplication,
         ApplicationApproved,
-        ApplicationRejected
+        ApplicationRejected,
+        Donation
     }
 }

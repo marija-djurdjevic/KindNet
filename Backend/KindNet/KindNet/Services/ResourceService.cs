@@ -10,11 +10,13 @@ namespace KindNet.Services
     {
         private readonly IResourceRepository _resourceRepository;
         private readonly IBusinessProfileRepository _businessProfileRepository;
+        private readonly INotificationService _notificationService;
 
-        public ResourceService(IResourceRepository resourceRepository, IBusinessProfileRepository businessProfileRepository)
+        public ResourceService(IResourceRepository resourceRepository, IBusinessProfileRepository businessProfileRepository, INotificationService notificationService)
         {
             _resourceRepository = resourceRepository;
             _businessProfileRepository = businessProfileRepository;
+            _notificationService = notificationService;
         }
 
         public async Task<ResourceRequestDto> CreateRequestAsync(CreateResourceRequestDto dto)
@@ -59,14 +61,39 @@ namespace KindNet.Services
             var businessDonationsCount = allFulfillmentsForEvent
                 .Count(f => f.ProviderId == BusinessRepId);
 
-            if (businessDonationsCount == 1)
+            var profile = await _businessProfileRepository.GetByUserIdAsync(BusinessRepId);
+            if (businessDonationsCount < 1)
             {
-                var profile = _businessProfileRepository.GetByUserId(BusinessRepId);
                 if (profile != null)
                 {
                     profile.SupportedEventsCount++;
                     _businessProfileRepository.Update(profile);
                 }
+            }
+
+            try
+            {
+                var message = "";
+                if (profile == null)
+                {
+                    message = $"Pristigla je donacija za resurs '{request.ItemName}' za vaš događaj '{request.Event.Name}'. ";
+                }
+                else
+                {
+                    message = $"'{profile.Name}' je donirao/la resurs '{request.ItemName}' za vaš događaj '{request.Event.Name}'";
+                }
+
+                await _notificationService.CreateNotificationAsync(
+                    request.Event.OrganizerId,
+                    message,
+                    NotificationType.Donation,
+                    request.EventId
+                );
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Greška prilikom kreiranja notifikacije: {ex.Message}");
             }
 
             var saved = await _resourceRepository.AddAsync(fulfillment);

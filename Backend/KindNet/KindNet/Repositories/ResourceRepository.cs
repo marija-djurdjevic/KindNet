@@ -85,8 +85,10 @@ namespace KindNet.Repositories
         public async Task<ResourceRequest> GetRequestByIdAsync(long id)
         {
             return await _context.ResourceRequests
-                .Include(r => r.Fulfillments)
-                .FirstOrDefaultAsync(r => r.Id == id);
+              .Where(r => r.Id == id) 
+              .Include(r => r.Event)           
+              .Include(r => r.Fulfillments)    
+              .FirstOrDefaultAsync();
         }
 
         public async Task<ResourceRequest> UpdateAsync(ResourceRequest request)

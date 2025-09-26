@@ -53,8 +53,7 @@
                         <mat-icon class="type-icon">{{ typeIconMapping[event.type] }}</mat-icon>
                         <h3 class="event-name">{{ event.name }}</h3>
                     </div>
-                    <div class="event-details">
-                          <div class="detail-item">
+                     <div *ngIf="!isOrganiser()" class="detail-item">
                             <mat-icon>person</mat-icon>
                             <span>Organizator: 
                                 <a  matTooltip="Pogledaj profil oganizacije" 
@@ -63,6 +62,7 @@
                                 </a>
                             </span>
                         </div>
+                    <div class="event-details">
                         <div class="detail-item">
                             <mat-icon>location_on</mat-icon>
                             <span>{{ event.city }}</span>
@@ -230,10 +230,10 @@
                             <li *ngFor="let fulfillment of resource.fulfillments">
                           <a [routerLink]="['/layout/business-profile', fulfillment.providerUserId]" 
                             class="provider-link"
-                            matTooltip="Pogledaj profil firme" 
+                            matTooltip="Pogledaj profil kompanije" 
                             matTooltipPosition="above">
-                            <mat-icon>business</mat-icon>
-                            <span>{{ fulfillment.providerName }}</span>
+                            <mat-icon class="provider-icon">business</mat-icon>
+                            {{ fulfillment.providerName }}
                             </a>          
                             <strong>{{ fulfillment.quantityProvided }} kom.</strong>
                             </li>

@@ -532,12 +532,17 @@
     text-align: center;
 }
 
-.provider-link {
-  cursor: pointer;
-  text-decoration: none;
-  color: inherit;
+.fulfillments-list li .provider-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #008080;
 }
 
-.provider-link:hover {
-  text-decoration: underline;
+.fulfillments-list li strong {
+  margin-left: auto;
+  padding-left: 16px;
+  font-weight: 500;
+  white-space: nowrap; 
 }
+
