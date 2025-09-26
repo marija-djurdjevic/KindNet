@@ -55,6 +55,20 @@ namespace KindNet.Services
                 AgreementTime = DateTime.UtcNow,
             };
 
+            var allFulfillmentsForEvent = await _resourceRepository.GetAllFulfillmentsForEventAsync(request.EventId);
+            var businessDonationsCount = allFulfillmentsForEvent
+                .Count(f => f.ProviderId == BusinessRepId);
+
+            if (businessDonationsCount == 1)
+            {
+                var profile = _businessProfileRepository.GetByUserId(BusinessRepId);
+                if (profile != null)
+                {
+                    profile.SupportedEventsCount++;
+                    _businessProfileRepository.Update(profile);
+                }
+            }
+
             var saved = await _resourceRepository.AddAsync(fulfillment);
             return MapToDto(saved);
         }

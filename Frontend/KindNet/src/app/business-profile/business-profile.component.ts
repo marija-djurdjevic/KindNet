@@ -3,6 +3,8 @@ import { BusinessProfile } from '../models/profiles.model';
 import { ProfileService } from '../services/profile.service';
 import { ToastService } from '../services/toast.service';
 import { AuthService } from '../services/auth.service';
+import { ActivatedRoute } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-business-profile',
@@ -13,6 +15,7 @@ export class BusinessProfileComponent implements OnInit {
   profile: BusinessProfile | null = null;
   isLoading = true;
   isProfileMissing = false;
+  isOwnProfile = false;
   currentIndex = 0;
   isLightboxOpen = false;
   currentImage: string | null = null;
@@ -21,45 +24,69 @@ export class BusinessProfileComponent implements OnInit {
   constructor(
     private profileService: ProfileService,
     private toastService: ToastService,
-    private authService: AuthService
+    private authService: AuthService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.loadProfile();
-    this.userEmail = this.authService.getUserEmail(); 
+    this.route.paramMap.subscribe(params => {
+      this.isLoading = true; 
+      this.profile = null;
+      this.isProfileMissing = false;
+      const userIdParam = params.get('userId');
+      if (userIdParam) {
+        this.isOwnProfile = false;
+        const userId = parseInt(userIdParam, 10);
+        this.loadProfileByUserId(userId);
+      } else {
+        this.isOwnProfile = true;
+        this.userEmail = this.authService.getUserEmail();
+        this.loadMyProfile();
+      }
+    });
   }
 
-  loadProfile(): void {
+   loadMyProfile(): void {
     this.profileService.getBusinessProfile().subscribe({
       next: (profile) => {
         this.profile = profile;
         this.isLoading = false;
       },
-      error: (err) => {
-        const message = (err instanceof Error) ? err.message : '';
-        if (message.includes('Profile not found')) {
-          this.isProfileMissing = true;
-          this.isLoading = false;
-          this.toastService.info('Nemate kreiran business profil.');
-        } else {
-          this.isLoading = false;
-          this.toastService.error('Greška pri učitavanju profila.');
-          console.error('Greška pri učitavanju business profila:', err);
-        }
-      }
+      error: (err: HttpErrorResponse) => this.handleProfileError(err)
+    });
+  }
+
+  loadProfileByUserId(userId: number): void {
+    this.profileService.getBusinessProfileByUserId(userId).subscribe({
+      next: (profile) => {
+        this.profile = profile;
+        this.isLoading = false;
+      },
+      error: (err: HttpErrorResponse) => this.handleProfileError(err)
     });
   }
 
 
-
-nextSlide(): void {
-  if (!this.profile?.galleryImageUrls) return;
-  const totalImages = this.profile.galleryImageUrls.length;
-  const remainingImages = totalImages - (this.currentIndex + 5);
-  if (remainingImages > 0) {
-    this.currentIndex += (remainingImages >= 5) ? 5 : remainingImages;
+   private handleProfileError(err: any): void {
+    const message = err.error?.message || err.message;
+    if (message.includes('Profile not found')) {
+      this.isProfileMissing = true;
+      this.toastService.info('Korisnik nema kreiran poslovni profil.');
+    } else {
+      this.toastService.error('Greška pri učitavanju profila.');
+      console.error('Greška pri učitavanju poslovnog profila:', err);
+    }
+    this.isLoading = false;
   }
-}
+
+  nextSlide(): void {
+    if (!this.profile?.galleryImageUrls) return;
+    const totalImages = this.profile.galleryImageUrls.length;
+    const remainingImages = totalImages - (this.currentIndex + 5);
+    if (remainingImages > 0) {
+      this.currentIndex += (remainingImages >= 5) ? 5 : remainingImages;
+    }
+  }
 
 prevSlide(): void {
   this.currentIndex = Math.max(0, this.currentIndex - 5);

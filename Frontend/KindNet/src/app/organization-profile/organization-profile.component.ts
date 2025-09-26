@@ -3,6 +3,8 @@ import { OrganizationProfile } from '../models/profiles.model';
 import { ProfileService } from '../services/profile.service';
 import { ToastService } from '../services/toast.service';
 import { AuthService } from '../services/auth.service';
+import { ActivatedRoute } from '@angular/router'; 
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-organization-profile',
@@ -13,6 +15,7 @@ export class OrganizationProfileComponent implements OnInit {
   profile: OrganizationProfile | null = null;
   isLoading = true;
   isProfileMissing = false;
+  isOwnProfile = false;
   userEmail: string | null = null;
   currentIndex = 0;
   isLightboxOpen = false;
@@ -21,12 +24,51 @@ export class OrganizationProfileComponent implements OnInit {
   constructor(
     private profileService: ProfileService,
     private toastService: ToastService,
-    private authService: AuthService
+    private authService: AuthService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    this.loadProfile();
-    this.userEmail = this.authService.getUserEmail();
+    // 4. Slušaj promene u URL-u
+    this.route.paramMap.subscribe(params => {
+      this.isLoading = true;
+      this.profile = null;
+      this.isProfileMissing = false;
+
+      const userIdParam = params.get('userId');
+
+      if (userIdParam) {
+        // Prikazujemo tuđi profil
+        this.isOwnProfile = false;
+        const userId = parseInt(userIdParam, 10);
+        this.loadProfileByUserId(userId);
+      } else {
+        // Prikazujemo sopstveni profil
+        this.isOwnProfile = true;
+        this.userEmail = this.authService.getUserEmail();
+        this.loadMyProfile();
+      }
+    });
+  }
+
+  loadMyProfile(): void {
+    this.profileService.getOrganizationProfile().subscribe({
+      next: (profile: OrganizationProfile) => {
+        this.profile = profile;
+        this.isLoading = false;
+      },
+      error: (err: HttpErrorResponse) => this.handleProfileError(err)
+    });
+  }
+
+  loadProfileByUserId(userId: number): void {
+    this.profileService.getOrganizationProfileByUserId(userId).subscribe({
+      next: (profile: OrganizationProfile) => {
+        this.profile = profile;
+        this.isLoading = false;
+      },
+      error: (err: HttpErrorResponse) => this.handleProfileError(err)
+    });
   }
 
   nextSlide(): void {
@@ -85,24 +127,15 @@ export class OrganizationProfileComponent implements OnInit {
   }
 
 
-  loadProfile(): void {
-    this.profileService.getOrganizationProfile().subscribe({
-      next: (profile) => {
-        this.profile = profile;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        const message = (err instanceof Error) ? err.message : '';
-        if (message.includes('Profile not found')) {
-          this.isProfileMissing = true;
-          this.isLoading = false;
-          this.toastService.info('Nemate kreiran profil organizacije.');
-        } else {
-          this.isLoading = false;
-          this.toastService.error('Greška pri učitavanju profila.');
-          console.error('Greška pri učitavanju organizacijskog profila:', err);
-        }
-      }
-    });
+   private handleProfileError(err: HttpErrorResponse): void {
+    const message = err.error?.message || err.message;
+    if (err.status === 404 || message.includes('Profile not found')) {
+      this.isProfileMissing = true;
+      this.toastService.info('Korisnik nema kreiran profil organizacije.');
+    } else {
+      this.toastService.error('Greška pri učitavanju profila.');
+      console.error('Greška pri učitavanju profila organizacije:', err);
+    }
+    this.isLoading = false;
   }
 }

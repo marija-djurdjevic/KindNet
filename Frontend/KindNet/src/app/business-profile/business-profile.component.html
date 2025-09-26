@@ -1,7 +1,7 @@
 <div class="edit-business-profile-container">
   <div *ngIf="isLoading" class="loading-spinner">
     <mat-spinner></mat-spinner>
-    <p>Učitavanje profila biznisa...</p>
+    <p>Učitavanje profila preduzeća...</p>
   </div>
 
   <div *ngIf="!isLoading && profile" class="profile-grid">
@@ -15,7 +15,7 @@
             
           </div>
         </div>
-        <div class="header-actions">
+        <div *ngIf="profile && isOwnProfile" class="header-actions">
           <button mat-flat-button class="edit-button-small" [routerLink]="['/layout/business-profile/edit']">
             <mat-icon>edit</mat-icon>
             Uredi profil

@@ -30,9 +30,12 @@
 
               <div class="card-content">
                 <div class="volunteer-info">
-                  <h4 class="volunteer-name">
+                  <a matTooltip="Pogledaj profil volontera" 
+                    [routerLink]="['/layout/user-profile', app.volunteerUserId]" class="volunteer-profile-link">
+                      <h4 class="volunteer-name">
                     {{ app.volunteerFirstName }} {{ app.volunteerLastName }}
-                  </h4>
+                     </h4>
+                   </a>
                   <div class="info-line">
                     <mat-icon>location_on</mat-icon>
                     <span>{{ app.volunteerCity }}</span>
@@ -128,9 +131,12 @@
 
               <div class="card-content">
                 <div class="volunteer-info">
-                  <h4 class="volunteer-name">
+                   <a matTooltip="Pogledaj profil volontera" 
+                     [routerLink]="['/layout/user-profile', app.volunteerUserId]" class="volunteer-profile-link">
+                      <h4 class="volunteer-name">
                     {{ app.volunteerFirstName }} {{ app.volunteerLastName }}
-                  </h4>
+                     </h4>
+                   </a>
                   <div class="info-line">
                     <mat-icon>location_on</mat-icon>
                     <span>{{ app.volunteerCity }}</span>
@@ -165,9 +171,12 @@
 
               <div class="card-content">
                 <div class="volunteer-info">
-                  <h4 class="volunteer-name">
+                   <a
+                       [routerLink]="['/layout/user-profile', app.volunteerUserId]" class="volunteer-profile-link">
+                      <h4  matTooltip="Pogledaj profil volontera"  class="volunteer-name">
                     {{ app.volunteerFirstName }} {{ app.volunteerLastName }}
-                  </h4>
+                     </h4>
+                   </a>
                   <div class="info-line">
                     <mat-icon>location_on</mat-icon>
                     <span>{{ app.volunteerCity }}</span>

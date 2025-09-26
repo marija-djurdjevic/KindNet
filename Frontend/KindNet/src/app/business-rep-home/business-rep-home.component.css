@@ -219,3 +219,13 @@ mat-progress-bar {
   font-weight: 500;
   letter-spacing: 0.5px;
 }
+
+.provider-link {
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.provider-link:hover {
+  text-decoration: underline;
+}

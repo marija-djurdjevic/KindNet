@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EventService } from '../services/event.service';
-import { EventDto } from '../models/event.model';
+import { EventDto, EventStatus } from '../models/event.model';
 import { ResourceService } from '../services/resource.service';
 import { ResourceFulfillment, ResourceRequest, ResourceRequestDetailDto, ResourceRequestStatus } from '../models/resource.model';
 import { DonationDialogComponent } from '../donation-dialog/donation-dialog.component';
@@ -19,9 +19,13 @@ export class BusinessRepHomeComponent implements OnInit {
   loading: boolean = true;
   now: Date = new Date();
   private audio = new Audio('assets/audio/success-340660.mp3');
+  private statusTranslationMap = new Map<string, string>();
+  private typeTranslationMap = new Map<string, string>();
   constructor(private eventService: EventService, private resourceService: ResourceService, public dialog: MatDialog, private toastService: ToastService) { }
 
   ngOnInit(): void {
+  this.populateStatusMap();
+  this.populateTypeMap(); 
    this.loadData();
   }
 
@@ -38,6 +42,15 @@ export class BusinessRepHomeComponent implements OnInit {
       }
     });
   }
+
+   eventStatuses = [
+      { value: EventStatus.Draft, name: 'Nacrt' },
+      { value: EventStatus.Planned, name: 'Planiran' },
+      { value: EventStatus.Active, name: 'Aktivan' },
+      { value: EventStatus.Finished, name: 'Završen' },
+      { value: EventStatus.Canceled, name: 'Otkazan' },
+      { value: EventStatus.Archived, name: 'Arhiviran' },
+  ];
 
   typeIconMapping: { [key: string]: string } = {
     'Environmental': 'eco',
@@ -107,4 +120,28 @@ export class BusinessRepHomeComponent implements OnInit {
     }
   });
 }
+
+ private populateStatusMap(): void {
+      for (const status of this.eventStatuses) {
+        this.statusTranslationMap.set(EventStatus[status.value], status.name);
+      }
+    }
+
+  public translateStatus(status: string): string {
+    return this.statusTranslationMap.get(status) || status;
+  }
+
+  private populateTypeMap(): void {
+    this.typeTranslationMap.set('Environmental', 'Ekološki');
+    this.typeTranslationMap.set('Cultural', 'Kulturni');
+    this.typeTranslationMap.set('Educational', 'Edukativni');
+    this.typeTranslationMap.set('Humanitarian', 'Humanitarni');
+    this.typeTranslationMap.set('Sport', 'Sportski');
+    this.typeTranslationMap.set('Community', 'Društveni');
+    this.typeTranslationMap.set('Technology', 'Tehnološki');
+  }
+
+   public translateType(type: string): string {
+    return this.typeTranslationMap.get(type) || type;
+  }
 }

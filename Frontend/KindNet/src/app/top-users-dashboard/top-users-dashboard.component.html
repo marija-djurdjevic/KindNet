@@ -1,0 +1,81 @@
+<div class="dashboard-container">
+  <div class="header">
+    <h1>🏆 Najaktivniji u zajednici</h1>
+    <p>Pregled volontera, preduzeća i organizacija koji najviše doprinose.</p>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner diameter="60"></mat-spinner>
+    <p>Učitavanje rang liste...</p>
+  </div>
+
+  <div *ngIf="!isLoading && topPerformers" class="performers-grid">
+    
+    <div class="performer-column">
+      <div class="column-header">
+        <mat-icon>{{ typeIconMapping['Volunteer'] }}</mat-icon>
+        <h3>Najaktivniji Volonteri</h3>
+      </div>
+      <div *ngFor="let v of topPerformers.topVolunteers; let i = index" class="performer-card">
+        <a [routerLink]="['/layout/user-profile', v.userId]">
+        <span class="rank">{{ i + 1 }}.</span>
+        <mat-icon class="performer-avatar">account_circle</mat-icon>
+        <div class="performer-info">
+            <span class="name">{{ v.firstName }} {{ v.lastName }}</span>
+            <span class="city">{{ v.city }}</span>
+        </div>
+        <div class="performer-score">
+            <span>{{ v.totalHours | number:'1.0-1' }}</span>
+            <small>sati</small>
+        </div>
+        <div class="performer-score">
+            <span>{{ v.eventParticipations }}</span>
+            <small>događaja</small>
+        </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="performer-column">
+      <div class="column-header">
+        <mat-icon>{{ typeIconMapping['Business'] }}</mat-icon>
+        <h3>Preduzeća Prijatelji</h3>
+      </div>
+      <div *ngFor="let b of topPerformers.topBusinesses; let i = index" class="performer-card">
+        <a [routerLink]="['/layout/business-profile', b.userId]">
+          <span class="rank">{{ i + 1 }}.</span>
+          <mat-icon class="performer-avatar">business_center</mat-icon>
+           <div class="performer-info">
+             <span class="name">{{ b.name }}</span>
+             <span class="city">{{ b.city }}</span>
+           </div>
+           <div class="performer-score">
+             <span>{{ b.supportedEventsCount }}</span>
+             <small>Podržanih događaja</small>
+           </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="performer-column">
+       <div class="column-header">
+        <mat-icon>{{ typeIconMapping['Organization'] }}</mat-icon>
+        <h3>Vrijedne Organizacije</h3>
+      </div>
+      <div *ngFor="let o of topPerformers.topOrganizations; let i = index" class="performer-card">
+         <a [routerLink]="['/layout/organization-profile', o.userId]">
+            <span class="rank">{{ i + 1 }}.</span>
+            <mat-icon class="performer-avatar">corporate_fare</mat-icon>
+            <div class="performer-info">
+              <span class="name">{{ o.name }}</span>
+              <span class="city">{{ o.city }}</span>
+            </div>
+            <div class="performer-score">
+              <span>{{ o.finishedEventsCount }}</span>
+              <small>Organizovanih događaja</small>
+            </div>
+         </a>
+      </div>
+    </div>
+  </div>
+</div>

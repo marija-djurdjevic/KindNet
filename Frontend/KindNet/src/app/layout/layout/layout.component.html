@@ -3,10 +3,13 @@
     <div class="app-title">KindNet</div>
     
     <mat-nav-list class="nav-list">
-      <a *ngIf="isBusinessRep()" mat-list-item routerLink="/layout/businessRep-home">
+      <a mat-list-item routerLink="/layout/dashboard">
         <mat-icon>home</mat-icon> Početna stranica
       </a>
-      <a mat-list-item routerLink="/layout/events">
+      <a *ngIf="isBusinessRep()" mat-list-item routerLink="/layout/businessRep-home">
+        <mat-icon>event</mat-icon> Događaji
+      </a>
+      <a *ngIf="!isBusinessRep()" mat-list-item routerLink="/layout/events">
         <mat-icon>event</mat-icon> Događaji
       </a>
       <a mat-list-item routerLink="/layout/calendar">

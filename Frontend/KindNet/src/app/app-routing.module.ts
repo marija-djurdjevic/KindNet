@@ -16,6 +16,7 @@ import { OrganizationProfileComponent } from './organization-profile/organizatio
 import { EditOrganizationProfileComponent } from './edit-organization-profile/edit-organization-profile.component';
 import { EditBusinessProfileComponent } from './edit-business-profile/edit-business-profile.component';
 import { BusinessProfileComponent } from './business-profile/business-profile.component';
+import { TopUsersDashboardComponent } from './top-users-dashboard/top-users-dashboard.component';
 
 
 const routes: Routes = [
@@ -33,12 +34,16 @@ const routes: Routes = [
       { path: 'calendar', component: CalendarComponent },
       { path: 'events-applications', component: ApplicationsDashboardComponent },
       { path: 'user-profile', component: UserProfileComponent }, 
+      { path: 'user-profile/:userId', component: UserProfileComponent }, 
       { path: 'user-profile/edit', component: EditVolunteerProfileComponent },
-      { path: "businessRep-home", component: BusinessRepHomeComponent},
+      { path: 'businessRep-home', component: BusinessRepHomeComponent},
       { path: 'organization-profile', component: OrganizationProfileComponent },
+      { path: 'organization-profile/:userId', component: OrganizationProfileComponent },
       { path: 'organization-profile/edit', component: EditOrganizationProfileComponent},
       { path: 'business-profile', component: BusinessProfileComponent},
-      { path: 'business-profile/edit', component: EditBusinessProfileComponent}
+      { path: 'business-profile/:userId', component: BusinessProfileComponent }, 
+      { path: 'business-profile/edit', component: EditBusinessProfileComponent},
+       { path: 'dashboard', component: TopUsersDashboardComponent },
     ]
   },
   

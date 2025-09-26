@@ -2,6 +2,7 @@
 {
     public class BusinessProfileDto
     {
+        public long UserId { get; set; }
         public string Name { get; set; }
         public string City { get; set; }
         public string ContactPhone { get; set; }

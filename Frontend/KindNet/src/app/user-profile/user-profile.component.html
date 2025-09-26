@@ -21,7 +21,7 @@
                         <mat-card-subtitle>{{ volunteerProfile.city }}</mat-card-subtitle>
                     </div>
                 </div>
-                <div class="header-actions">
+                <div *ngIf="isOwnProfile" class="header-actions">
                     <button mat-flat-button class="edit-button-small" (click)="onEditProfileClick()">
                         <mat-icon>edit</mat-icon>
                         Uredi profil

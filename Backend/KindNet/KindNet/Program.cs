@@ -78,6 +78,7 @@ builder.Services.AddScoped<IOrganizationProfileRepository, OrganizationProfileRe
 builder.Services.AddScoped<OrganizationProfileService>();
 builder.Services.AddScoped<IBusinessProfileRepository, BusinessProfileRepository>();
 builder.Services.AddScoped<BusinessProfileService>();
+builder.Services.AddScoped<DashboardService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

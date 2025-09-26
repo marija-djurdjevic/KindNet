@@ -7,6 +7,8 @@ namespace KindNet.Dtos
     public class EventDto
     {
         public long Id { get; set; }
+        public long OrganizerId { get; set; }
+
 
         [Required]
         public string Name { get; set; }
