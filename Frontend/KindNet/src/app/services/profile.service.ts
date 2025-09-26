@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { VolunteerProfile, VolunteerProfileDto, OrganizationProfile, BusinessProfile } from '../models/profiles.model';
+import { TopPerformers } from '../models/top-users.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ export class ProfileService {
   private apiUrl = 'https://localhost:7200/api/profiles'; 
   private organizationUrl = 'https://localhost:7200/api/profiles/organization';
   private businessUrl = 'https://localhost:7200/api/profiles/business';
+  private dashboardUrl = 'https://localhost:7200/api/dashboard';
 
   constructor(private http: HttpClient) { }
 
@@ -46,6 +48,10 @@ export class ProfileService {
 
   createOrUpdateBusinessProfile(profile: BusinessProfile): Observable<any> {
     return this.http.post<any>(this.businessUrl, profile);
-}
+  }
+
+    getTopPerformers(): Observable<TopPerformers> {
+    return this.http.get<TopPerformers>(`${this.dashboardUrl}/top-performers`);
+  }
 
 }

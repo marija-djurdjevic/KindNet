@@ -15,7 +15,6 @@ namespace KindNet.Repositories
             _context = context;
         }
 
-        //Dodavanje requesta
         public async Task<ResourceRequest> AddAsync(ResourceRequest request)
         {
             _context.ResourceRequests.Add(request);
@@ -23,7 +22,6 @@ namespace KindNet.Repositories
             return request;
         }
 
-        //Dodavanje fulfillmenta i update fulfilled količine u requestu
         public async Task<ResourceFulfillment> AddAsync(ResourceFulfillment fulfillment)
         {
             var request = await _context.ResourceRequests
@@ -45,7 +43,6 @@ namespace KindNet.Repositories
             return fulfillment;
         }
 
-        //Brisanje requesta i njegovih fulfillmenta
         public async Task<bool> DeleteAsync(long id)
         {
             var request = await _context.ResourceRequests
@@ -62,7 +59,6 @@ namespace KindNet.Repositories
             return true;
         }
 
-        //Svi requestovi za određeni event
         public async Task<IEnumerable<ResourceRequest>> GetByEventIdAsync(long eventId)
         {
             return await _context.ResourceRequests
@@ -72,7 +68,6 @@ namespace KindNet.Repositories
         .ToListAsync();
         }
 
-        //Svi fulfillmenti za određeni request
         public async Task<IEnumerable<ResourceFulfillment>> GetByRequestIdAsync(long requestId)
         {
             return await _context.ResourceFulfillments
@@ -81,14 +76,12 @@ namespace KindNet.Repositories
 
         }
 
-        //Fulfillment po id
         public async Task<ResourceFulfillment> GetFulfillmentByIdAsync(long id)
         {
             return await _context.ResourceFulfillments
                 .FirstOrDefaultAsync(f => f.Id == id);
         }
 
-        //Request po id
         public async Task<ResourceRequest> GetRequestByIdAsync(long id)
         {
             return await _context.ResourceRequests
@@ -96,7 +89,6 @@ namespace KindNet.Repositories
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
-        //Update requesta (npr. ako se menja naziv ili kategorija)
         public async Task<ResourceRequest> UpdateAsync(ResourceRequest request)
         {
             var existing = await _context.ResourceRequests.FindAsync(request.Id);
@@ -110,6 +102,16 @@ namespace KindNet.Repositories
 
             await _context.SaveChangesAsync();
             return existing;
+        }
+
+        public async Task<IEnumerable<ResourceFulfillment>> GetAllFulfillmentsForEventAsync(long eventId)
+        {
+            return await _context.ResourceFulfillments
+                // Uključujemo ResourceRequest da bismo mogli da filtriramo po EventId
+                .Include(rf => rf.Request)
+                // Filtriramo sve Fulfillments čiji povezani Request pripada traženom događaju
+                .Where(rf => rf.Request.EventId == eventId)
+                .ToListAsync();
         }
     }
 }

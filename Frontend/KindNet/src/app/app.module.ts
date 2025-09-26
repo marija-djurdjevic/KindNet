@@ -54,6 +54,7 @@ import { EditOrganizationProfileComponent } from './edit-organization-profile/ed
 import { OrganizationProfileComponent } from './organization-profile/organization-profile.component';
 import { EditBusinessProfileComponent } from './edit-business-profile/edit-business-profile.component';
 import { BusinessProfileComponent } from './business-profile/business-profile.component';
+import { TopUsersDashboardComponent } from './top-users-dashboard/top-users-dashboard.component';
 
 export function tokenGetter() {
   return localStorage.getItem('jwt');
@@ -78,7 +79,8 @@ export function tokenGetter() {
     EditOrganizationProfileComponent,
     OrganizationProfileComponent,
     EditBusinessProfileComponent,
-    BusinessProfileComponent
+    BusinessProfileComponent,
+    TopUsersDashboardComponent
   ],
 
   imports: [

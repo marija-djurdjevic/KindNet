@@ -1,0 +1,120 @@
+:host {
+  display: block;
+  padding: 24px;
+}
+
+.dashboard-container .header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.dashboard-container h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.dashboard-container .header p {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.performers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.performer-column .column-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+  color: #34495e;
+}
+
+.performer-card a {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: space-between;
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  text-decoration: none;
+  color: inherit;
+  margin-bottom: 12px;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.performer-card a:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.rank {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #bdc3c7;
+  min-width: 24px;
+  text-align: center;
+}
+
+.performer-avatar {
+  font-size: 40px;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  color: #3f51b5;
+}
+
+.performer-info {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.performer-info .name {
+  display: block;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: #2c3e50;
+}
+
+.performer-info .city {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+}
+
+.performer-score {
+  text-align: center;
+  min-width: 60px;
+}
+
+.performer-score span {
+  font-size: 1.8rem;
+  font-weight: 700;
+  display: block;
+  color: #3f51b5; 
+}
+
+.performer-score small {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #34495e;
+  font-weight: 500;
+}

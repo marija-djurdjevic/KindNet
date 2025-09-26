@@ -10,5 +10,6 @@
         Task<ResourceFulfillment> GetFulfillmentByIdAsync(long id);
         Task<IEnumerable<ResourceFulfillment>> GetByRequestIdAsync(long requestId);
         Task<ResourceFulfillment> AddAsync(ResourceFulfillment fulfillment);
+        Task<IEnumerable<ResourceFulfillment>> GetAllFulfillmentsForEventAsync(long eventId);
     }
 }

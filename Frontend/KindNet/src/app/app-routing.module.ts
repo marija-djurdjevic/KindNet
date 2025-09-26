@@ -16,6 +16,7 @@ import { OrganizationProfileComponent } from './organization-profile/organizatio
 import { EditOrganizationProfileComponent } from './edit-organization-profile/edit-organization-profile.component';
 import { EditBusinessProfileComponent } from './edit-business-profile/edit-business-profile.component';
 import { BusinessProfileComponent } from './business-profile/business-profile.component';
+import { TopUsersDashboardComponent } from './top-users-dashboard/top-users-dashboard.component';
 
 
 const routes: Routes = [
@@ -41,7 +42,8 @@ const routes: Routes = [
       { path: 'organization-profile/edit', component: EditOrganizationProfileComponent},
       { path: 'business-profile', component: BusinessProfileComponent},
       { path: 'business-profile/:userId', component: BusinessProfileComponent }, 
-      { path: 'business-profile/edit', component: EditBusinessProfileComponent}
+      { path: 'business-profile/edit', component: EditBusinessProfileComponent},
+       { path: 'dashboard', component: TopUsersDashboardComponent },
     ]
   },
   
