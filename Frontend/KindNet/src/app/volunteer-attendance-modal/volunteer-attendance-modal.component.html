@@ -24,7 +24,7 @@
               <tr>
                 <th class="volunteer-name-header">Volonter</th>
                 <th *ngFor="let date of eventDates" class="date-header" [class.disabled-header]="!isDateEditable(date)">
-                  {{ date | date:'EEE, dd.MM' }}
+                  {{ date | date:'EEE, dd. MM. yyyy.' }}
                 </th>
               </tr>
             </thead>

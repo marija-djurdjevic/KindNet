@@ -5,12 +5,19 @@ import { EventService } from '../services/event.service';
 import { ToastService } from '../services/toast.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, switchMap } from 'rxjs';
-import { throwDialogContentAlreadyAttachedError } from '@angular/cdk/dialog';
+import { LOCALE_ID } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localeSr from '@angular/common/locales/sr-Latn';
+
+registerLocaleData(localeSr);
 
 @Component({
   selector: 'app-volunteer-attendance-modal',
   templateUrl: './volunteer-attendance-modal.component.html',
-  styleUrls: ['./volunteer-attendance-modal.component.css']
+  styleUrls: ['./volunteer-attendance-modal.component.css'],
+   providers: [
+    { provide: LOCALE_ID, useValue: 'sr-Latn' }
+  ]
 })
 export class VolunteerAttendanceModalComponent {
    event: EventDto | null = null;
