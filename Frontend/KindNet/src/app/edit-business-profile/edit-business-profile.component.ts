@@ -41,6 +41,7 @@ export class EditBusinessProfileComponent implements OnInit {
   loadProfile(): void {
     this.profileService.getBusinessProfile().subscribe({
       next: (profile: BusinessProfile) => {
+        console.log(profile);
         this.patchForm(profile);
         this.isNewProfile = false;
         this.isLoading = false;
@@ -62,6 +63,7 @@ export class EditBusinessProfileComponent implements OnInit {
   }
 
   patchForm(profile: BusinessProfile): void {
+    console.log(profile);
     this.profileForm.patchValue({
       name: profile.name,
       city: profile.city,

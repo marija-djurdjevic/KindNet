@@ -34,7 +34,9 @@ export class BusinessProfileComponent implements OnInit {
       this.profile = null;
       this.isProfileMissing = false;
       const userIdParam = params.get('userId');
-      if (userIdParam) {
+      console.log(userIdParam);
+      if (userIdParam != null) {
+        console.log('usao ovdjeeeeee');
         this.isOwnProfile = false;
         const userId = parseInt(userIdParam, 10);
         this.loadProfileByUserId(userId);
@@ -50,6 +52,7 @@ export class BusinessProfileComponent implements OnInit {
     this.profileService.getBusinessProfile().subscribe({
       next: (profile) => {
         this.profile = profile;
+        console.log(this.profile);
         this.isLoading = false;
       },
       error: (err: HttpErrorResponse) => this.handleProfileError(err)
@@ -57,6 +60,7 @@ export class BusinessProfileComponent implements OnInit {
   }
 
   loadProfileByUserId(userId: number): void {
+    console.log(userId);
     this.profileService.getBusinessProfileByUserId(userId).subscribe({
       next: (profile) => {
         this.profile = profile;
