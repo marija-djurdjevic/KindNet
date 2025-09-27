@@ -15,7 +15,6 @@ import { ResourceRequestDetailDto } from '../models/resource.model';
   styleUrls: ['./events-list.component.css']
 })
 export class EventsListComponent implements OnInit {
-
   @ViewChild('confirmDialogTemplate') confirmDialogTemplate!: TemplateRef<any>;
 
   events: EventDto[] = [];
@@ -290,4 +289,5 @@ export class EventsListComponent implements OnInit {
    public translateType(type: string): string {
     return this.typeTranslationMap.get(type) || type;
   }
+
 }
