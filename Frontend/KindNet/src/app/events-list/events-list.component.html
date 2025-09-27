@@ -96,6 +96,16 @@
                             {{  translateStatus(event.status) }}
                         </span>
                         <button
+                            *ngIf="event.status === 'Active' && isOrganiser()"
+                            mat-flat-button
+                            color="primary"
+                            class="attendance-button"
+                            matTooltip="Evidencija prisustva volontera"
+                             [routerLink]="['/layout/events', event.id, 'attendance']">
+                            <mat-icon>how_to_reg</mat-icon>
+                            <span>Volonteri</span>
+                        </button>
+                        <button
                             *ngIf="event.status === 'Planned' && isOrganiser()"
                             mat-icon-button
                             color="warn"
@@ -230,7 +240,7 @@
                             <li *ngFor="let fulfillment of resource.fulfillments">
                           <a [routerLink]="['/layout/business-profile', fulfillment.providerUserId]" 
                             class="provider-link"
-                            matTooltip="Pogledaj profil kompanije" 
+                            matTooltip="Pogledaj profil preduzeća" 
                             matTooltipPosition="above">
                             <mat-icon class="provider-icon">business</mat-icon>
                             {{ fulfillment.providerName }}

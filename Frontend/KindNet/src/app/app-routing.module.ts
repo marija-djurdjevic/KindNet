@@ -17,6 +17,7 @@ import { EditOrganizationProfileComponent } from './edit-organization-profile/ed
 import { EditBusinessProfileComponent } from './edit-business-profile/edit-business-profile.component';
 import { BusinessProfileComponent } from './business-profile/business-profile.component';
 import { TopUsersDashboardComponent } from './top-users-dashboard/top-users-dashboard.component';
+import { VolunteerAttendanceModalComponent } from './volunteer-attendance-modal/volunteer-attendance-modal.component';
 
 
 const routes: Routes = [
@@ -44,6 +45,7 @@ const routes: Routes = [
       { path: 'business-profile/:userId', component: BusinessProfileComponent }, 
       { path: 'business-profile/edit', component: EditBusinessProfileComponent},
        { path: 'dashboard', component: TopUsersDashboardComponent },
+         { path: 'events/:id/attendance', component: VolunteerAttendanceModalComponent },
     ]
   },
   
