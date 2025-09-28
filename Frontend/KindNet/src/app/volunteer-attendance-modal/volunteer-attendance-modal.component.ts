@@ -88,10 +88,14 @@ export class VolunteerAttendanceModalComponent {
   }
 
   isDateEditable(date: Date): boolean {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return date <= today;
-  }
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); 
+
+  const eventDate = new Date(date); 
+  eventDate.setHours(0, 0, 0, 0); 
+
+  return eventDate <= today;
+}
 
   setAttendanceStatus(record: AttendanceRecord, date: Date, status: boolean): void {
   const dateKey = this.formatDate(date);

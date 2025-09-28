@@ -18,6 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { registerLocaleData } from '@angular/common'; 
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { JwtModule } from '@auth0/angular-jwt';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import localeSr from '@angular/common/locales/sr-Latn';
 registerLocaleData(localeSr);
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -129,7 +130,8 @@ export function tokenGetter() {
       }
     }),
     ReactiveFormsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatButtonToggleModule
   ],
 
    providers: [

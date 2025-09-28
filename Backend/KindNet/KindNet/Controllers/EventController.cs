@@ -267,5 +267,18 @@ namespace KindNet.Controllers
             return Ok();
         }
 
+        [HttpGet("for-business-representatives")]
+        public async Task<IActionResult> GetEventsForBusinessReps([FromQuery] string? city, [FromQuery] string? resourceCategory)
+        {
+            ResourceCategory? categoryEnum = null;
+            if (!string.IsNullOrEmpty(resourceCategory) && Enum.TryParse<ResourceCategory>(resourceCategory, true, out var parsedCategory))
+            {
+                categoryEnum = parsedCategory;
+            }
+
+            var eventDtos = await _eventService.GetEventsForBusinessRepsAsync(city, categoryEnum);
+            return Ok(eventDtos);
+        }
+
     }
 }

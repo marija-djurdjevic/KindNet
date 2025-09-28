@@ -387,6 +387,18 @@ namespace KindNet.Services
             return eventDtos;
         }
 
+        public async Task<IEnumerable<EventDto>> GetEventsForBusinessRepsAsync(string? city, ResourceCategory? resourceCategory)
+        {
+            var events = await _eventRepository.GetEventsForBusinessRepsAsync(city, resourceCategory);
+
+            var eventDtos = new List<EventDto>();
+            foreach (var eventItem in events)
+            {
+                var dto = await MapToEventDtoWithResourcesAsync(eventItem);
+                eventDtos.Add(dto);
+            }
+            return eventDtos;
+        }
 
     }
 }

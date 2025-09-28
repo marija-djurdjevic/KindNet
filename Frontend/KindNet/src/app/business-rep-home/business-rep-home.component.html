@@ -3,19 +3,47 @@
     <h2>Predstojeći i aktivni događaji</h2>
   </div>
 
+  <div class="filter-sort-container">
+    <div class="filter-group">
+      <button mat-flat-button class="filter-button" (click)="toggleFilter('city')">
+        <span>{{ selectedCity }}</span>
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <div *ngIf="activeFilter === 'city'" class="filter-options">
+        <div class="filter-option" (click)="applyCityFilter('Svi gradovi')">Svi gradovi</div>
+        <div *ngFor="let city of availableCities" class="filter-option" (click)="applyCityFilter(city)">
+          {{ city }}
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <button mat-flat-button class="filter-button" (click)="toggleFilter('category')">
+        <span>{{ selectedCategory }}</span>
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <div *ngIf="activeFilter === 'category'" class="filter-options">
+        <div class="filter-option" (click)="applyCategoryFilter('Sve kategorije')">Sve kategorije</div>
+        <div *ngFor="let category of resourceCategories" class="filter-option" (click)="applyCategoryFilter(category)">
+          {{ category }}
+        </div>
+      </div>
+    </div>
+  </div>
   <div *ngIf="loading" class="loading-spinner">
     <mat-spinner></mat-spinner>
     <p>Učitavanje...</p>
   </div>
-  <div *ngIf="!loading && events.length === 0" class="no-events">
-    <mat-icon>info</mat-icon>
-    <p>Trenutno nema događaja koji traže resurse.</p>
+  
+  <div *ngIf="!loading && displayEvents.length === 0" class="no-events">
+    <mat-icon>search_off</mat-icon>
+    <p>Nema događaja koji odgovaraju zadatim filterima.</p>
   </div>
 
-  <div class="event-list" *ngIf="!loading && events.length > 0">
+  <div class="event-list" *ngIf="!loading && displayEvents.length > 0">
     <mat-card
       class="event-card"
-      *ngFor="let event of events"
+      *ngFor="let event of displayEvents"
       [ngClass]="'type-border-' + event.type.toLowerCase()">
 
       <div class="card-main-content">
@@ -33,15 +61,17 @@
               <mat-icon>schedule</mat-icon>
               <span>{{ event.startTime | date:'dd.MM.yyyy HH:mm' }} - {{ event.endTime | date:'dd.MM.yy HH:mm' }}</span>
             </div>
-             <div class="detail-item">
-            <mat-icon>person</mat-icon>
-            <span>Organizator: 
-                <a  matTooltip="Pogledaj profil oganizacije" 
-                            matTooltipPosition="above" [routerLink]="['/layout/organization-profile', event.organizerId]" class="organizer-link">
-                    {{ event.organizerName }}
+            <div class="detail-item">
+              <mat-icon>person</mat-icon>
+              <span>Organizator: 
+                <a matTooltip="Pogledaj profil oganizacije" 
+                   matTooltipPosition="above" 
+                   [routerLink]="['/layout/organization-profile', event.organizerId]" 
+                   class="organizer-link">
+                  {{ event.organizerName }}
                 </a>
-            </span>
-        </div>
+              </span>
+            </div>
           </div>
         </div>
         <div class="event-meta">
@@ -50,48 +80,48 @@
               {{ translateStatus(event.status) }}
             </span>
           </div>
-          <span class="tag type-tag"  [ngClass]="'tag-'+ event.type.toLowerCase()">
+          <span class="tag type-tag" [ngClass]="'tag-'+ event.type.toLowerCase()">
             {{ translateType(event.type) }}
           </span>
         </div>
       </div>
 
       <div class="resources-section">
-  <div class="resources-list">
-    <label class="resources-label">Potrebni resursi</label> <div 
-      class="resource-item" 
-      *ngFor="let res of event.resourceRequests"
-      [ngClass]="'category-border-' + res.category.toString().toLowerCase()"> <div class="resource-main-info">
-        <mat-icon class="resource-icon">{{ resourceIconMapping[res.category] }}</mat-icon>
-        <div class="resource-name-cat">
-          <span class="resource-name">{{ res.itemName }}</span>
-          <span class="resource-category">{{ res.category }}</span>
+        <div class="resources-list">
+          <label class="resources-label">Potrebni resursi</label>
+          <div 
+            class="resource-item" 
+            *ngFor="let res of event.resourceRequests"
+            [ngClass]="'category-border-' + res.category.toString().toLowerCase()"
+            [class.highlighted-resource]="selectedCategory !== 'Sve kategorije' && res.category.toString() === selectedCategory">
+            <div class="resource-main-info">
+              <mat-icon class="resource-icon">{{ resourceIconMapping[res.category] }}</mat-icon>
+              <div class="resource-name-cat">
+                <span class="resource-name">{{ res.itemName }}</span>
+                <span class="resource-category">{{ res.category }}</span>
+              </div>
+            </div>
+            <div class="resource-progress">
+              <span class="progress-text">
+                Obezbijeđeno: <strong>{{ res.quantityFulfilled || 0 }} / {{ res.quantityNeeded }}</strong>
+              </span>
+              <mat-progress-bar
+                mode="determinate"
+                [value]="(res.quantityFulfilled || 0) * 100 / res.quantityNeeded">
+              </mat-progress-bar>
+            </div>
+            <div class="resource-action" *ngIf="res.status.toString() !== 'Ispunjen'">
+              <button mat-flat-button color="primary" class="offer-button" (click)="openDonationDialog(res)">
+                <mat-icon>volunteer_activism</mat-icon>
+                <span>Učestvuj</span>
+              </button>
+            </div>
+          </div>
+          <div *ngIf="!event.resourceRequests || event.resourceRequests.length === 0" class="no-resources-found">
+            <p>Nema traženih resursa za ovaj događaj.</p>
+          </div>
         </div>
       </div>
-
-      <div class="resource-progress">
-        <span class="progress-text">
-          Obezbijeđeno: <strong>{{ res.quantityFulfilled || 0 }} / {{ res.quantityNeeded }}</strong>
-        </span>
-        <mat-progress-bar
-          mode="determinate"
-          [value]="(res.quantityFulfilled || 0) * 100 / res.quantityNeeded">
-        </mat-progress-bar>
-      </div>
-
-        <div class="resource-action" *ngIf="res.status.toString() !== 'Ispunjen'">
-      <button mat-flat-button color="primary" class="offer-button" (click)="openDonationDialog(res)">
-        <mat-icon>volunteer_activism</mat-icon>
-        <span>Učestvuj</span>
-      </button>
-    </div>
-    </div>
-    <div *ngIf="!event.resourceRequests || event.resourceRequests.length === 0" class="no-resources-found">
-      <p>Nema traženih resursa za ovaj događaj.</p>
-    </div>
-  </div>
-</div>
-
     </mat-card>
   </div>
 </div>
