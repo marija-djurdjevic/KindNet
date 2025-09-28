@@ -1,0 +1,139 @@
+.edit-profile-container {
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: calc(100vh - 64px);
+}
+
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.edit-profile-card {
+    width: 100%;
+    max-width: 700px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+}
+
+.mat-card-header .mat-card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.mat-card-header .mat-card-subtitle {
+    font-size: 1rem;
+    color: #888;
+}
+
+.mat-divider {
+    margin: 16px 0;
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+}
+
+.form-field {
+    width: 100%;
+}
+
+.full-width-field {
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.skills-section, .interests-section {
+    margin-top: 24px;
+    margin-bottom: 24px;
+    padding: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.section-subtitle {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px 16px;
+    margin-bottom: 16px;
+    padding: 0 8px;
+}
+
+.checkbox-group mat-checkbox {
+    width: auto;
+    align-self: start;
+    margin-bottom: 0;
+}
+
+.checkbox-group .mat-checkbox-layout {
+    font-size: 14px;
+    margin-right: 0;
+}
+
+.checkbox-group .mat-checkbox-inner-container {
+    height: 16px;
+    width: 16px;
+}
+
+mat-chip-grid {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
+    padding: 8px;
+    min-height: 56px; 
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    transition: border-color 0.2s ease-in-out;
+}
+
+mat-chip-grid:hover {
+    border-color: rgba(0, 0, 0, 0.87);
+}
+
+.mat-chip-list-input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 16px;
+    padding: 0;
+    margin: 0;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 24px;
+}
+
+.form-actions button[type="submit"] {
+    background-color: #e07a5f !important;
+    color: white !important;
+}
+
+.mat-chip {
+    background-color: #f0f0f0;
+}

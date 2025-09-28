@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace KindNet.Repositories
 {
@@ -62,6 +63,12 @@ namespace KindNet.Repositories
            .Include(ea => ea.VolunteerUser)
            .Include(ea => ea.Event)
            .ToListAsync();
+        }
+
+        public async Task UpdateRangeAsync(IEnumerable<EventApplication> applications)
+        {
+            _context.EventApplications.UpdateRange(applications);
+            await _context.SaveChangesAsync();
         }
     }
 }

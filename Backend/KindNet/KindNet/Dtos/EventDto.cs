@@ -7,6 +7,8 @@ namespace KindNet.Dtos
     public class EventDto
     {
         public long Id { get; set; }
+        public long OrganizerId { get; set; }
+
 
         [Required]
         public string Name { get; set; }
@@ -31,5 +33,6 @@ namespace KindNet.Dtos
         public List<string> RequiredSkills { get; set; }
 
         public string? OrganizerName {get; set;}
+        public List<ResourceRequestDto> ResourceRequests { get; set; } = new();
     }
 }

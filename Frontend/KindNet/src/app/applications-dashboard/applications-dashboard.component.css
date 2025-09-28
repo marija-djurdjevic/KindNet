@@ -218,7 +218,7 @@
 }
 
 .status-badge.pending {
-    background-color: #ff9800; 
+    background-color: #2196f3; 
 }
 
 .status-badge.approved {
@@ -323,4 +323,15 @@
   background-color: #e07a5f;
   color: white;
   border: none;
+}
+
+.volunteer-profile-link {
+  color: inherit;
+  text-decoration: none; 
+  transition: color 0.2s ease-in-out;
+}
+
+.volunteer-profile-link:hover .volunteer-name {
+  color: #008080;
+  cursor: pointer;
 }

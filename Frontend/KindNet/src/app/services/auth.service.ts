@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, BehaviorSubject, EMPTY } from 'rxjs';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { Router } from '@angular/router';
+import { ProfileService } from './profile.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,10 @@ export class AuthService {
   public isLoggedIn$ = this.isLoggedInSubject.asObservable();
   private jwtHelper = new JwtHelperService();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,
+    private router: Router,
+    private profileService: ProfileService
+  ) { }
 
   private hasToken(): boolean {
     return !!localStorage.getItem('jwt');
@@ -63,5 +68,20 @@ export class AuthService {
     const role = this.getRole();
     return role === 'OrganizationRep' || role === 'BusinessRep';
   }
+
+  public getUserEmail(): string | null {
+  const token = this.getToken();
+  if (token) {
+    try {
+      const decodedToken = this.jwtHelper.decodeToken(token);
+      const emailClaim = 'email';
+      return decodedToken[emailClaim];
+    } catch (error) {
+      console.error('Greška pri dekodiranju tokena za email:', error);
+      return null;
+    }
+  }
+  return null;
+}
 
 }

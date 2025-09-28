@@ -70,6 +70,17 @@ builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
 builder.Services.AddScoped<ApplicationService>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
+builder.Services.AddScoped<ResourceService>();
+builder.Services.AddScoped<IVolunteerProfileRepository, VolunteerProfileRepository>();
+builder.Services.AddScoped<VolunteerProfileService>();
+builder.Services.AddScoped<IOrganizationProfileRepository, OrganizationProfileRepository>();
+builder.Services.AddScoped<OrganizationProfileService>();
+builder.Services.AddScoped<IBusinessProfileRepository, BusinessProfileRepository>();
+builder.Services.AddScoped<BusinessProfileService>();
+builder.Services.AddScoped<DashboardService>();
+builder.Services.AddScoped<AttendanceService>();
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {

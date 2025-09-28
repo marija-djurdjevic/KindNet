@@ -12,10 +12,11 @@ namespace KindNet.Controllers
     public class EventController : ControllerBase
     {
         private readonly EventService _eventService;
-
-        public EventController(EventService eventService)
+        private readonly AttendanceService _attendanceService;
+        public EventController(EventService eventService, AttendanceService attendanceService)
         {
             _eventService = eventService;
+            _attendanceService = attendanceService;
         }
 
         [HttpPost]
@@ -246,6 +247,37 @@ namespace KindNet.Controllers
                 Console.WriteLine($"Greška prilikom dohvatanja događaja: {ex.Message}");
                 return StatusCode(500, "Došlo je do greške prilikom obrade zahteva.");
             }
+        }
+
+        [HttpGet("{eventId}/attendance")]
+        public async Task<ActionResult<List<AttendanceRecordDto>>> GetAttendance(long eventId)
+        {
+            var attendanceData = await _attendanceService.GetAttendanceForEventAsync(eventId);
+            return Ok(attendanceData);
+        }
+
+        [HttpPost("{eventId}/attendance")]
+        public async Task<IActionResult> SaveAttendance(long eventId, [FromBody] List<SaveAttendanceDto> records)
+        {
+            var result = await _attendanceService.SaveAttendanceAsync(records);
+            if (!result)
+            {
+                return BadRequest("Greška pri čuvanju podataka.");
+            }
+            return Ok();
+        }
+
+        [HttpGet("for-business-representatives")]
+        public async Task<IActionResult> GetEventsForBusinessReps([FromQuery] string? city, [FromQuery] string? resourceCategory)
+        {
+            ResourceCategory? categoryEnum = null;
+            if (!string.IsNullOrEmpty(resourceCategory) && Enum.TryParse<ResourceCategory>(resourceCategory, true, out var parsedCategory))
+            {
+                categoryEnum = parsedCategory;
+            }
+
+            var eventDtos = await _eventService.GetEventsForBusinessRepsAsync(city, categoryEnum);
+            return Ok(eventDtos);
         }
 
     }

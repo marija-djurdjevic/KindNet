@@ -1,0 +1,102 @@
+<div class="profile-container">
+
+    <div *ngIf="isLoading" class="loading-spinner">
+        <mat-spinner></mat-spinner>
+        <p>Učitavanje profila...</p>
+    </div>
+
+    <div *ngIf="!isLoading && error" class="error-message">
+        <mat-icon color="warn">error_outline</mat-icon>
+        <p>{{ error }}</p>
+    </div>
+
+    <div *ngIf="!isLoading && volunteerProfile" class="profile-content-grid">
+        
+        <mat-card class="profile-card basic-info-card">
+            <mat-card-header>
+                <div class="card-title-group">
+                    <mat-icon class="profile-icon large-icon">account_circle</mat-icon>
+                    <div>
+                        <mat-card-title>{{ volunteerProfile.firstName }} {{ volunteerProfile.lastName }}</mat-card-title>
+                        <mat-card-subtitle>{{ volunteerProfile.city }}</mat-card-subtitle>
+                    </div>
+                </div>
+                <div *ngIf="isOwnProfile" class="header-actions">
+                    <button mat-flat-button class="edit-button-small" (click)="onEditProfileClick()">
+                        <mat-icon>edit</mat-icon>
+                        Uredi profil
+                    </button>
+                </div>
+            </mat-card-header>
+            <mat-divider></mat-divider>
+            <mat-card-content>
+                <div class="detail-item">
+                    <mat-icon>phone</mat-icon>
+                    <span>{{ volunteerProfile.contactPhone || 'Nije unesen'}}</span>
+                </div>
+                <div class="detail-item">
+                    <mat-icon>email</mat-icon>
+                    <span>{{ userEmail || 'Nije dostupan' }}</span>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="profile-card skills-card">
+            <mat-card-header>
+                <mat-card-title>Vještine</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <mat-chip-listbox aria-label="Lista veština">
+                    <mat-chip *ngFor="let skill of volunteerProfile.skills" color="primary" selected>
+                        {{ skill }}
+                    </mat-chip>
+                </mat-chip-listbox>
+                <p *ngIf="!volunteerProfile.skills || volunteerProfile.skills.length === 0" class="no-data">Nema unesenih veština.</p>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="profile-card interests-card">
+            <mat-card-header>
+                <mat-card-title>Interesovanja</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <mat-chip-listbox aria-label="Lista interesovanja">
+                    <mat-chip *ngFor="let interest of volunteerProfile.interests" color="accent" selected>
+                        {{ interest }}
+                    </mat-chip>
+                </mat-chip-listbox>
+                <p *ngIf="!volunteerProfile.interests || volunteerProfile.interests.length === 0" class="no-data">Nema unesenih interesovanja.</p>
+            </mat-card-content>
+        </mat-card>
+        
+        <mat-card class="profile-card stats-card">
+            <mat-card-header>
+                <mat-card-title>Statistika volontiranja</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <mat-icon class="medium-icon">schedule</mat-icon>
+                        <span>{{ volunteerProfile.totalHours || 0 }} h</span>
+                        <small>Ukupno sati</small>
+                    </div>
+                    <div class="stat-item">
+                        <mat-icon class="medium-icon">event_available</mat-icon>
+                        <span>{{ volunteerProfile.totalApprovedApplications || 0 }}</span>
+                        <small>Prihvaćene prijave</small>
+                    </div>
+                    <div class="stat-item">
+                        <mat-icon class="medium-icon">thumb_down_alt</mat-icon>
+                        <span>{{ volunteerProfile.totalNoShows || 0 }}</span>
+                        <small>Neizvršene prijave</small>
+                    </div>
+                    <div class="stat-item">
+                        <mat-icon class="medium-icon">star_rate</mat-icon>
+                        <span>{{ (volunteerProfile.reliabilityScore || 0) | number:'1.1-2' }}</span>
+                        <small>Indeks pouzdanosti</small>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

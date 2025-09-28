@@ -11,5 +11,10 @@
         public DbSet<Event> Events { get; set; }
         public DbSet<EventApplication> EventApplications { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<ResourceRequest> ResourceRequests { get; set; }
+        public DbSet<ResourceFulfillment> ResourceFulfillments { get; set; }    
+        public DbSet<BusinessProfile> BusinessProfiles { get; set;}
+        public DbSet<Badge> Badges { get; set; }
+        public DbSet<VolunteerSession> VolunteersSessions { get; set; }
     }
 }

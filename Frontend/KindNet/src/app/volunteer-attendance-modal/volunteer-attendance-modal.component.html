@@ -1,0 +1,78 @@
+<div class="attendance-container">
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner></mat-spinner>
+    <p>Učitavanje podataka o prisustvu...</p>
+  </div>
+
+  <div *ngIf="!isLoading && event">
+    <div class="header">
+      <div>
+        <h1>Evidencija Prisustva</h1>
+        <p class="event-title">{{ event.name }}</p>
+      </div>
+      <button class="back-button" mat-stroked-button (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+        <span>Nazad na događaje</span>
+      </button>
+    </div>
+
+    <mat-card class="table-card">
+      <mat-card-content>
+        <div class="attendance-table-container">
+          <table class="attendance-table">
+            <thead>
+              <tr>
+                <th class="volunteer-name-header">Volonter</th>
+                <th *ngFor="let date of eventDates" class="date-header" [class.disabled-header]="!isDateEditable(date)">
+                  {{ date | date:'EEE, dd. MM. yyyy.' }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let record of attendanceRecords">
+                <td class="volunteer-name-cell">{{ record.volunteerFirstName }} {{ record.volunteerLastName }}</td>
+                <td *ngFor="let date of eventDates" class="attendance-cell" [class.disabled-cell]="!isDateEditable(date)">
+                  
+                  <ng-container *ngIf="isDateEditable(date)">
+                    <div class="cell-controls">
+                      <button mat-icon-button (click)="setAttendanceStatus(record, date, true)"
+                              [class.active-status]="record.dailyRecords[formatDate(date)]?.status === true"
+                              matTooltip="Prisutan" matTooltipPosition="above">
+                        <mat-icon>check_circle</mat-icon>
+                      </button>
+                      
+                      <button mat-icon-button (click)="setAttendanceStatus(record, date, false)"
+                              [class.active-status]="record.dailyRecords[formatDate(date)]?.status === false"
+                              matTooltip="Nije se pojavio" matTooltipPosition="above">
+                        <mat-icon>cancel</mat-icon>
+                      </button>
+  
+                      <input type="number" class="hours-input" min="0" matTooltip="Broj sati" [disabled]="record.dailyRecords[formatDate(date)]?.status === false"
+                             [ngModel]="record.dailyRecords[formatDate(date)]?.hoursVolunteered"
+                             (ngModelChange)="onHoursChange(record, date, $event)"
+                             placeholder="h">
+                    </div>
+                  </ng-container>
+  
+                </td>
+              </tr>
+              <tr *ngIf="attendanceRecords.length === 0">
+                <td [attr.colspan]="eventDates.length + 1" class="no-volunteers-cell">
+                  Nema prihvaćenih volontera za ovaj događaj.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="footer-actions">
+      <button mat-flat-button color="primary" (click)="onSave()" [disabled]="isSaving">
+        <mat-spinner *ngIf="isSaving" diameter="20" class="save-spinner"></mat-spinner>
+        <span>Sačuvaj izmjene</span>
+      </button>
+    </div>
+  </div>
+</div>
+

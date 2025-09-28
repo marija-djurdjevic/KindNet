@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CreateEventDto, CreateEventPayload, CreateEventResultDto, EventDto, EventStatus } from '../models/event.model';
+import { AttendanceRecord, SaveAttendanceRecord } from '../models/volunteer-attendance.model';
 
 @Injectable({
   providedIn: 'root'
@@ -72,5 +73,24 @@ export class EventService {
     params = params.set('sortByStartTimeDescending', sortByStartTimeDescending.toString());
     return this.http.get<EventDto[]>(`${this.apiUrl}/my-events/filtered`, { params });
   }
+
+   getAttendanceForEvent(eventId: number): Observable<AttendanceRecord[]> {
+    return this.http.get<AttendanceRecord[]>(`${this.apiUrl}/${eventId}/attendance`);
+  }
+
+  saveAttendance(eventId: number, records: SaveAttendanceRecord[]): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${eventId}/attendance`, records);
+  }
+
+  getBusinessRepEvents(city?: string, resourceCategory?: string): Observable<EventDto[]> {
+  let params = new HttpParams();
+  if (city) {
+    params = params.set('city', city);
+  }
+  if (resourceCategory) {
+    params = params.set('resourceCategory', resourceCategory);
+  }
+  return this.http.get<EventDto[]>(`${this.apiUrl}/for-business-representatives`, { params });
+}
 
 }

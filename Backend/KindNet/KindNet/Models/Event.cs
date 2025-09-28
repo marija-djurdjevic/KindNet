@@ -23,5 +23,6 @@
         public EventStatus Status { get; set; }
         public DateTime ApplicationDeadline { get; set; }
         public List<string> RequiredSkills { get; set; }
+        public List<ResourceRequest> ResourcesRequests { get; set; } = new List<ResourceRequest>();
     }
 }

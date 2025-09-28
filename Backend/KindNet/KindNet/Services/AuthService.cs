@@ -25,7 +25,7 @@ namespace KindNet.Services
         {
             if (_context.Users.Any(u => u.Email == request.Email))
             {
-                return Result.Fail("User with this email already exists.");
+                return Result.Fail("Korisnik sa ovim e-mailom već postoji.");
             }
 
             var passwordHash = HashPassword(request.Password);
@@ -48,12 +48,12 @@ namespace KindNet.Services
             var user = _context.Users.FirstOrDefault(u => u.Email == request.Email);
             if (user == null)
             {
-                return Result.Fail("Incorrect email or password.");
+                return Result.Fail("Pogrešan e-mail ili lozinka. Provjerite podatke.");
             }
 
             if (!VerifyPassword(request.Password, user.Password))
             {
-                return Result.Fail("Incorrect email or password.");
+                return Result.Fail("Pogrešan e-mail ili lozinka. Provjerite podatke.");
             }
 
             return _tokenGenerator.GenerateAccessToken(user);

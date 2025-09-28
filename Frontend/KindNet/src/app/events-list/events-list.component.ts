@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { ApplicationService } from '../services/application.service';
 import { ToastService } from '../services/toast.service';
 import { MatDialog } from '@angular/material/dialog';
+import { ResourceRequestDetailDto } from '../models/resource.model';
 
 @Component({
   selector: 'app-events-list',
@@ -14,7 +15,6 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./events-list.component.css']
 })
 export class EventsListComponent implements OnInit {
-
   @ViewChild('confirmDialogTemplate') confirmDialogTemplate!: TemplateRef<any>;
 
   events: EventDto[] = [];
@@ -33,6 +33,8 @@ export class EventsListComponent implements OnInit {
    selectedStatusName: string | null = 'Status';
    sortOptionName: string = 'Najnoviji prvi';
 
+  showResourcesModal = false;
+  selectedEventForResources: EventDto | null = null;
     eventStatuses = [
     { value: EventStatus.Draft, name: 'Nacrt' },
     { value: EventStatus.Planned, name: 'Planiran' },
@@ -41,6 +43,9 @@ export class EventsListComponent implements OnInit {
     { value: EventStatus.Canceled, name: 'Otkazan' },
     { value: EventStatus.Archived, name: 'Arhiviran' },
 ];
+
+  private statusTranslationMap = new Map<string, string>();
+  private typeTranslationMap = new Map<string, string>();
 
   statusMapping: { [key: number]: string } = {
     0: 'Draft',
@@ -89,6 +94,8 @@ export class EventsListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.populateStatusMap();
+    this.populateTypeMap(); 
     this.getEventsBasedOnRole();
   }
 
@@ -120,15 +127,20 @@ export class EventsListComponent implements OnInit {
           );
       } else {
           eventsObservable = this.eventService.getAllEventsWithApplicationStatus();
+          
       }
 
       eventsObservable.subscribe({
           next: (data) => {
               if (this.isOrganiser()) {
                   this.events = data;
+                  console.log(this.events);
               } else {
-                  this.events = data.events.filter((event: { status: string; }) => event.status !== 'Archived' && event.status !== 'Draft');
+                  console.log(data.events);
+                  this.events = data.events.filter((event: { status: string; }) => event.status !== 'Archived' && event.status !== 'Draft' && event.status !== 'Canceled' );
                   this.applicationStatus = data.applicationStatus;
+                  console.log(this.events);
+
               }
               this.isLoading = false;
           }
@@ -236,4 +248,46 @@ export class EventsListComponent implements OnInit {
   navigateToApplications() {
     this.router.navigate(['layout/events-applications']);
   }
+
+  onViewResources(event: EventDto): void {
+    this.selectedEventForResources = event;
+    this.showResourcesModal = true;
+  }
+
+  closeResourcesModal(): void {
+    this.showResourcesModal = false;
+    this.selectedEventForResources = null;
+  }
+
+  calculateFulfillmentPercentage(resource: ResourceRequestDetailDto): number {
+    if (!resource.quantityNeeded || resource.quantityNeeded === 0) {
+      return 100;
+    }
+    return (resource.quantityFulfilled / resource.quantityNeeded) * 100;
+  }
+
+    private populateStatusMap(): void {
+      for (const status of this.eventStatuses) {
+        this.statusTranslationMap.set(EventStatus[status.value], status.name);
+      }
+    }
+
+  public translateStatus(status: string): string {
+    return this.statusTranslationMap.get(status) || status;
+  }
+
+  private populateTypeMap(): void {
+    this.typeTranslationMap.set('Environmental', 'Ekološki');
+    this.typeTranslationMap.set('Cultural', 'Kulturni');
+    this.typeTranslationMap.set('Educational', 'Edukativni');
+    this.typeTranslationMap.set('Humanitarian', 'Humanitarni');
+    this.typeTranslationMap.set('Sport', 'Sportski');
+    this.typeTranslationMap.set('Community', 'Društveni');
+    this.typeTranslationMap.set('Technology', 'Tehnološki');
+  }
+
+   public translateType(type: string): string {
+    return this.typeTranslationMap.get(type) || type;
+  }
+
 }

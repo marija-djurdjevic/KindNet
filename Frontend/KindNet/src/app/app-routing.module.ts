@@ -8,11 +8,22 @@ import { EventsListComponent } from './events-list/events-list.component';
 import { CreateEventComponent } from './create-event/create-event.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { ApplicationsDashboardComponent } from './applications-dashboard/applications-dashboard.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { EditVolunteerProfileComponent } from './edit-volunteer-profile/edit-volunteer-profile.component';
+import { ProfileGuard } from './guards/profile.guard';
+import { BusinessRepHomeComponent } from './business-rep-home/business-rep-home.component';
+import { OrganizationProfileComponent } from './organization-profile/organization-profile.component';
+import { EditOrganizationProfileComponent } from './edit-organization-profile/edit-organization-profile.component';
+import { EditBusinessProfileComponent } from './edit-business-profile/edit-business-profile.component';
+import { BusinessProfileComponent } from './business-profile/business-profile.component';
+import { TopUsersDashboardComponent } from './top-users-dashboard/top-users-dashboard.component';
+import { VolunteerAttendanceModalComponent } from './volunteer-attendance-modal/volunteer-attendance-modal.component';
+
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'sign-up', component: SignUpComponent },
-  { path: 'home', component: HomeComponent },
+  { path: 'home', component: HomeComponent, canActivate: [ProfileGuard]  },
 
   {
     path: 'layout',
@@ -22,7 +33,19 @@ const routes: Routes = [
       { path: 'create-event', component: CreateEventComponent },
       { path: 'create-event/:id', component: CreateEventComponent },
       { path: 'calendar', component: CalendarComponent },
-      { path: 'events-applications', component: ApplicationsDashboardComponent }
+      { path: 'events-applications', component: ApplicationsDashboardComponent },
+      { path: 'user-profile', component: UserProfileComponent }, 
+      { path: 'user-profile/:userId', component: UserProfileComponent }, 
+      { path: 'user-profile-edit', component: EditVolunteerProfileComponent },
+      { path: 'businessRep-home', component: BusinessRepHomeComponent},
+      { path: 'organization-profile', component: OrganizationProfileComponent },
+      { path: 'organization-profile/:userId', component: OrganizationProfileComponent },
+      { path: 'organization-profile-edit', component: EditOrganizationProfileComponent},
+      { path: 'business-profile', component: BusinessProfileComponent},
+      { path: 'business-profile/:userId', component: BusinessProfileComponent }, 
+      { path: 'business-profile-edit', component: EditBusinessProfileComponent},
+       { path: 'dashboard', component: TopUsersDashboardComponent },
+         { path: 'events/:id/attendance', component: VolunteerAttendanceModalComponent },
     ]
   },
   

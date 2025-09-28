@@ -16,6 +16,8 @@ namespace KindNet.Models.Interfaces
             long organizerId,
             EventStatus? status = null, 
             bool sortByStartTimeDescending = true);
+
+        Task<IEnumerable<Event>> GetEventsForBusinessRepsAsync(string? city, ResourceCategory? resourceCategory);
     }
 
 }

@@ -53,6 +53,15 @@
                         <mat-icon class="type-icon">{{ typeIconMapping[event.type] }}</mat-icon>
                         <h3 class="event-name">{{ event.name }}</h3>
                     </div>
+                     <div *ngIf="!isOrganiser()" class="detail-item">
+                            <mat-icon>person</mat-icon>
+                            <span>Organizator: 
+                                <a  matTooltip="Pogledaj profil oganizacije" 
+                                            matTooltipPosition="above" [routerLink]="['/layout/organization-profile', event.organizerId]" class="organizer-link">
+                                    {{ event.organizerName }}
+                                </a>
+                            </span>
+                        </div>
                     <div class="event-details">
                         <div class="detail-item">
                             <mat-icon>location_on</mat-icon>
@@ -68,12 +77,34 @@
                         </div>
                     </div>
                 </div>
+                <div class="volunteer-actions">
+                <div *ngIf="isOrganiser()" class="organiser-actions">
+                    <button
+                        mat-flat-button
+                        color="primary"
+                        class="resource-button"
+                        (click)="onViewResources(event)">
+                        <mat-icon>shopping_bag</mat-icon>
+                        <span>Potrebni resursi</span>
+                    </button>
+                    </div>
+                </div>
 
                 <div class="event-meta">
                     <div class="tag-and-actions">
                         <span class="tag status-tag" [ngClass]="'status-' + event.status.toLowerCase()">
-                            {{ event.status }}
+                            {{  translateStatus(event.status) }}
                         </span>
+                        <button
+                            *ngIf="event.status === 'Active' && isOrganiser()"
+                            mat-flat-button
+                            color="primary"
+                            class="attendance-button"
+                            matTooltip="Evidencija prisustva volontera"
+                             [routerLink]="['/layout/events', event.id, 'attendance']">
+                            <mat-icon>how_to_reg</mat-icon>
+                            <span>Volonteri</span>
+                        </button>
                         <button
                             *ngIf="event.status === 'Planned' && isOrganiser()"
                             mat-icon-button
@@ -104,7 +135,7 @@
                         </button>
                     </div>
                     <span class="tag type-tag">
-                        {{ event.type }}
+                        {{ translateType(event.type) }}
                     </span>
                 </div>
             </div>
@@ -134,10 +165,13 @@
                     mat-icon-button
                     matTooltip="Prijava je poslata!"
                     (click)="navigateToApplications()">
-                    <mat-icon color="primary">article</mat-icon>
-                </button>
-                <div *ngIf="!isOrganiser() && !isApplicationDeadlineMet(event) && !applicationStatus[event.id]" class="deadline-expired-message">
-                    <mat-icon color="warn" matTooltip="Rok za prijavu je istekao">warning_amber</mat-icon>
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+                    <i class="fa-solid fa-clipboard-check"></i>
+
+            </button>
+                <div *ngIf="!isOrganiser() && !isApplicationDeadlineMet(event) && !applicationStatus[event.id]" matTooltip="Rok za prijavu je istekao.">
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+                     <i class="fa-solid fa-circle-info info-icon-warning"></i>
                 </div>
             </div>
         </mat-card>
@@ -167,6 +201,68 @@
                 (click)="confirmAction()">
                 Potvrdi
             </button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" *ngIf="showResourcesModal" (click)="closeResourcesModal()">
+    <div class="modal-dialog resources-modal" (click)="$event.stopPropagation()">
+        
+        <div class="modal-header">
+            <h4 class="modal-title" *ngIf="selectedEventForResources">
+                Potrebni resursi za događaj: "<strong>{{ selectedEventForResources.name }}</strong>"
+            </h4>
+            <button type="button" class="close" (click)="closeResourcesModal()">&times;</button>
+        </div>
+
+        <div class="modal-body" *ngIf="selectedEventForResources">
+            
+            <div *ngIf="selectedEventForResources.resourceRequests.length > 0; else noResources" class="resources-list">
+                
+                <div *ngFor="let resource of selectedEventForResources.resourceRequests" class="resource-item">
+                    
+                    <div class="resource-header">
+                        <span class="item-name">{{ resource.itemName }}</span>
+                        <span class="category-tag">{{ resource.category }}</span>
+                    </div>
+
+                    <div class="fulfillment-info">
+                        Obezbijeđeno: <strong>{{ resource.quantityFulfilled || 0 }} / {{ resource.quantityNeeded }}</strong>
+                    </div>
+
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" [style.width.%]="calculateFulfillmentPercentage(resource)"></div>
+                    </div>
+
+                    <div *ngIf="resource.fulfillments.length > 0" class="fulfillments-section">
+                        <h5>Donacije:</h5>
+                        <ul class="fulfillments-list">
+                            <li *ngFor="let fulfillment of resource.fulfillments">
+                          <a [routerLink]="['/layout/business-profile', fulfillment.providerUserId]" 
+                            class="provider-link"
+                            matTooltip="Pogledaj profil preduzeća" 
+                            matTooltipPosition="above">
+                            <mat-icon class="provider-icon">business</mat-icon>
+                            {{ fulfillment.providerName }}
+                            </a>          
+                            <strong>{{ fulfillment.quantityProvided }} kom.</strong>
+                            </li>
+                        </ul>
+                    </div>
+                     <div *ngIf="resource.fulfillments.length === 0" class="no-fulfillments">
+                        <p>Još uvek nema donacija za ovaj resurs.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <ng-template #noResources>
+                <div class="no-events">
+                    <mat-icon>info_outline</mat-icon>
+                    <p>Za ovaj događaj nisu definisani potrebni resursi.</p>
+                </div>
+            </ng-template>
+
         </div>
     </div>
 </div>

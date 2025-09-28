@@ -23,6 +23,80 @@ namespace KindNet.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("KindNet.Models.Badge", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("IconUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long?>("VolunteerProfileId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VolunteerProfileId");
+
+                    b.ToTable("Badges");
+                });
+
+            modelBuilder.Entity("KindNet.Models.BusinessProfile", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ContactPhone")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<List<string>>("GalleryImageUrls")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.Property<bool>("IsVerified")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("SupportedEventsCount")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("BusinessProfiles");
+                });
+
             modelBuilder.Entity("KindNet.Models.Event", b =>
                 {
                     b.Property<long>("Id")
@@ -182,6 +256,69 @@ namespace KindNet.Migrations
                     b.ToTable("OrganizationProfiles");
                 });
 
+            modelBuilder.Entity("KindNet.Models.ResourceFulfillment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("AgreementTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("ProviderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("QuantityProvided")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("RequestId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProviderId");
+
+                    b.HasIndex("RequestId");
+
+                    b.ToTable("ResourceFulfillments");
+                });
+
+            modelBuilder.Entity("KindNet.Models.ResourceRequest", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("Category")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("EventId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ItemName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("QuantityFulfilled")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("QuantityNeeded")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("ResourceRequests");
+                });
+
             modelBuilder.Entity("KindNet.Models.User", b =>
                 {
                     b.Property<long>("Id")
@@ -266,6 +403,51 @@ namespace KindNet.Migrations
                     b.ToTable("VolunteerProfiles");
                 });
 
+            modelBuilder.Entity("KindNet.Models.VolunteerSession", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("ApplicationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("AttendanceStatus")
+                        .HasColumnType("boolean");
+
+                    b.Property<double>("HoursVolunteered")
+                        .HasColumnType("double precision");
+
+                    b.Property<DateOnly>("SessionDate")
+                        .HasColumnType("date");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationId");
+
+                    b.ToTable("VolunteersSessions");
+                });
+
+            modelBuilder.Entity("KindNet.Models.Badge", b =>
+                {
+                    b.HasOne("KindNet.Models.VolunteerProfile", null)
+                        .WithMany("Badges")
+                        .HasForeignKey("VolunteerProfileId");
+                });
+
+            modelBuilder.Entity("KindNet.Models.BusinessProfile", b =>
+                {
+                    b.HasOne("KindNet.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("KindNet.Models.Event", b =>
                 {
                     b.HasOne("KindNet.Models.OrganizationProfile", "Organizer")
@@ -307,6 +489,36 @@ namespace KindNet.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("KindNet.Models.ResourceFulfillment", b =>
+                {
+                    b.HasOne("KindNet.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("ProviderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KindNet.Models.ResourceRequest", "Request")
+                        .WithMany("Fulfillments")
+                        .HasForeignKey("RequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Request");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("KindNet.Models.ResourceRequest", b =>
+                {
+                    b.HasOne("KindNet.Models.Event", "Event")
+                        .WithMany("ResourcesRequests")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+                });
+
             modelBuilder.Entity("KindNet.Models.VolunteerProfile", b =>
                 {
                     b.HasOne("KindNet.Models.User", "User")
@@ -316,6 +528,32 @@ namespace KindNet.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("KindNet.Models.VolunteerSession", b =>
+                {
+                    b.HasOne("KindNet.Models.EventApplication", "Application")
+                        .WithMany()
+                        .HasForeignKey("ApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Application");
+                });
+
+            modelBuilder.Entity("KindNet.Models.Event", b =>
+                {
+                    b.Navigation("ResourcesRequests");
+                });
+
+            modelBuilder.Entity("KindNet.Models.ResourceRequest", b =>
+                {
+                    b.Navigation("Fulfillments");
+                });
+
+            modelBuilder.Entity("KindNet.Models.VolunteerProfile", b =>
+                {
+                    b.Navigation("Badges");
                 });
 #pragma warning restore 612, 618
         }

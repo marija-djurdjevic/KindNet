@@ -1,0 +1,112 @@
+<div class="edit-organization-profile-container">
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner></mat-spinner>
+    <p>Učitavanje profila organizacije...</p>
+  </div>
+
+  <div *ngIf="!isLoading && profile" class="profile-grid">
+    
+    <mat-card class="profile-card basic-info-card">
+      <mat-card-header>
+        <div class="card-title-group">
+          <div>
+            <mat-card-title>{{ profile.name }}</mat-card-title>
+            <mat-card-subtitle>{{ profile.city }}</mat-card-subtitle>
+            
+          </div>
+        </div>
+        <div *ngIf="profile && isOwnProfile" class="header-actions">
+          <button mat-flat-button class="edit-button-small" [routerLink]="['/layout/organization-profile-edit']">
+            <mat-icon>edit</mat-icon>
+            Uredi profil
+          </button>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="contact-info-block">
+          <div class="detail-item" *ngIf="profile.contactPhone">
+            <mat-icon>phone</mat-icon>
+            <span>{{ profile.contactPhone }}</span>
+          </div>
+          <div class="detail-item" *ngIf="profile.website">
+            <mat-icon>public</mat-icon>
+            <a [href]="profile.website" target="_blank">{{ profile.website }}</a>
+          </div>
+          <div class="detail-item" *ngIf="userEmail">
+            <mat-icon>email</mat-icon>
+            <span>{{ userEmail }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="profile-card activities-card">
+      <mat-card-header>
+        <mat-card-title>Oblasti djelovanja</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-chip-listbox aria-label="Aktivnosti">
+          <mat-chip *ngFor="let area of profile.activityAreas" color="primary" selected>
+            {{ area }}
+          </mat-chip>
+        </mat-chip-listbox>
+        <p *ngIf="!profile.activityAreas || profile.activityAreas.length === 0" class="no-data">Nema unesenih oblasti.</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="profile-card description-card">
+      <mat-card-header>
+        <mat-card-title>O nama</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{ profile.description }}</p>
+      </mat-card-content>
+    </mat-card>
+
+   <mat-card class="profile-card gallery-card">
+  <mat-card-header>
+    <mat-card-title>Galerija</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="gallery-slider-container">
+      <button mat-icon-button class="slider-arrow prev" (click)="prevSlide()" *ngIf="hasPreviousImages">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <div class="gallery-slider">
+        <img 
+          *ngFor="let url of profile.galleryImageUrls | slice:currentIndex:currentIndex + 5" 
+          [src]="url" 
+          alt="Gallery image" 
+          class="gallery-image"
+          (click)="openLightbox(url)" 
+        />
+      </div>
+      <button mat-icon-button class="slider-arrow next" (click)="nextSlide()"  *ngIf="hasNextImages">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+    <p *ngIf="!profile.galleryImageUrls || profile.galleryImageUrls.length === 0" class="no-data">Nema unesenih slika u galeriji.</p>
+  </mat-card-content>
+</mat-card>
+
+<div class="lightbox-overlay" [ngClass]="{'visible': isLightboxOpen}" (click)="closeLightbox()">
+  <div class="lightbox-content" (click)="$event.stopPropagation()">
+    <button mat-icon-button class="lightbox-close" (click)="closeLightbox()">
+      <mat-icon>close</mat-icon>
+    </button>
+    <button mat-icon-button class="lightbox-nav prev" (click)="prevImage()">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <img [src]="currentImage" alt="Enlarged image" />
+    <button mat-icon-button class="lightbox-nav next" (click)="nextImage()">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+</div>
+
+  </div>
+
+  <div *ngIf="isProfileMissing && !isLoading">
+    <p>Nemate kreiran profil. Molimo kreirajte ga.</p>
+  </div>
+</div>
