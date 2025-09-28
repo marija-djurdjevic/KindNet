@@ -123,6 +123,27 @@
 
             return await query.ToListAsync();
         }
+
+        public async Task<IEnumerable<Event>> GetEventsForBusinessRepsAsync(string? city, ResourceCategory? resourceCategory)
+        {
+            var query = _context.Events
+                .Include(e => e.Organizer)
+                .Include(e => e.ResourcesRequests)
+                .Where(e => e.Status == EventStatus.Planned || e.Status == EventStatus.Active)
+                .Where(e => e.ResourcesRequests.Any()); 
+
+            if (!string.IsNullOrEmpty(city))
+            {
+                query = query.Where(e => e.City.ToLower().Contains(city.ToLower()));
+            }
+
+            if (resourceCategory.HasValue)
+            {
+                query = query.Where(e => e.ResourcesRequests.Any(r => r.Category == resourceCategory.Value));
+            }
+
+            return await query.OrderBy(e => e.StartTime).ToListAsync();
+        }
     }
 
 }

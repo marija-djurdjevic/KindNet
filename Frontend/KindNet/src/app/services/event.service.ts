@@ -82,4 +82,15 @@ export class EventService {
     return this.http.post(`${this.apiUrl}/${eventId}/attendance`, records);
   }
 
+  getBusinessRepEvents(city?: string, resourceCategory?: string): Observable<EventDto[]> {
+  let params = new HttpParams();
+  if (city) {
+    params = params.set('city', city);
+  }
+  if (resourceCategory) {
+    params = params.set('resourceCategory', resourceCategory);
+  }
+  return this.http.get<EventDto[]>(`${this.apiUrl}/for-business-representatives`, { params });
+}
+
 }
