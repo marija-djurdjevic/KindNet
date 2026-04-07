@@ -6,6 +6,12 @@
 
 **KindNet** is a comprehensive web platform designed to streamline the organization, coordination, and management of volunteer activities. Developed as a Bachelor's thesis project, this system connects volunteer organizations, individual volunteers, and socially responsible companies into a single, cohesive ecosystem.
 
+## 🔄 Development Process & User-Centered Approach
+
+We didn't just want to build an application; we wanted to build the *right* solution. 
+
+The project was developed using an Agile methodology across **3 sprints**. To ensure the platform provides real value, we conducted interviews and feedback sessions with actual volunteer organizations and active volunteers throughout the development process. This hands-on, user-centered approach allowed us to gather precise requirements, understand their daily pain points, and build features that directly solve real-world coordination problems.
+
 ## ✨ Key Features
 
 ### 🏢 For Volunteer Organizations
@@ -40,6 +46,7 @@
 * [.NET SDK](https://dotnet.microsoft.com/download)
 * [Node.js & npm](https://nodejs.org/)
 * [Angular CLI](https://angular.io/cli)
+* [PostgreSQL](https://www.postgresql.org/download/)
 
 ### 🎓 About This Project
 This project was developed as a collaborative Bachelor's Thesis by passionate software engineering students Marija Đurđević and
