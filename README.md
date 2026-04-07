@@ -31,18 +31,16 @@
 
 ## 📸 Screenshots
 <img width="1898" height="869" alt="Screenshot 2025-10-15 134622" src="https://github.com/user-attachments/assets/b8f3c150-9741-4314-85cf-061d97d7df06" />
-
 <img width="1898" height="839" alt="Screenshot 2025-10-15 133352" src="https://github.com/user-attachments/assets/7bc1f40f-f089-4130-bb6b-14278451e10f" />
-<img width="1909" height="867" alt="evidencija" src="https://github.com/user-attachments/assets/97fc7fb0-f2d1-4c3a-9f9c-b4ec2c1b620d" />
-
+<img width="1890" height="866" alt="pregled-prijava" src="https://github.com/user-attachments/assets/54e42de9-6010-40df-b21d-98000d25fecf" />
 <img width="1896" height="869" alt="pregled-prijava-vol" src="https://github.com/user-attachments/assets/08a00927-6608-403d-a071-952c6bf39ad4" />
-<img width="1896" height="869" alt="pregled-prijava-vol" src="https://github.com/user-attachments/assets/bec8d4ff-7d80-4d12-9983-bf674d21edba" />
+<img width="1909" height="867" alt="evidencija" src="https://github.com/user-attachments/assets/97fc7fb0-f2d1-4c3a-9f9c-b4ec2c1b620d" />
 
 ### Prerequisites
 * [.NET SDK](https://dotnet.microsoft.com/download)
 * [Node.js & npm](https://nodejs.org/)
 * [Angular CLI](https://angular.io/cli)
 
-🎓 About This Project
+### 🎓 About This Project
 This project was developed as a collaborative Bachelor's Thesis by passionate software engineering students Marija Đurđević and
 Jana Janković. Our goal was to apply our full-stack development skills to a real-world problem, creating a tool that empowers communities and fosters the spirit of volunteering.
