@@ -35,7 +35,6 @@
 <img width="1890" height="866" alt="pregled-prijava" src="https://github.com/user-attachments/assets/54e42de9-6010-40df-b21d-98000d25fecf" />
 <img width="1896" height="869" alt="pregled-prijava-vol" src="https://github.com/user-attachments/assets/08a00927-6608-403d-a071-952c6bf39ad4" />
 <img width="1909" height="867" alt="evidencija" src="https://github.com/user-attachments/assets/97fc7fb0-f2d1-4c3a-9f9c-b4ec2c1b620d" />
-<img width="696" height="335" alt="Screenshot 2025-10-22 005613" src="https://github.com/user-attachments/assets/9f63c932-3a2e-408e-9cb5-0bb9c95165ff" />
 
 ### Prerequisites
 * [.NET SDK](https://dotnet.microsoft.com/download)
